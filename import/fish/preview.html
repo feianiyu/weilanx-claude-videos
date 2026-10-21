@@ -1,0 +1,616 @@
+<title>水墨系列 · 小鱼动画</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+/* 布局：两台竖版"放映机"并排，下方是金句候选与拆解公式 */
+:root{
+  --bg:#F2F3EE; --panel:#FFFFFF; --ink:#1C1F1D; --muted:#6B716D; --line:#DADDD8;
+  --green:#13A24E; --seal:#13A24E;
+  --serif:"Noto Serif SC","Songti SC",serif; --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121513;--panel:#1A1E1B;--ink:#E8EBE7;--muted:#9AA19C;--line:#2C322E;--green:#2BE08A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121513;--panel:#1A1E1B;--ink:#E8EBE7;--muted:#9AA19C;--line:#2C322E;--green:#2BE08A;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:30px}
+.eyebrow{font-size:12px;letter-spacing:.2em;color:var(--green);margin:0 0 4px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(24px,4vw,34px);margin:0;text-wrap:balance}
+.lede{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card h2{font-family:var(--serif);font-weight:600;font-size:19px;margin:0}
+.card .sub{color:var(--muted);font-size:13px;margin:0}
+.screen{position:relative;width:100%;max-width:340px;aspect-ratio:9/16;margin:0 auto;border-radius:6px;overflow:hidden;background:#EEF1EA}
+.screen canvas{width:100%;height:100%;display:block}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+button.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.play{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;border-radius:0}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13.5px}
+dt{color:var(--muted);letter-spacing:.06em}
+dd{margin:0}
+section h3{font-family:var(--serif);font-weight:600;font-size:20px;margin:0 0 4px}
+section .hint{color:var(--muted);font-size:13.5px;margin:0 0 12px}
+.formula{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.step{border-top:2px solid var(--ink);padding-top:8px}
+.step b{display:block;font-family:var(--serif);font-size:16px}
+.step p{margin:4px 0 0;color:var(--muted);font-size:13.5px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:13.5px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500;letter-spacing:.04em}
+td.q{font-family:var(--serif);font-weight:600;font-size:15.5px;white-space:nowrap}
+td.src{color:var(--muted);font-size:12.5px}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;border:1px solid var(--green);color:var(--green);margin-left:6px;vertical-align:2px}
+.note{font-size:12.5px;color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">老杨魔方 · 水墨系列</p>
+    <h1>水墨系列 · 小鱼动画</h1>
+    <p class="lede">第二版：背景换成一圈圈淡绿色光晕，鱼群炸开后停顿一拍再散开，鱼和格子都画得更细。点"播放"有声音（拨弦加水滴，浏览器现场合成）。</p>
+  </header>
+
+  <div class="stage">
+    <article class="card">
+      <h2>六 · 两鱼成缘</h2>
+      <p class="sub">20 秒预览：满屏鱼群 → 混乱 → 散尽留白 → 两鱼追尾 → 诗句 → 片尾小标识聚了又散</p>
+      <div class="screen"><canvas id="cvC" width="540" height="960"></canvas></div>
+      <div class="bar">
+        <button class="play" id="playC">▶ 播放</button>
+      </div>
+      <dl>
+        <dt>诗句</dt><dd>众里寻他千百度，蓦然回首，那人却在，灯火阑珊处。（辛弃疾《青玉案·元夕》）</dd>
+        <dt>物</dt><dd>五百多条鱼的鱼群，和其中两条有缘的鱼</dd>
+        <dt>那一下</dt><dd>6–8.6 秒鱼群向四周散尽，画面从极满变成极空，只剩两条鱼</dd>
+      </dl>
+    </article>
+
+    <article class="card">
+      <h2>一 · 放大镜与鱼群</h2>
+      <p class="sub">14 秒：小字竖排 → 圆圈放大 → 鱼群炸开 → 停住 → 散开游走 → 片尾小署名聚散</p>
+      <div class="screen"><canvas id="cvA" width="540" height="960"></canvas></div>
+      <div class="bar">
+        <button class="play" id="playA">▶ 播放</button>
+        <span class="seg" role="group" aria-label="文案">
+          <button id="a0">示意文字</button><button id="a1" class="on">老杨文案</button>
+        </span>
+      </div>
+      <dl>
+        <dt>金句</dt><dd>平均数回暖，不等于你回暖</dd>
+        <dt>物</dt><dd>鱼群是平均数；逆着游的那条绿鱼是你的生意</dd>
+        <dt>那一下</dt><dd>2.6 秒炸开，鱼群悬停约 1 秒，音乐同时静下来，再一声低音放开</dd>
+      </dl>
+    </article>
+
+    <article class="card">
+      <h2>二 · 被扯开的格子</h2>
+      <p class="sub">17 秒：一张 KPI 表，格线连同格子里的数字被慢慢扯散，镜头缓推 → 片尾小署名聚散</p>
+      <div class="screen"><canvas id="cvB" width="540" height="960"></canvas></div>
+      <div class="bar">
+        <button class="play" id="playB">▶ 播放</button>
+        <span class="seg" role="group" aria-label="文案">
+          <button id="b0">示意文字</button><button id="b1" class="on">老杨文案</button>
+        </span>
+      </div>
+      <dl>
+        <dt>金句</dt><dd>冲击来了，这条相关还成立吗？</dd>
+        <dt>物</dt><dd>KPI 考核表的格子，每格只填一个数</dd>
+        <dt>那一下</dt><dd>没有炸点，格子连着数字一片片剥落，水滴落在每句字幕上</dd>
+      </dl>
+    </article>
+  </div>
+
+  <section>
+    <h3>水墨系列 · 金句候选</h3>
+    <p class="hint">都从你的 Notion 文案库和公众号成稿里提炼。挑 3–5 句，我逐条出逐秒脚本。</p>
+    <div class="tbl"><table>
+      <thead><tr><th>金句</th><th>物</th><th>动作</th><th>那一下</th><th>出处</th></tr></thead>
+      <tbody>
+        <tr><td class="q">平均数回暖，不等于你回暖<span class="tag">已示意</span></td><td>鱼群</td><td>放大镜扫过，鱼群炸开后游散</td><td>一条绿鱼逆着游</td><td class="src">文案库 #6</td></tr>
+        <tr><td class="q">冲击来了，这条相关还成立吗？<span class="tag">已示意</span></td><td>KPI 表格</td><td>格线和数字被扯散</td><td>最后剩下的格子还在硬撑</td><td class="src">文案库 #2</td></tr>
+        <tr><td class="q">有收入，不等于有现金</td><td>一只瓷碗</td><td>清水不断注入</td><td>碗底一道细裂缝，水面始终涨不上去</td><td class="src">文案库 #6</td></tr>
+        <tr><td class="q">签完合同，风险才开始</td><td>两滴墨</td><td>一浓一淡两滴墨在水里靠近、相触</td><td>相触后没有融合，各自晕开、互相推挤</td><td class="src">文案库 #1</td></tr>
+        <tr><td class="q">科技越强，钱越难赚</td><td>一道墨线</td><td>墨线向上生长</td><td>中途分岔成 K：一支向上发亮，一支向下慢慢晕散</td><td class="src">文案库 #5</td></tr>
+        <tr><td class="q">猛药治不了安全感</td><td>一杯清水与一团浓墨</td><td>大团浓墨砸进水里翻涌</td><td>墨散尽后，杯底那尾小鱼还缩在角落不动</td><td class="src">文案库 #4</td></tr>
+        <tr><td class="q">换的是工具，不是工作方式</td><td>一支毛笔</td><td>毛笔换成发光的新笔</td><td>新笔落纸，写出来的还是同一个字</td><td class="src">公众号《95% 的 AI 转型》</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h3>拆解公式</h3>
+    <div class="formula">
+      <div class="step"><b>找"物"</b><p>整片只有一个具体物件：鱼、稿纸、墨滴、瓷碗。它就是金句的替身。</p></div>
+      <div class="step"><b>找"动词"</b><p>这个物件只做一件事：放大、炸开、撕扯、晕开、生长。不换第二个动作。</p></div>
+      <div class="step"><b>找"那一下"</b><p>全片一个冲击点，冲击后停一拍让人看清，再放开。音乐在这一下最密，停顿时最静。</p></div>
+      <div class="step"><b>找"留白"</b><p>文字小、颜色淡，背景只有光晕和纸纹，注意力全给那个物件。</p></div>
+    </div>
+    <p class="note">声音：五声音阶单音拨弦，间隔约 1 秒；冲击点快速上滑；停顿处留空；水滴落在字出现的瞬间。不用鼓点。</p>
+  </section>
+</div>
+
+<script>
+(function(){
+const TAU=Math.PI*2;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const seg=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const eo3=x=>1-Math.pow(1-x,3);
+const eio=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+const lerp=(a,b,k)=>a+(b-a)*k;
+function rng(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+const W=540,H=960;
+
+/* ---------- 音频 ---------- */
+let AC=null, master=null, verb=null;
+function audioInit(){
+  if(AC) return;
+  AC=new (window.AudioContext||window.webkitAudioContext)();
+  verb=AC.createConvolver();
+  const len=AC.sampleRate*3, ir=AC.createBuffer(2,len,AC.sampleRate);
+  for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4);}
+  verb.buffer=ir;
+  const wet=AC.createGain(); wet.gain.value=0.5; verb.connect(wet).connect(AC.destination);
+}
+function newBus(){
+  if(master){try{master.gain.setTargetAtTime(0,AC.currentTime,0.05);}catch(e){}}
+  const g=AC.createGain(); g.gain.value=0.8;
+  const dry=AC.createGain(); dry.gain.value=0.75;
+  g.connect(dry).connect(AC.destination); g.connect(verb);
+  master=g; return g;
+}
+function pluck(bus,t0,f,vel){
+  const o1=AC.createOscillator(), o2=AC.createOscillator(), lp=AC.createBiquadFilter(), g=AC.createGain(), g2=AC.createGain();
+  o1.type='triangle'; o2.type='sawtooth'; g2.gain.value=0.18;
+  for(const o of [o1,o2]){o.frequency.setValueAtTime(f*1.018,t0); o.frequency.exponentialRampToValueAtTime(f,t0+0.09);}
+  lp.type='lowpass'; lp.frequency.setValueAtTime(f*7,t0); lp.frequency.exponentialRampToValueAtTime(f*1.6,t0+0.8); lp.Q.value=2;
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vel*0.5,t0+0.004); g.gain.exponentialRampToValueAtTime(0.0001,t0+2.4);
+  o1.connect(lp); o2.connect(g2).connect(lp); lp.connect(g).connect(bus);
+  o1.start(t0);o2.start(t0);o1.stop(t0+2.6);o2.stop(t0+2.6);
+}
+function drop(bus,t0,f,vel=0.32){
+  const o=AC.createOscillator(), g=AC.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(f,t0); o.frequency.exponentialRampToValueAtTime(f*2.3,t0+0.05);
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vel,t0+0.003); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.14);
+  o.connect(g).connect(bus); o.start(t0); o.stop(t0+0.2);
+}
+function pad(bus,t0,f,dur,vel=0.045){
+  const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.value=f;
+  g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(vel,t0+2); g.gain.setValueAtTime(vel,t0+dur-2); g.gain.linearRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g).connect(bus); o.start(t0); o.stop(t0+dur+0.1);
+}
+const N={D3:146.83,A3:220,D4:293.66,E4:329.63,Fs4:369.99,A4:440,B4:493.88,D5:587.33,E5:659.25,Fs5:739.99,A5:880};
+const SCORE={
+ A:[['p',.3,'D4',.32],['p',1.1,'A4',.28],['p',1.8,'Fs4',.28],['p',2.3,'E4',.26],
+    ['g',2.5],['d',2.62,1100],['d',2.7,1500],['d',2.8,900],
+    ['p',3.95,'D3',.42],['p',3.95,'A3',.25],['d',4.05,800],
+    ['p',5.1,'D5',.28],['p',5.9,'B4',.24],['d',6.4,1000],['p',6.8,'A4',.26],['p',7.7,'Fs4',.22],['d',8.1,1250],
+    ['p',8.6,'E4',.25],['p',9.5,'D4',.28],['p',9.5,'A3',.16],['d',10.3,950],
+    ['p',11.0,'D4',.1],['p',11.2,'Fs4',.12],['p',11.4,'A4',.14],['p',11.6,'D5',.16],
+    ['p',12.1,'D4',.2],['p',12.1,'A4',.14],['d',12.12,1000],['p',12.7,'D5',.1],['p',12.77,'A4',.1],['p',12.84,'Fs4',.1],['p',12.91,'D4',.1],['d',12.8,1300],['p',13.6,'D3',.22]],
+ B:[['pad',0,'D3',17.5],['p',.4,'A4',.24],['p',1.5,'Fs4',.22],['d',2.0,1000],['p',2.8,'E4',.24],['p',3.9,'D4',.26],['d',4.3,1200],
+    ['p',5.2,'B4',.2],['p',6.4,'A4',.22],['d',7.2,950],['p',7.7,'Fs4',.2],['p',9.0,'E4',.24],['d',9.6,1300],['p',10.2,'D4',.24],
+    ['p',11.5,'A3',.2],['d',12.1,1050],['p',12.8,'E4',.2],['p',14.0,'D4',.24],['d',14.5,1150],
+    ['p',14.7,'D4',.1],['p',14.9,'Fs4',.12],['p',15.1,'A4',.14],['p',15.3,'D5',.16],
+    ['p',15.7,'D4',.2],['p',15.7,'A4',.14],['d',15.72,1000],['p',16.3,'D5',.1],['p',16.37,'A4',.1],['p',16.44,'Fs4',.1],['p',16.51,'D4',.1],['d',16.4,1300],['p',17.1,'D3',.2]]
+};
+function playScore(name){
+  audioInit(); if(AC.state==='suspended')AC.resume();
+  const bus=newBus(), t0=AC.currentTime+0.05;
+  for(const ev of SCORE[name]){
+    if(ev[0]==='p') pluck(bus,t0+ev[1],N[ev[2]],ev[3]);
+    else if(ev[0]==='d') drop(bus,t0+ev[1],ev[2]);
+    else if(ev[0]==='pad') pad(bus,t0+ev[1],N[ev[2]],ev[3]);
+    else if(ev[0]==='g'){ ['D4','E4','Fs4','A4','B4','D5','E5','Fs5','A5'].forEach((k,i)=>pluck(bus,t0+ev[1]+i*0.04,N[k],0.2+i*0.02)); }
+  }
+}
+
+/* ---------- 水墨底：纸纹 + 一圈圈淡绿光晕 ---------- */
+function makeLayer(fn){const c=document.createElement('canvas');c.width=W;c.height=H;fn(c.getContext('2d'));return c;}
+const PAPER=makeLayer(g=>{
+  g.fillStyle='#F3F4EE'; g.fillRect(0,0,W,H);
+  const r=rng(3);
+  for(let i=0;i<9000;i++){const x=r()*W,y=r()*H; g.fillStyle=`rgba(${r()<.5?60:255},${r()<.5?80:255},70,${0.025+r()*0.03})`; g.fillRect(x,y,1,1);}
+  for(let i=0;i<60;i++){const x=r()*W,y=r()*H,l=10+r()*40,a=r()*TAU; g.strokeStyle=`rgba(90,110,95,${0.03+r()*0.03})`; g.lineWidth=0.6; g.beginPath(); g.moveTo(x,y); g.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l); g.stroke();}
+  const v=g.createRadialGradient(W/2,H/2,H*0.25,W/2,H/2,H*0.75); v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(70,90,75,0.10)'); g.fillStyle=v; g.fillRect(0,0,W,H);
+});
+const HALO=makeLayer(g=>{
+  const cx=W/2,cy=H*0.42,R=520;
+  const gr=g.createRadialGradient(cx,cy,0,cx,cy,R);
+  for(let i=0;i<=60;i++){
+    const r=i/60;
+    const ring=0.5+0.5*Math.cos(r*TAU*5.2);
+    const fall=Math.pow(1-r,1.4);
+    const core=Math.exp(-r*r*9)*0.35;
+    const a=(ring*0.20+core)*fall;
+    gr.addColorStop(r,`rgba(${Math.round(lerp(150,190,r))},${Math.round(lerp(205,225,r))},${Math.round(lerp(165,190,r))},${a.toFixed(3)})`);
+  }
+  g.fillStyle=gr; g.fillRect(0,0,W,H);
+});
+function inkBg(ctx,t,cy){
+  ctx.drawImage(PAPER,0,0);
+  const s=1+0.035*Math.sin(t*0.55), dy=(cy-H*0.42);
+  ctx.save(); ctx.globalAlpha=0.9; ctx.translate(W/2,H*0.42+dy); ctx.scale(s,s); ctx.translate(-W/2,-H*0.42); ctx.drawImage(HALO,0,0); ctx.restore();
+  ctx.save(); ctx.globalAlpha=0.35; ctx.translate(W/2,H*0.42+dy); ctx.scale(1.35-0.035*Math.sin(t*0.55),1.35); ctx.rotate(0.3); ctx.translate(-W/2,-H*0.42); ctx.drawImage(HALO,0,0); ctx.restore();
+}
+
+/* ---------- 共用 ---------- */
+function vtext(ctx,str,x,y,size,color,gap){
+  ctx.fillStyle=color; ctx.font=`${size}px "Noto Serif SC","Songti SC",serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  [...str].forEach((ch,i)=>{ if('，。、'.includes(ch)) ctx.fillText(ch,x+size*0.3,y+i*gap-size*0.25); else ctx.fillText(ch,x,y+i*gap); });
+}
+function seal(ctx,x,y,a){
+  if(a<=0) return; ctx.save(); ctx.globalAlpha=a;
+  const s=40; const r=rng(11);
+  ctx.fillStyle='#13A24E'; ctx.beginPath();
+  ctx.moveTo(x+r()*2,y+r()*2); ctx.lineTo(x+s-r()*2,y+r()*2); ctx.lineTo(x+s-r()*2,y+s-r()*2); ctx.lineTo(x+r()*2,y+s-r()*2); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='rgba(243,244,238,0.95)'; ctx.font='900 15px "Noto Serif SC",serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('魔',x+s*0.27,y+s*0.3); ctx.fillText('方',x+s*0.27,y+s*0.72); ctx.fillText('老',x+s*0.73,y+s*0.3); ctx.fillText('杨',x+s*0.73,y+s*0.72);
+  ctx.fillStyle='rgba(243,244,238,0.25)'; for(let i=0;i<40;i++){ctx.fillRect(x+r()*s,y+r()*s,1.5,1.5);}
+  ctx.fillStyle='#6B736D'; ctx.font='13px "Noto Serif SC",serif'; ctx.textAlign='left';
+  ctx.fillText('水墨系列 · 企业经营观察',x+s+12,y+s/2);
+  ctx.restore();
+}
+
+/* ---------- 作品一：放大镜与鱼群 ---------- */
+const COPY_A=[
+  {cols:['这里换成，','你自己的句子。'],extra:null,odd:false,sig:false},
+  {cols:['数据在回暖，','可你的生意呢。'],extra:'平均数回暖，不等于你回暖',odd:true,sig:true}
+];
+function drawFish(ctx,x,y,ang,L,a,tone,green,swim){
+  if(a<=0.01||L<3) return;
+  ctx.save(); ctx.translate(x,y); ctx.rotate(ang); ctx.globalAlpha=a;
+  const Hh=L*0.16, w=Math.sin(swim||0)*L*0.04;
+  const ink=green?[11,90,46]:[30+tone*20,52+tone*25,88+tone*30];
+  const rgb=(k,al)=>`rgba(${Math.round(lerp(ink[0],235,k))},${Math.round(lerp(ink[1],240,k))},${Math.round(lerp(ink[2],236,k))},${al})`;
+  // 洇开的底
+  ctx.fillStyle=rgb(0.55,0.12);
+  ctx.beginPath(); ctx.ellipse(0,0,L*0.56,Hh*1.6,0,0,TAU); ctx.fill();
+  // 尾
+  ctx.fillStyle=rgb(0.45,0.55);
+  ctx.beginPath(); ctx.moveTo(-L*0.36,0); ctx.quadraticCurveTo(-L*0.46,-Hh*0.2,-L*0.56,-Hh*1.15+w); ctx.quadraticCurveTo(-L*0.5,0,-L*0.56,Hh*1.15+w); ctx.quadraticCurveTo(-L*0.46,Hh*0.2,-L*0.36,0); ctx.fill();
+  ctx.strokeStyle=rgb(0.2,0.35); ctx.lineWidth=Math.max(0.4,L*0.008);
+  for(let k=-2;k<=2;k++){ctx.beginPath(); ctx.moveTo(-L*0.38,0); ctx.lineTo(-L*0.53,k*Hh*0.45+w); ctx.stroke();}
+  // 身
+  const gr=ctx.createLinearGradient(-L*0.4,0,L*0.5,0);
+  gr.addColorStop(0,rgb(0.6,0.35)); gr.addColorStop(0.55,rgb(0.15,0.85)); gr.addColorStop(1,rgb(0.05,0.95));
+  ctx.fillStyle=gr;
+  ctx.beginPath(); ctx.moveTo(L*0.5,Hh*0.1);
+  ctx.bezierCurveTo(L*0.4,-Hh*1.15,-L*0.05,-Hh*1.05,-L*0.38,-Hh*0.25);
+  ctx.lineTo(-L*0.38,Hh*0.25);
+  ctx.bezierCurveTo(-L*0.05,Hh*0.95,L*0.38,Hh*0.95,L*0.5,Hh*0.1); ctx.fill();
+  // 腹部留白
+  ctx.fillStyle=rgb(0.85,0.55); ctx.beginPath(); ctx.ellipse(L*0.08,Hh*0.42,L*0.26,Hh*0.28,0,0,TAU); ctx.fill();
+  // 背线
+  ctx.strokeStyle=rgb(0,0.75); ctx.lineWidth=Math.max(0.6,L*0.022); ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(L*0.42,-Hh*0.45); ctx.bezierCurveTo(L*0.2,-Hh*1.0,-L*0.1,-Hh*0.9,-L*0.36,-Hh*0.22); ctx.stroke();
+  // 背鳍、胸鳍
+  ctx.fillStyle=rgb(0.35,0.45);
+  ctx.beginPath(); ctx.moveTo(L*0.02,-Hh*0.92); ctx.lineTo(-L*0.12,-Hh*1.6); ctx.lineTo(-L*0.16,-Hh*0.8); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(L*0.22,Hh*0.4); ctx.lineTo(L*0.08,Hh*1.2+w); ctx.lineTo(L*0.12,Hh*0.4); ctx.fill();
+  // 鳃线 + 眼
+  if(L>16){
+    ctx.strokeStyle=rgb(0.1,0.5); ctx.lineWidth=Math.max(0.4,L*0.01);
+    ctx.beginPath(); ctx.arc(L*0.32,0,Hh*0.8,-1.1,1.0); ctx.stroke();
+    ctx.fillStyle='rgba(245,247,242,0.95)'; ctx.beginPath(); ctx.arc(L*0.4,-Hh*0.2,Hh*0.3,0,TAU); ctx.fill();
+    ctx.fillStyle='#141c22'; ctx.beginPath(); ctx.arc(L*0.41,-Hh*0.2,Hh*0.17,0,TAU); ctx.fill();
+  }
+  ctx.restore();
+}
+const burst=(()=>{const r=rng(7),a=[];for(let i=0;i<150;i++){const s=0.3+Math.pow(r(),0.8)*0.7;a.push({ang:r()*TAU,s,tone:r(),wob:r()*TAU,len:14+r()*20});}return a;})();
+const school=(()=>{const r=rng(21),a=[];for(let i=0;i<22;i++)a.push({x0:r()*720,y0:70+r()*820,v:24+r()*26,L:34+r()*40,tone:r(),ph:r()*TAU});return a.sort((p,q)=>p.L-q.L);})();
+function renderA(ctx,t,mode){
+  const C=COPY_A[mode];
+  const size=15,gap=23,top=300,x0=W/2+14, colX=i=>x0-i*28, len=[...C.cols[0]].length;
+  const bx=colX(0)-14, by=top+(len-1)*gap*0.85;
+  inkBg(ctx,t,by);
+  const fadeIn=seg(t,0,0.6);
+  const drawText=(al)=>{C.cols.forEach((s,i)=>vtext(ctx,s,colX(i),top,size,`rgba(70,76,72,${0.9*al})`,gap));};
+  drawText(fadeIn);
+  // 放大镜
+  const mz=seg(t,0.4,2.3), mx=bx+Math.sin(mz*3)*4, my=top+eio(mz)*(len-1)*gap*0.85;
+  const mr=48*(1-eio(seg(t,2.3,2.6)))*seg(t,0.2,0.6);
+  if(mr>0.5){
+    ctx.save(); ctx.beginPath(); ctx.arc(mx,my,mr,0,TAU); ctx.fillStyle='rgba(243,244,238,0.92)'; ctx.fill(); ctx.clip();
+    ctx.translate(mx,my); ctx.scale(1.8,1.8); ctx.translate(-mx,-my);
+    C.cols.forEach((s,i)=>vtext(ctx,s,colX(i),top,size,'rgba(30,36,34,1)',gap)); ctx.restore();
+    ctx.save(); ctx.strokeStyle='rgba(19,120,70,0.7)'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(mx,my,mr,0,TAU); ctx.stroke();
+    ctx.globalAlpha=0.25; ctx.beginPath(); ctx.arc(mx,my,mr+5,0,TAU); ctx.stroke(); ctx.restore();
+  }
+  // 炸开 → 悬停 → 放开
+  const TB=2.6, HOLD0=0.38, HOLD1=1.45, R1=230;
+  if(t>TB){
+    const k=t-TB;
+    // 墨晕涟漪
+    for(let i=0;i<3;i++){
+      const kk=k-i*0.18; if(kk<=0||kk>2) continue;
+      const rr=40+kk*190, al=0.35*(1-kk/2);
+      ctx.save(); ctx.strokeStyle=`rgba(40,95,70,${al})`; ctx.lineWidth=2.5-i*0.6; ctx.beginPath(); ctx.arc(bx,by,rr,0,TAU); ctx.stroke(); ctx.restore();
+    }
+    const out=[];
+    for(const f of burst){
+      let r;
+      if(k<HOLD0) r=f.s*R1*eo3(k/HOLD0);
+      else if(k<HOLD1) r=f.s*R1+f.s*14*(k-HOLD0);
+      else r=f.s*R1+f.s*14*(HOLD1-HOLD0)+f.s*720*eio(clamp((k-HOLD1)/2.6,0,1));
+      const a=1-seg(k,HOLD1+1.4,HOLD1+2.8);
+      const ang=f.ang+Math.sin(k*1.6+f.wob)*0.04;
+      out.push([bx+Math.cos(ang)*r,by+Math.sin(ang)*r,ang,f.len*(0.6+0.4*seg(k,0,HOLD0))+r*0.035,a,f.tone,k*9+f.wob]);
+    }
+    out.sort((p,q)=>p[3]-q[3]).forEach(o=>drawFish(ctx,o[0],o[1],o[2],o[3],o[4],o[5],false,o[6]));
+  }
+  // 游散
+  const sa=seg(t,4.6,6.0);
+  if(sa>0){
+    for(const f of school){
+      const x=((f.x0+f.v*t)%760)-110, y=f.y0+Math.sin(t*0.9+f.ph)*8;
+      drawFish(ctx,x,y,Math.sin(t*1.1+f.ph)*0.05,f.L,sa*0.92,f.tone,false,t*5+f.ph);
+    }
+  }
+  if(C.odd){
+    const oa=seg(t,5.8,6.8);
+    const ox=W+70-(t-5.8)*58, oy=by+70+Math.sin(t*1.2)*6;
+    if(oa>0) drawFish(ctx,ox,oy,Math.PI,66,oa,0,true,t*6);
+    const ea=seg(t,8.6,9.8);
+    if(ea>0){ ctx.save(); ctx.globalAlpha=ea; ctx.font='600 20px "Noto Serif SC",serif'; ctx.fillStyle='#0B5A2E'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(C.extra,W/2,690); ctx.restore(); }
+  }
+  if(t>TB) drawText(1);
+  if(C.odd){ const ea=seg(t,8.6,9.8); if(ea>0){ ctx.save(); ctx.globalAlpha=ea; ctx.font='600 20px "Noto Serif SC",serif'; ctx.fillStyle='#0B5A2E'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(C.extra,W/2,690); ctx.restore(); } }
+  if(C.sig){ logoFX(ctx,t,LGA); topIP(ctx,1); }
+}
+
+/* ---------- 作品二：被扯开的格子 ---------- */
+const COPY_B=[
+  {paper:'示意：这一行放表格抬头',subs:[],nums:false,sig:false},
+  {paper:'本月 KPI 考核表 · 每格只填一个数',subs:[[0.7,3.7,'公司里只盯 KPI 相关'],[3.9,7.1,'表格越细，每个人只看自己那一格'],[7.3,10.7,'冲击一来，格子先碎'],[10.9,14.8,'先问：冲击来了，这条相关还成立吗？']],nums:true,sig:true}
+];
+const GX=14, GY=18, CELL=25, PX=(W-GX*CELL)/2, PY=212;
+const lattice=(()=>{const r=rng(99),v=[];for(let j=0;j<=GY;j++){const row=[];for(let i=0;i<=GX;i++){
+  const u=(1-j/GY)*0.6+(1-i/GX)*0.4+(r()-0.5)*0.14;
+  const th=0.75+(r()-0.5)*0.4;
+  row.push({x:PX+i*CELL,y:PY+j*CELL,T:0.8+(1-u)*25,k:0.7+r()*0.7,dx:Math.cos(th),dy:Math.sin(th)});}v.push(row);}return v;})();
+const cells=(()=>{const r=rng(17),pool=['92','87%','↑3','64','100','71%','3.2','58','—','88','✓','45%','↓2','76','9.1'],a=[];
+  for(let j=0;j<GY;j++)for(let i=0;i<GX;i++){ if(r()<0.42) a.push({i,j,s:pool[Math.floor(r()*pool.length)],rot:(r()-0.5)*0.2,vx:-4-r()*8,vy:-10-r()*12,spin:(r()-0.5)*1.6}); }return a;})();
+const frags=(()=>{const r=rng(5),a=[];for(let n=0;n<60;n++)a.push({i:Math.floor(r()*GX),j:Math.floor(r()*GY),ang:r()*TAU,len:4+r()*8,vx:-6-r()*10,vy:-6-r()*12});return a;})();
+function vpos(v,t){ const d=t-v.T; if(d<=0) return [v.x,v.y,0]; const m=Math.pow(d,1.5)*22*v.k; return [v.x+v.dx*m,v.y+v.dy*m,d]; }
+function renderB(ctx,t,mode){
+  const C=COPY_B[mode];
+  inkBg(ctx,t,H*0.4);
+  // 镜头缓推
+  const z=1+0.06*eio(seg(t,0,16)), fx=PX+GX*CELL*0.35, fy=PY+GY*CELL*0.35;
+  ctx.save(); ctx.translate(fx,fy); ctx.scale(z,z); ctx.translate(-fx,-fy);
+  // 纸
+  ctx.save(); ctx.shadowColor='rgba(40,60,45,0.18)'; ctx.shadowBlur=24; ctx.shadowOffsetY=6;
+  ctx.fillStyle='rgba(250,250,246,0.96)'; ctx.fillRect(PX-26,PY-58,GX*CELL+52,GY*CELL+88); ctx.restore();
+  ctx.font='13px "Noto Serif SC",serif'; ctx.fillStyle='rgba(40,46,42,0.85)'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText(C.paper,PX,PY-26);
+  // 格子里的数字
+  if(C.nums){
+    ctx.textAlign='center';
+    for(const c of cells){
+      const v=lattice[c.j][c.i]; const d=t-v.T;
+      let x=PX+(c.i+0.5)*CELL, y=PY+(c.j+0.55)*CELL, a=0.8, rot=c.rot;
+      if(d>0){ const p=vpos(v,t); x+= (p[0]-v.x)*0.55 + c.vx*d; y+=(p[1]-v.y)*0.55 + c.vy*d; a=0.8*Math.max(0,1-d/3.2); rot+=c.spin*d; }
+      if(a<=0.02) continue;
+      ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.globalAlpha=a; ctx.fillStyle='#2A3A33'; ctx.font='italic 12px "Noto Serif SC",serif'; ctx.fillText(c.s,0,0); ctx.restore();
+    }
+  }
+  // 格线
+  const link=(a,b)=>{
+    const p=vpos(a,t),q=vpos(b,t), both=p[2]>0&&q[2]>0, d=Math.max(p[2],q[2]);
+    let al, lw;
+    if(d<=0){al=0.75; lw=1.1;}
+    else if(both){al=0.7*Math.exp(-d*0.24); lw=0.9;}
+    else {al=0.85; lw=0.7;}
+    if(al<0.02) return;
+    ctx.strokeStyle=`rgba(46,72,58,${al})`; ctx.lineWidth=lw;
+    ctx.beginPath(); ctx.moveTo(p[0],p[1]);
+    const mx=(p[0]+q[0])/2+(q[1]-p[1])*0.05, my=(p[1]+q[1])/2-(q[0]-p[0])*0.05;
+    ctx.quadraticCurveTo(mx,my,q[0],q[1]); ctx.stroke();
+  };
+  ctx.lineCap='round';
+  for(let j=0;j<=GY;j++)for(let i=0;i<=GX;i++){const v=lattice[j][i]; if(i<GX)link(v,lattice[j][i+1]); if(j<GY)link(v,lattice[j+1][i]);}
+  // 墨点碎屑
+  for(const f of frags){
+    const v=lattice[f.j][f.i]; const d=t-v.T; if(d<=0||d>5) continue;
+    const a=0.6*(1-d/5), x=v.x+f.vx*d, y=v.y+f.vy*d;
+    ctx.strokeStyle=`rgba(46,72,58,${a})`; ctx.lineWidth=0.8; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(f.ang+d)*f.len,y+Math.sin(f.ang+d)*f.len); ctx.stroke();
+  }
+  ctx.restore();
+  // 字幕
+  for(const [a,b,s] of C.subs){
+    const al=seg(t,a,a+0.5)*(1-seg(t,b-0.5,b)); if(al<=0) continue;
+    ctx.save(); ctx.globalAlpha=al; ctx.fillStyle='#1F2A24'; ctx.font='600 20px "Noto Serif SC",serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(s,W/2,748+ (1-seg(t,a,a+0.6))*6); ctx.restore();
+  }
+  if(C.sig){ logoFX(ctx,t,LGB); topIP(ctx,1); }
+}
+
+/* ---------- 老杨魔方 IP：顶部常驻 + 结尾鱼群聚成 logo ---------- */
+function cubePts(x,y,s){
+  const w=s*0.866, T=[x,y-s],R1=[x+w,y-s/2],R2=[x+w,y+s/2],B=[x,y+s],L2=[x-w,y+s/2],L1=[x-w,y-s/2],C=[x,y];
+  const segs=[[T,R1],[R1,R2],[R2,B],[B,L2],[L2,L1],[L1,T],[L1,C],[C,R1],[C,B]];
+  const face=(P0,P1,P3)=>{for(const k of [1/3,2/3]){
+    segs.push([[P0[0]+(P1[0]-P0[0])*k,P0[1]+(P1[1]-P0[1])*k],[P3[0]+(P1[0]-P0[0])*k,P3[1]+(P1[1]-P0[1])*k]]);
+    segs.push([[P0[0]+(P3[0]-P0[0])*k,P0[1]+(P3[1]-P0[1])*k],[P1[0]+(P3[0]-P0[0])*k,P1[1]+(P3[1]-P0[1])*k]]);}};
+  face(L1,T,C); face(L1,C,L2); face(C,R1,B);
+  return segs;
+}
+function drawCube(ctx,x,y,s,col,lw,al){
+  ctx.save(); ctx.globalAlpha=al; ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.lineJoin='round'; ctx.lineCap='round';
+  for(const [a,b] of cubePts(x,y,s)){ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();}
+  ctx.restore();
+}
+const LOGO_IMG=new Image(); LOGO_IMG.src="data:image/png;base64,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";
+function logoImg(ctx,cx,cy,size,al){ if(!LOGO_IMG.complete||!LOGO_IMG.naturalWidth||al<=0) return; ctx.save(); ctx.globalAlpha=al; ctx.drawImage(LOGO_IMG,cx-size/2,cy-size/2,size,size); ctx.restore(); }
+const BRAND_FONT='"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif';
+function topIP(ctx,al){
+  if(al<=0) return;
+  const y=122;
+  logoImg(ctx,W/2-37,y,20,0.6*al);
+  ctx.save(); ctx.globalAlpha=0.6*al; ctx.fillStyle='#0B5A2E'; ctx.font='900 14px '+BRAND_FONT; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText('老杨魔方',W/2-23,y+1); ctx.restore();
+}
+const LOGO={cx:W/2-44,cy:772,s:28,tx:W/2-26,ty:773};
+let LOGO_PTS=null;
+function buildLogoPts(){
+  const pts=[], S=LOGO.s;
+  const c0=document.createElement('canvas'); c0.width=S; c0.height=S; const g0=c0.getContext('2d');
+  g0.drawImage(LOGO_IMG,0,0,S,S); const d0=g0.getImageData(0,0,S,S).data;
+  for(let y=0;y<S;y+=1)for(let x=0;x<S;x+=1){ if(d0[(y*S+x)*4+3]>170 && (x+y)%2===0) pts.push([LOGO.cx-S/2+x,LOGO.cy-S/2+y,0]); }
+  const c=document.createElement('canvas'); c.width=W; c.height=120; const g=c.getContext('2d');
+  g.fillStyle='#000'; g.font='900 17px '+BRAND_FONT; g.textAlign='left'; g.textBaseline='middle'; g.fillText('老杨魔方',LOGO.tx,60);
+  const d=g.getImageData(0,0,W,120).data;
+  for(let y=0;y<120;y+=2)for(let x=0;x<W;x+=2){ if(d[(y*W+x)*4+3]>140) pts.push([x,LOGO.ty-60+y,1]); }
+  const r=rng(404);
+  LOGO_PTS=pts.map(p=>{const a=r()*TAU, R=620+r()*200; return {tx:p[0],ty:p[1],txt:p[2],sx:CX+Math.cos(a)*R,sy:CY+Math.sin(a)*R*1.2,
+    cx:CX+Math.cos(a+1.2)*260*(r()-0.3),cy:CY+Math.sin(a+1.2)*260*(r()-0.3),dl:r(),od:Math.atan2(p[1]-LOGO.cy+6,p[0]-W/2)+(r()-0.5)*0.9,ok:0.7+r()*0.6,L:9+r()*6};});
+}
+const LG={in0:16.2,form:17.5,out0:18.1};
+const LGA={in0:10.9,form:12.1,out0:12.7};
+const LGB={in0:14.6,form:15.7,out0:16.3};
+function logoFX(ctx,t,L){
+  L=L||LG;
+  if(t<L.in0) return; if(!LOGO_PTS){ if(!LOGO_IMG.complete) return; buildLogoPts(); }
+  const col='#0B5A2E';
+  const hold=seg(t,L.form-0.15,L.form+0.35)*(1-seg(t,L.out0,L.out0+0.25));
+  // 成形瞬间的一圈涟漪
+
+  if(hold>0.02){ logoImg(ctx,LOGO.cx,LOGO.cy,LOGO.s,hold*0.75);
+    ctx.save(); ctx.globalAlpha=hold*0.75; ctx.fillStyle=col; ctx.font='900 17px '+BRAND_FONT; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('老杨魔方',LOGO.tx,LOGO.ty); ctx.restore(); }
+  for(const p of LOGO_PTS){
+    if(t<L.out0){
+      const s0=L.in0+p.dl*0.5, k=eo3(seg(t,s0,s0+0.8)); if(k<=0) continue;
+      const u=k, v=1-u;
+      const x=v*v*p.sx+2*u*v*p.cx+u*u*p.tx, y=v*v*p.sy+2*u*v*p.cy+u*u*p.ty;
+      const dx=2*v*(p.cx-p.sx)+2*u*(p.tx-p.cx), dy=2*v*(p.cy-p.sy)+2*u*(p.ty-p.cy);
+      const a=(1-hold)*Math.min(1,k*3);
+      if(k<0.985) fishSimple(ctx,x,y,Math.atan2(dy,dx),p.L*0.6*(1-0.4*k),a*0.8,0.2,t*14+p.dl*9);
+      else {ctx.fillStyle=`rgba(11,90,46,${a*0.75})`; ctx.beginPath(); ctx.arc(x,y,0.9,0,TAU); ctx.fill();}
+    } else {
+      const s0=L.out0+p.dl*0.25, q=eo3(seg(t,s0,s0+1.1)); if(q<=0||q>=1) continue;
+      const D=q*300*p.ok, x=p.tx+Math.cos(p.od)*D, y=p.ty+Math.sin(p.od)*D;
+      fishSimple(ctx,x,y,p.od,p.L*0.6*(0.6+0.4*q),(1-q)*0.8,0.2,t*14+p.dl*9);
+    }
+  }
+}
+
+/* ---------- 作品六：鱼群散尽，两鱼成缘 ---------- */
+SCORE.C=(()=>{const ev=[['pad',0,'D3',20.5],['p',.2,'D4',.26],['p',1.2,'A4',.22],['p',2.1,'Fs4',.22]];
+  const r=rng(77),sc=['D4','E4','Fs4','A4','B4','D5','E5','Fs5'];
+  let tt=3.0; while(tt<6.2){ev.push(['p',tt,sc[Math.floor(r()*sc.length)],0.12+r()*0.1]); tt+=lerp(0.32,0.09,(tt-3)/3.2);}
+  [['Fs5',6.2],['E5',6.26],['D5',6.32],['B4',6.38],['A4',6.44],['Fs4',6.5],['E4',6.56],['D4',6.62]].forEach(([k,s])=>ev.push(['p',s,k,0.18]));
+  ev.push(['p',7.2,'A4',.16],['p',7.9,'E4',.14],['d',8.6,900]);
+  [9.3,10.5,11.7,12.9].forEach((s,i)=>{ev.push(['p',s,i%2?'A4':'D5',.26],['p',s+0.18,i%2?'D5':'A4',.2],['d',s+0.05,1000+i*120]);});
+  ev.push(['d',9.05,950],['p',9.1,'A4',.2],['d',12.05,1150],['p',12.1,'Fs4',.2],['p',14.2,'D3',.34],['p',14.2,'A3',.18]);
+  ['D4','Fs4','A4','D5'].forEach((k,i)=>ev.push(['p',16.3+i*0.2,k,0.1+i*0.02]));
+  ev.push(['p',17.5,'D4',.2],['p',17.5,'A4',.14],['d',17.52,1000]);
+  ['D5','A4','Fs4','D4'].forEach((k,i)=>ev.push(['p',18.1+i*0.07,k,0.1]));
+  ev.push(['d',18.2,1300],['p',19.6,'D3',.22]);
+  return ev;})();
+const CX=270, CY=460;
+const crowd=(()=>{const r=rng(55),a=[];for(let i=0;i<1300;i++){
+  const r0=Math.sqrt(r())*600, th=r()*TAU;
+  a.push({r0,th,ph:r()*TAU,ph2:r()*TAU,flip:r()<0.5?1:0,dl:r(),L:24+r()*18,tone:r(),sp:0.85+r()*0.3});}return a;})();
+function crowdPos(f,t){
+  const w=0.22*(1.25-f.r0/760)*f.sp;
+  const c=seg(t,3,5.2);
+  const weff=w*(1-2*c*f.flip*0.9);
+  const th=f.th+weff*t;
+  let r=f.r0+Math.sin(t*0.7+f.ph)*10;
+  let x=CX+Math.cos(th)*r, y=CY+Math.sin(th)*r*1.15;
+  x+=c*Math.sin(t*3.3+f.ph)*42; y+=c*Math.cos(t*2.9+f.ph2)*42;
+  const d=eo3(seg(t,6.1+f.dl*0.9,7.6+f.dl*0.9));
+  if(d>0){const dx=x-CX,dy=y-CY,n=Math.hypot(dx,dy)||1; x+=dx/n*d*900; y+=dy/n*d*900;}
+  return [x,y];
+}
+// 两条有缘的鱼：前段藏在鱼群里，散场后留在中央追尾
+const HERO=[{r0:120,th:0.4,ph:1,ph2:2,flip:0,dl:0,sp:1},{r0:180,th:3.6,ph:2,ph2:1,flip:1,dl:0,sp:1}];
+const ORB=(t,i)=>{
+  const s=t-8.6, w=1.45-0.35*seg(t,8.6,17), phi=0.4+w*Math.max(0,s)+(i?Math.PI*0.82:0);
+  const R=88-22*seg(t,9,15);
+  return [CX+Math.cos(phi)*R, CY-40+Math.sin(phi)*R*0.9];
+};
+function heroPos(i,t){
+  if(t<6.0) return crowdPos(HERO[i],t);
+  const p0=crowdPos(HERO[i],6.0), p1=ORB(8.6,i);
+  if(t<8.6){const k=eio(seg(t,6.0,8.6)); return [lerp(p0[0],p1[0],k),lerp(p0[1],p1[1],k)];}
+  return ORB(t,i);
+}
+function heading(fn,t){const a=fn(t-0.03),b=fn(t+0.03);return Math.atan2(b[1]-a[1],b[0]-a[0]);}
+function fishSimple(ctx,x,y,ang,L,a,tone,ph){
+  const Hh=L*0.17, w=Math.sin(ph)*L*0.06;
+  const c=Math.round(lerp(28,60,tone)), g=Math.round(lerp(48,82,tone)), b=Math.round(lerp(80,118,tone));
+  ctx.save(); ctx.translate(x,y); ctx.rotate(ang); ctx.globalAlpha=a;
+  ctx.fillStyle=`rgba(${c},${g},${b},0.82)`;
+  ctx.beginPath(); ctx.moveTo(L*0.5,0); ctx.quadraticCurveTo(L*0.15,-Hh,-L*0.35,-Hh*0.2); ctx.lineTo(-L*0.52,-Hh*0.9+w); ctx.lineTo(-L*0.44,w*0.5); ctx.lineTo(-L*0.52,Hh*0.9+w); ctx.lineTo(-L*0.35,Hh*0.2); ctx.quadraticCurveTo(L*0.15,Hh,L*0.5,0); ctx.fill();
+  ctx.restore();
+}
+const RIP=[6.6,8.7,9.35,10.55,11.75,12.95,14.2];
+function renderC(ctx,t){
+  inkBg(ctx,t,CY);
+  // 鱼群
+  const crowdA=1-seg(t,7.4,8.6);
+  if(crowdA>0){
+    for(const f of crowd){
+      const p=crowdPos(f,t); if(p[0]<-40||p[0]>W+40||p[1]<-40||p[1]>H+40) continue;
+      const ang=heading(tt=>crowdPos(f,tt),t);
+      fishSimple(ctx,p[0],p[1],ang,f.L,crowdA*0.95,f.tone,t*(7+seg(t,3,5.5)*8)+f.ph);
+    }
+  }
+  // 涟漪
+  for(const [k,s] of RIP.entries()){
+    const d=t-s; if(d<=0||d>3.4) continue;
+    const c=k===0?[CX,CY]:(()=>{const a=heroPos(0,s),b=heroPos(1,s);return [(a[0]+b[0])/2,(a[1]+b[1])/2];})();
+    const big=k===0||k===RIP.length-1?1.6:1;
+    for(let i=0;i<3;i++){const kk=d-i*0.2; if(kk<=0) continue;
+      ctx.strokeStyle=`rgba(30,95,65,${0.36*(1-kk/3.4)})`; ctx.lineWidth=1.8-i*0.4; ctx.beginPath(); ctx.ellipse(c[0],c[1],(12+kk*95)*big,(12+kk*95)*big*0.9,0,0,TAU); ctx.stroke();}
+  }
+  // 两条有缘的鱼
+  const pa=heroPos(0,t), pb=heroPos(1,t);
+  const sw=t<3?7:(t<6?14:(t<8.6?9:6));
+  drawFish(ctx,pb[0],pb[1],heading(tt=>heroPos(1,tt),t),t<6?28:lerp(28,64,seg(t,6.4,8.6)),1,0,true,t*sw+1);
+  drawFish(ctx,pa[0],pa[1],heading(tt=>heroPos(0,tt),t),t<6?30:lerp(30,68,seg(t,6.4,8.6)),1,0.25,false,t*sw);
+  // 诗句：辛弃疾《青玉案·元夕》
+  const poem=[[9.0,'众里寻他千百度','600 25px'],[12.0,'蓦然回首，那人却在，灯火阑珊处','600 21px']];
+  poem.forEach(([s0,txt,f],i)=>{
+    const al=seg(t,s0,s0+1.2); if(al<=0) return;
+    ctx.save(); ctx.globalAlpha=al; ctx.fillStyle=i===1?'#0B5A2E':'#1F2A24';
+    ctx.font=f+' "Noto Serif SC","Songti SC",serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(txt,W/2,618+i*48+(1-eo3(al))*8); ctx.restore();
+  });
+  const ca=seg(t,13.6,14.6);
+  if(ca>0){ctx.save(); ctx.globalAlpha=ca*0.8; ctx.fillStyle='#7A827C'; ctx.font='13px "Noto Serif SC",serif'; ctx.textAlign='center'; ctx.fillText('辛弃疾《青玉案·元夕》',W/2,706); ctx.restore();}
+  logoFX(ctx,t);
+  topIP(ctx,1);
+}
+
+/* ---------- 播放控制 ---------- */
+function makePlayer(id,render,dur,scoreName,btn,segBtns,still){
+  const cv=document.getElementById(id), ctx=cv.getContext('2d');
+  let mode=1, start=null, raf=0;
+  const draw=t=>render(ctx,t,mode);
+  draw(still);
+  function loop(now){ const t=(now-start)/1000; if(t>=dur){draw(dur);btn.textContent='↻ 重播';start=null;return;} draw(t); raf=requestAnimationFrame(loop); }
+  btn.addEventListener('click',()=>{
+    cancelAnimationFrame(raf); start=performance.now(); btn.textContent='▶ 播放中';
+    try{playScore(scoreName);}catch(e){}
+    raf=requestAnimationFrame(loop);
+  });
+  segBtns.forEach((b,i)=>b.addEventListener('click',()=>{
+    mode=i; segBtns.forEach((x,k)=>x.classList.toggle('on',k===i));
+    if(start===null) draw(still);
+  }));
+}
+const ready=()=>{
+  makePlayer('cvC',(c,t)=>renderC(c,t),20.5,'C',document.getElementById('playC'),[],2.0);
+  makePlayer('cvA',renderA,14,'A',document.getElementById('playA'),[document.getElementById('a0'),document.getElementById('a1')],3.4);
+  makePlayer('cvB',renderB,17.5,'B',document.getElementById('playB'),[document.getElementById('b0'),document.getElementById('b1')],9.5);
+};
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(ready,ready);
+})();
+</script>
