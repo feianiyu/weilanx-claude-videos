@@ -77,7 +77,8 @@ tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp
        .replace("__CUBE56__", f'<svg width="56" height="56" viewBox="-56 -56 112 112">{CUBE}</svg>').replace("__CUBEPATH__", CUBE)
        .replace("__ENDSEC__", last_sec).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
 SFXLIST = D.get("sfx", [])
-specs = set(re.findall(r"""\bT\(\s*['"](v[^'"]+)['"]\s*\)""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST}
+# 锚点：scenes.js 里任何写成 'v07|词|s' 的字符串都算（包括写在数组里的），加上 scenes.html 的 data-at 和音效表
+specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST}
 A = {s: anchor(s) for s in sorted(specs)}
 
 # sections (cards)

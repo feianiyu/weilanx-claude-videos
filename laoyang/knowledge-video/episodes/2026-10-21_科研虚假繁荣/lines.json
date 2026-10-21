@@ -1,0 +1,378 @@
+{
+ "series": {
+  "title": "科研虚假繁荣",
+  "sub": "投1块，只转回8毛1"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 经营信号 ——",
+  "title": "投1块钱<br>转回8毛1",
+  "sub": "设计院科研的虚假繁荣，破了"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/12692135/pexels-photo-12692135.jpeg?w=2160&h=3840&fit=crop",
+ "bgNote": "成片用的是 C 档调色后的版本（在作者 Google Drive 的 V2.3 源码包里：assets/bg/bg.jpg）；这里下载的是原图，偏亮",
+ "voice": {
+  "name": "zh-CN-YunyangNeural",
+  "rate": "+25%",
+  "pitch": "+0Hz",
+  "engine": "edge-tts"
+ },
+ "gapSec": 0.3,
+ "secGap": 0.6,
+ "bgmUnder": 7.0,
+ "bgm": {
+  "file": "audio/bgm_mixkit_driving_ambition_32.mp3",
+  "url": "https://assets.mixkit.co/music/32/32.mp3",
+  "src": "Mixkit《Driving Ambition》by Ahjay Stelino（id 32）· Mixkit Stock Music Free License"
+ },
+ "beat": {
+  "bpm": 100.0,
+  "period": 0.6,
+  "t0": 0.0,
+  "src": "src/beatfit.py assets/bgm_mixkit_driving_ambition_32.mp3 95 99.4 → 100.0 BPM, 首拍 0.125s, 乐句线 38.525+9.6k"
+ },
+ "restBefore": "v10",
+ "bgmSection": 67.325,
+ "progress": [
+  [
+   "开场",
+   "c0"
+  ],
+  [
+   "投入",
+   "c1"
+  ],
+  [
+   "产出",
+   "c2"
+  ],
+  [
+   "病症",
+   "c3"
+  ],
+  [
+   "判断",
+   "c4"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "smoke",
+   900
+  ],
+  "c2": [
+   "sweep",
+   0
+  ],
+  "c3": [
+   "smoke",
+   950
+  ],
+  "c5": [
+   "sweep",
+   0
+  ],
+  "c6": [
+   "smoke",
+   990
+  ]
+ },
+ "sfx": [
+  [
+   "v01|投进去|s",
+   "sparkle",
+   0.1
+  ],
+  [
+   "v01|八毛一|s",
+   "sub",
+   0.15
+  ],
+  [
+   "v02|十年前|s",
+   "swish",
+   -0.05
+  ],
+  [
+   "v03|五倍多|s",
+   "land",
+   0.1
+  ],
+  [
+   "v04|下降|s",
+   "boom",
+   0.2
+  ],
+  [
+   "v05|更狠|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v05|两倍|s",
+   "sub",
+   0.1
+  ],
+  [
+   "v06|熄火|s",
+   "smoke",
+   0.1
+  ],
+  [
+   "v06|加码|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v07|破了|s",
+   "shatter",
+   0.0
+  ],
+  [
+   "v08|课题式|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v08|生产型|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v08|农闲式|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v09|被动式|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v09|档案柜|s",
+   "lock",
+   0.1
+  ],
+  [
+   "v10|我|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v10|新大陆|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v11|你们|s",
+   "vs",
+   0.25
+  ],
+  [
+   "v12|魔方|e",
+   "riser",
+   0.15
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "land": {
+   "file": "audio/sfx/3049.mp3",
+   "hit": 0.034,
+   "lvl": -9,
+   "src": "Mixkit #3049 Quest game heavy stomp",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3049/3049-preview.mp3"
+  },
+  "shatter": {
+   "file": "audio/sfx/759.mp3",
+   "hit": 0.022,
+   "lvl": -10,
+   "src": "Mixkit #759 Glass break with hammer thud",
+   "url": "https://assets.mixkit.co/active_storage/sfx/759/759-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "boom": {
+   "file": "audio/sfx/1143.mp3",
+   "hit": 0.632,
+   "lvl": -6,
+   "to": 2.4,
+   "src": "Mixkit #1143 Cinematic whoosh deep impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1143/1143-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "lock": {
+   "file": "audio/sfx/3218.mp3",
+   "hit": 0.248,
+   "to": 1.2,
+   "lvl": -14,
+   "src": "Mixkit #3218 Positive tech alert",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3218/3218-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "hangNote": "tts 里「行业」写成「航业」保证读 háng；字幕不变",
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "设计院搞科研，投进去1块钱，现在只能转回8毛1。",
+   "tts": "设计院搞科研，投进去一块钱，现在只能转回八毛一。",
+   "screens": [
+    "设计院搞科研，|投进去1块钱，",
+    "现在只能转回8毛1。"
+   ],
+   "dur": 5.26
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "十年前，还能转回1块1毛3。",
+   "tts": "十年前，还能转回一块一毛三。",
+   "dur": 3.12
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "十年里，全行业科研投入一路涨到约2953亿，是十年前的5倍多。",
+   "tts": "十年里，全航业科研投入一路涨到约两千九百五十三亿，是十年前的五倍多。",
+   "screens": [
+    "十年里，全行业科研投入|一路涨到约2953亿，",
+    "是十年前的5倍多。"
+   ],
+   "dur": 7.43
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "2024年，投入十年来头一回下降，减少7.6%。",
+   "tts": "二零二四年，投入十年来头一回下降，减少百分之七点六。",
+   "dur": 5.69
+  },
+  "v05": {
+   "sec": "c2",
+   "sub": "可产出掉得更狠：科技成果转让收入2200.9亿，减少14.7%，降幅接近投入的两倍。",
+   "tts": "可产出掉得更狠：科技成果转让收入两千二百点九亿，减少百分之十四点七，降幅接近投入的两倍。",
+   "screens": [
+    "可产出掉得更狠：|科技成果转让收入2200.9亿，",
+    "减少14.7%，|降幅接近投入的两倍。"
+   ],
+   "dur": 9.57
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "其实产出早就熄火了。2022、2023两年几乎零增长，投入却还在加码。",
+   "tts": "其实产出早就熄火了。二零二二、二零二三两年几乎零增长，投入却还在加码。",
+   "screens": [
+    "其实产出早就熄火了。",
+    "2022、2023两年几乎零增长，|投入却还在加码。"
+   ],
+   "dur": 7.61
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "堆人头、凑课题、刷专利的虚假繁荣，破了。",
+   "dur": 4.35
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "病症有五种：课题式，验收即解散；生产型，只为画图更快；农闲式，闲了才搞科研；",
+   "screens": [
+    "病症有五种：|课题式，验收即解散；",
+    "生产型，只为画图更快；|农闲式，闲了才搞科研；"
+   ],
+   "dur": 8.15
+  },
+  "v09": {
+   "sec": "c3",
+   "sub": "被动式，搞科研就少拿奖金；孤岛式，专利锁进档案柜。",
+   "screens": [
+    "被动式，搞科研就少拿奖金；",
+    "孤岛式，专利锁进档案柜。"
+   ],
+   "dur": 5.44
+  },
+  "v10": {
+   "sec": "c4",
+   "sub": "我的判断是：病根不在科研本身，而在商业模式。拿着一张旧地图，找不到新大陆。",
+   "screens": [
+    "我的判断是：|病根不在科研本身，",
+    "而在商业模式。",
+    "拿着一张旧地图，|找不到新大陆。"
+   ],
+   "dur": 8.01
+  },
+  "v11": {
+   "sec": "c5",
+   "sub": "你们院的科研，该接着投，还是先停下来选方向？",
+   "dur": 4.82
+  },
+  "v12": {
+   "sec": "c6",
+   "sub": "关注老杨魔方，下期讲：去哪里。",
+   "dur": 3.3
+  }
+ }
+}
