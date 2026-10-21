@@ -126,6 +126,7 @@ import {Ep27CoverTall} from './episodes/ep27-opus-video-full/Cover';
 import {GILDED_DEMO_FRAMES, GildedDemo} from './library/previews/GildedDemo';
 import {HALFTONE_DEMO_FRAMES, HalftoneDemo} from './library/previews/HalftoneDemo';
 import {BLACKGOLD_DEMO_FRAMES, BlackGoldDemo} from './library/previews/BlackGoldDemo';
+import {MIST_DEMO_FRAMES, MistDemo} from './library/previews/MistDemo';
 import {LAMPLIGHT_DEMO_FRAMES, LamplightDemo} from './library/previews/LamplightDemo';
 import {TACTICAL_DEMO_FRAMES, TacticalDemo} from './library/previews/TacticalDemo';
 import {WARM_DESK_DEMO_FRAMES, WarmDeskDemo} from './library/previews/WarmDeskDemo';
@@ -240,6 +241,9 @@ export const Root: React.FC = () => (
       <Composition id="library-gilded" component={GildedDemo} durationInFrames={GILDED_DEMO_FRAMES} fps={FPS} width={1920} height={1080} />
       <Composition id="library-halftone" component={HalftoneDemo} durationInFrames={HALFTONE_DEMO_FRAMES} fps={FPS} width={1920} height={1080} />
       <Composition id="library-blackgold" component={BlackGoldDemo} durationInFrames={BLACKGOLD_DEMO_FRAMES} fps={FPS} width={1920} height={1080} />
+      <Composition id="library-color-mist" component={MistDemo} durationInFrames={MIST_DEMO_FRAMES} fps={30} width={1080} height={1920} defaultProps={{palette: 'ruby' as const, seed: 1}} />
+      <Composition id="library-color-mist-jade" component={MistDemo} durationInFrames={MIST_DEMO_FRAMES} fps={30} width={1080} height={1920} defaultProps={{palette: 'jade' as const, seed: 7}} />
+      <Composition id="library-color-mist-ember" component={MistDemo} durationInFrames={MIST_DEMO_FRAMES} fps={30} width={1080} height={1920} defaultProps={{palette: 'ember' as const, seed: 3}} />
       <Composition id="library-lamplight" component={LamplightDemo} durationInFrames={LAMPLIGHT_DEMO_FRAMES} fps={FPS} width={1920} height={1080} />
       <Composition id="library-tactical" component={TacticalDemo} durationInFrames={TACTICAL_DEMO_FRAMES} fps={FPS} width={1920} height={1080} />
       <Composition id="library-warm-desk" component={WarmDeskDemo} durationInFrames={WARM_DESK_DEMO_FRAMES} fps={FPS} width={1920} height={1080} />

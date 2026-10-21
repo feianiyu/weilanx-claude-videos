@@ -176,6 +176,10 @@ Studio 里的 `library-wardrobe`（矢量版全部配饰与表情）、`library-
 
 要点：画面上的叙述就是字幕，不要再加底部字幕条；三种语义色各管一类意思，同一句里别混用超过两种；小人一律米白（死去 / 失势的人用 `color` 变灰），不加五官；场与场之间暗场溶解，能贯穿的元素（同一座城、同一个院落）放在场外面别跟着闪；地形是程序生成的假地形，不要标成真实地名的精确位置。音效用 `audio/sfx-lamplight.mjs` 的 `makeLamplightSfx(ep)`：马蹄 `hoof`、大鼓 `drum`、点火 `ignite`、驿铃 `bell`、瓷碗轻碰 `clink`（峰值 −6 dBFS），冲击和上升借战术屏的 `makeTacticalSfx`。
 
+## 彩雾粒子 `mist/`
+
+上万颗彩色粒子聚成的一团烟雾（模糊色雾 + 粒子簇 + 碎片 + 卷须 + 白色光网），跟着配乐的低 / 中 / 高三段能量呼吸、流动、闪烁，并能按事件表做瞬间爆炸、瞬间收缩、扭转拉伸。三套配色（ruby / jade / ember），换 seed 换形态，可透明叠加。配乐能量用 `scripts/audio-bands.mjs` 从任意 wav 提取。用法见 `src/library/mist/README.md`，预览：`library-color-mist`、`-jade`、`-ember`。
+
 ## 老杨魔方竖版 `laoyang/`
 
 竖版（1080×1920）「疏密 / 快慢 / 色彩」对比结构：上万光点星云旋进一个巨大金色数字，36 格数字疯长后逐行退潮变灰，米白圆形擦除反色、一个词占半屏；左上角标、底部脉动立方体、深浅两版署名按「老杨魔方」标准看板画，字体随仓库带。配方见 `styles/我的风格/老杨魔方竖版/README.md`，模板期：`ep52-laoyang-template`。
