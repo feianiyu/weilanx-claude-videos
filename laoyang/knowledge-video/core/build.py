@@ -67,6 +67,9 @@ def anchor(spec):
 CUBE = ('<g fill="none" stroke="#3EF09A" stroke-width="11.5"><polyline points="-29,-33 0,-50 29,-33"/><polyline points="-45,-24 0,2 45,-24"/>'
         '<polyline points="-41,-8 -41,24 -12,41"/><polyline points="41,-8 41,24 12,41"/></g><polygon points="-5.75,2 5.75,2 5.75,46.7 0,50 -5.75,46.7" fill="#3EF09A"/>')
 shell = open(f"{CORE}/shell.html", encoding="utf-8").read()
+# 片尾预告（可选，系列片用）：lines.json "endNext": "下期讲：怎么去" → 冒号前灰、冒号后橙
+_en = D.get("endNext", "")
+ENDNEXT_HTML = (_en.split("：", 1)[0] + "：<span style=\"color:var(--o)\">" + _en.split("：", 1)[1] + "</span>") if "：" in _en else _en
 fx = open(f"{CORE}/fx.js", encoding="utf-8").read()
 fxp = open(f"{CORE}/fx_particles.js", encoding="utf-8").read()
 fxt = open(f"{CORE}/fx_text.js", encoding="utf-8").read()
@@ -75,7 +78,7 @@ ep_css = open("scenes.css", encoding="utf-8").read() if os.path.exists("scenes.c
 last_sec = L[keys[-1]]["sec"]
 tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp).replace("//@TEXTFX", fxt).replace("//@FX", fx).replace("//@SCENES_JS", ep_js).replace("/*@EP_CSS*/", ep_css)
        .replace("__CUBE56__", f'<svg width="56" height="56" viewBox="-56 -56 112 112">{CUBE}</svg>').replace("__CUBEPATH__", CUBE)
-       .replace("__ENDSEC__", last_sec).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
+       .replace("__ENDSEC__", last_sec).replace("__ENDNEXT__", ENDNEXT_HTML).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
 SFXLIST = D.get("sfx", [])
 # 锚点：scenes.js 里任何写成 'v07|词|s' 的字符串都算（包括写在数组里的），加上 scenes.html 的 data-at 和音效表
 specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST}
@@ -283,7 +286,7 @@ wave_s = "".join(ALPH[int(round(v * 35))] for v in lv)
 
 REST_D = {"sec": L[REST]["sec"], "t": tl[REST][0]} if REST else None
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
-        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1]}
+        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", "")}
 meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)

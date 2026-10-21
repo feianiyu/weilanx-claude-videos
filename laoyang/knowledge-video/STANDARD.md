@@ -58,6 +58,7 @@
 | `bgmSection` | 让 restBefore 那句落在曲子的哪一秒（乐句线/高潮段） |
 | `progress` | 进度条章节 `[["开场","c0"],...]`，3–6 个 |
 | `transitions` | 章节入场转场 `{"c1":"smoke","c2":"sweep"}` |
+| `endNext` | 可选，系列片片尾预告：`"下期讲：怎么去"`（冒号后橙色） |
 | `sfx` | 音效点 `[锚点, 种类, 偏移秒]`，≤20 个；音效的**冲击点**对齐锚点 |
 | `sfxlib` | 音效库：file / url / hit / from-to / lvl（峰值窗相对人声 RMS 的 dB，−5~−15） |
 | `lines.vNN` | `sec` 章节、`sub` 字幕原文、`tts` 读法（数字写汉字；行业/本行/投行写航业/本航/投航）、`screens` 手动分屏 |
@@ -122,6 +123,8 @@
    cp -r starter episodes/<日期_主题>
    python3 core/fake_vo.py     episodes/<期>     # 离线占位配音，先排版
    python3 core/gen_vo.py      episodes/<期>     # 真配音（可只重配：... v02 v05）
+   # 云端网络放行不了 Edge TTS 时：把 lines.json、gen_vo.py、fetch_assets.py、生成配音和素材.command 放进
+   # 用户 Mac 的 materials/老杨魔方知识分享版/<编号-题目>/，请用户终端跑一次，再分小包回传
    python3 core/fetch_assets.py episodes/<期>    # 底图 + BGM + 音效
    python3 core/beatfit.py     audio/bgm.mp3 90 <粗测BPM>
    python3 core/build.py       episodes/<期>     # → build/preview.html 可拖动预览

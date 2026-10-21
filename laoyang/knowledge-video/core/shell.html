@@ -75,6 +75,7 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
   <div class="scene" data-sec="__ENDSEC__">
    <svg id="endLogo" class="abs" width="84" height="84" viewBox="-56 -56 112 112" preserveAspectRatio="xMidYMid meet" style="left:498px;top:1020px;width:84px;height:84px;opacity:0;overflow:visible">__CUBEPATH__</svg>
    <div class="t" id="endT" style="left:0;width:1080px;text-align:center;top:1132px;font-size:44px;font-weight:900;letter-spacing:4px;opacity:0">关注 <span style="color:var(--o)">老杨魔方</span></div>
+   <div class="t" id="endN" style="left:0;width:1080px;text-align:center;top:1200px;font-size:36px;font-weight:800;letter-spacing:2px;color:#C9C2B6;opacity:0">__ENDNEXT__</div>
   </div>
  </div>
  <div id="wave" class="abs"></div>
@@ -160,7 +161,7 @@ function render(t){
  scenes.forEach((el,i)=>{if(!el)return;const v=V[i]*(rest?(i===rpi?0.35:0):1);el.style.opacity=v.toFixed(3);el.style.visibility=v>0?'visible':'hidden';});
  order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].dom)SCENES[id].dom(tc,V[i],f);});
  const iE=order.length-1;
- if(V[iE]>0){rise('endT',eo(cl((tc-D.tl[D.lastLine][0]-0.2)/0.4)));const P=lgT();op('endLogo',V[iE]*0.92*cl((tc-P.b+0.1)/0.12)*(1-cl((tc-P.c)/0.18)));}else op('endLogo',0);
+ if(V[iE]>0){rise('endT',eo(cl((tc-D.tl[D.lastLine][0]-0.2)/0.4)));if(D.endNext)rise('endN',eo(cl((tc-D.tl[D.lastLine][0]-0.7)/0.4)));const P=lgT();op('endLogo',V[iE]*0.92*cl((tc-P.b+0.1)/0.12)*(1-cl((tc-P.c)/0.18)));}else op('endLogo',0);
  // ----- 进度条 -----
  let act=-1;stT.forEach((s,i)=>{if(tc>=s)act=i;});let fx=60;if(act>=0){const p=io(cl((tc-stT[act])/0.5));const pv=act>0?DX[act-1]:60;fx=pv+(DX[act]-pv)*p;}
  pfill.style.width=Math.max(0,fx-60)+'px';prog.style.opacity=rest?0.5:1;

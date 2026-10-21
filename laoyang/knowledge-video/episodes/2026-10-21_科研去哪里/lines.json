@@ -1,0 +1,345 @@
+{
+ "series": {
+  "title": "科研去哪里",
+  "sub": "方向本身就是战略"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 经营信号 ——",
+  "title": "科研<br>去哪里",
+  "sub": "三类设计院的确定性方向"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/12692135/pexels-photo-12692135.jpeg?w=2160&h=3840&fit=crop",
+ "bgNote": "成片用的是 C 档调色后的版本（在作者 Google Drive 的 V2.3 源码包里：assets/bg/bg.jpg）；这里下载的是原图，偏亮",
+ "voice": {
+  "name": "zh-CN-YunyangNeural",
+  "rate": "+25%",
+  "pitch": "+0Hz",
+  "engine": "edge-tts"
+ },
+ "gapSec": 0.3,
+ "secGap": 0.6,
+ "bgmUnder": 7.0,
+ "bgm": {
+  "file": "audio/bgm_mixkit_driving_ambition_32.mp3",
+  "url": "https://assets.mixkit.co/music/32/32.mp3",
+  "src": "Mixkit《Driving Ambition》by Ahjay Stelino（id 32）· Mixkit Stock Music Free License"
+ },
+ "beat": {
+  "bpm": 100.0,
+  "period": 0.6,
+  "t0": 0.0,
+  "src": "src/beatfit.py assets/bgm_mixkit_driving_ambition_32.mp3 95 99.4 → 100.0 BPM, 首拍 0.125s, 乐句线 38.525+9.6k"
+ },
+ "restBefore": "v10",
+ "bgmSection": 67.325,
+ "progress": [
+  [
+   "开场",
+   "c0"
+  ],
+  [
+   "取舍",
+   "c1"
+  ],
+  [
+   "建筑",
+   "c2"
+  ],
+  [
+   "土木",
+   "c3"
+  ],
+  [
+   "工业",
+   "c4"
+  ],
+  [
+   "判断",
+   "c5"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "smoke",
+   900
+  ],
+  "c2": [
+   "sweep",
+   0
+  ],
+  "c3": [
+   "smoke",
+   950
+  ],
+  "c4": [
+   "sweep",
+   0
+  ],
+  "c6": [
+   "sweep",
+   0
+  ],
+  "c7": [
+   "smoke",
+   990
+  ]
+ },
+ "endNext": "下期讲：怎么去",
+ "sfx": [
+  [
+   "v01|八毛一|s",
+   "sub",
+   0.15
+  ],
+  [
+   "v02|去哪里|s",
+   "sparkle",
+   0.1
+  ],
+  [
+   "v04|胡椒面|s",
+   "smoke",
+   0.1
+  ],
+  [
+   "v04|方向|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v05|向前|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v05|向深|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v05|向后|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v06|全生命周期|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v07|大管|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v08|全域|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v08|融合|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v08|自主|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v09|循环经济|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v10|我|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v10|战略|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v11|你们|s",
+   "vs",
+   0.25
+  ],
+  [
+   "v12|魔方|e",
+   "riser",
+   0.15
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "上期说，投1块钱只转回8毛1。那科研还要不要做？",
+   "tts": "上期说，投一块钱只转回八毛一。那科研还要不要做？",
+   "screens": [
+    "上期说，|投1块钱只转回8毛1。",
+    "那科研还要不要做？"
+   ],
+   "dur": 5.26
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "先别急着加钱，先想清楚：去哪里。",
+   "dur": 3.52
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "科研不是标配，是一道战略选择题。",
+   "dur": 3.55
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "主业下滑、利润缩水时，最忌撒胡椒面。方向选对，投入才不是沉没成本。",
+   "screens": [
+    "主业下滑、利润缩水时，|最忌撒胡椒面。",
+    "方向选对，|投入才不是沉没成本。"
+   ],
+   "dur": 7.14
+  },
+  "v05": {
+   "sec": "c2",
+   "sub": "规划建筑设计院，往三个方向走：向前做投融资策划，向深做光储直柔和性能模拟，向后做数字孪生运维。",
+   "screens": [
+    "规划建筑设计院，|往三个方向走：",
+    "向前做投融资策划，|向深做光储直柔和性能模拟，",
+    "向后做数字孪生运维。"
+   ],
+   "dur": 10.18
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "从赚一次性的设计费，变成赚全生命周期的运维费。",
+   "dur": 5.08
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "土木工程院：基建正从大建，转向大管、大修。",
+   "dur": 4.57
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "方向是全域、融合、自主：从BIM到数字孪生，交通加新能源，再把新材料做成自己的产品。",
+   "screens": [
+    "方向是全域、融合、自主：|从BIM到数字孪生，",
+    "交通加新能源，|再把新材料做成自己的产品。"
+   ],
+   "dur": 9.06
+  },
+  "v09": {
+   "sec": "c4",
+   "sub": "工业工程院离实业最近：绿色低碳工艺包、自主核心装备、工业软件、循环经济。",
+   "screens": [
+    "工业工程院离实业最近：",
+    "绿色低碳工艺包、自主核心装备、|工业软件、循环经济。"
+   ],
+   "dur": 7.79
+  },
+  "v10": {
+   "sec": "c5",
+   "sub": "我的判断是：方向本身就是战略。选准了，科研是长期投资；选不准，就是沉没成本。",
+   "screens": [
+    "我的判断是：|方向本身就是战略。",
+    "选准了，科研是长期投资；|选不准，就是沉没成本。"
+   ],
+   "dur": 8.19
+  },
+  "v11": {
+   "sec": "c6",
+   "sub": "你们院的科研，是选准一个方向，还是还在撒胡椒面？",
+   "dur": 5.26
+  },
+  "v12": {
+   "sec": "c7",
+   "sub": "关注老杨魔方，下期讲：怎么去。",
+   "dur": 3.3
+  }
+ }
+}
