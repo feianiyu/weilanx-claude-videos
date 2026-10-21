@@ -40,16 +40,20 @@ async def shoot(name, times):
     return res, errs
 
 fail = 0; report = []
+GHA = os.environ.get("GITHUB_ACTIONS") == "true"
+def gh_note(level, msg):   # 在 GitHub 上显示为检查注释（PR 的 Checks 页能直接看到）
+    if GHA: print(f"::{level} title=知识分享版回归::{msg}", flush=True)
 for name, times in CASES.items():
     ep = ep_path(name)
     r = subprocess.run([sys.executable, os.path.join(CORE, "build.py"), ep], env=dict(os.environ, LY_REGRESS="1"), capture_output=True, text=True)
+    if r.returncode: gh_note("error", f"{name} 构建失败 {(r.stderr or r.stdout)[-300:]}")
     if r.returncode: print(f"✗ {name} 构建失败\n{r.stdout[-800:]}{r.stderr[-1500:]}"); fail += 1; continue
     shots, errs = asyncio.run(shoot(name, times))
-    if errs: print(f"✗ {name} 控制台报错：{errs[:5]}"); fail += 1
+    if errs: print(f"✗ {name} 控制台报错：{errs[:5]}"); gh_note("error", f"{name} 控制台报错 {errs[:3]}"); fail += 1
     os.makedirs(os.path.join(GOLD, name), exist_ok=True)
     for t, png, iss in shots:
         im = Image.open(png).convert("RGB").resize((180, 320), Image.LANCZOS); g = os.path.join(GOLD, name, f"{t:06.2f}.png")
-        if iss: print(f"✗ {name} {t}s 越界：{iss[:3]}"); fail += 1
+        if iss: print(f"✗ {name} {t}s 越界：{iss[:3]}"); gh_note("error", f"{name} {t}s 越界 {iss[:2]}"); fail += 1
         if UPDATE: im.save(g, optimize=True); continue
         if not os.path.exists(g): print(f"✗ {name} {t}s 没有基准图（先 --update）"); fail += 1; continue
         d = np.abs(np.asarray(im, np.int16) - np.asarray(Image.open(g).convert("RGB"), np.int16)).max(2)
@@ -57,7 +61,13 @@ for name, times in CASES.items():
         report.append((name, t, m, p99, ok)); print(f"  {name[:8]} {t:6.2f} mean {m:.3f} changed>40 {p99} max {float(d.max()):.0f} px>30 {int((d>30).sum())}") if os.environ.get("RG_V") else None
         if not ok:
             fail += 1; Image.fromarray(np.concatenate([np.asarray(Image.open(g).convert("RGB")), np.asarray(im)], 1)).save(os.path.join(ep, "build", f"diff_{t:06.2f}.png"))
+            gh_note("error", f"{name} {t}s 画面变了：平均差 {m:.2f}，明显变化像素 {p99} 个")
             print(f"✗ {name} {t}s 画面变了：平均差 {m:.2f}，明显变化像素 {p99} 个（左基准 右现在：{ep}/build/diff_{t:06.2f}.png）")
 if UPDATE: print("基准图已更新 →", GOLD, "（记得在 CHANGELOG 写明有意改了什么画面）"); sys.exit(0)
+if GHA:
+    worst = sorted(report, key=lambda x: -x[3])[:8]
+    gh_note("notice", "最大差异帧：" + "；".join(f"{n[:6]} {t}s 均差{m:.2f} 变化{p}" for n, t, m, p, _ in worst))
+    with open(os.environ.get("GITHUB_STEP_SUMMARY", os.devnull), "a") as fh:
+        fh.write("| 期 | 秒 | 平均差 | 明显变化像素 | 结果 |\n|---|---|---|---|---|\n" + "".join(f"| {n} | {t} | {m:.2f} | {p} | {'✓' if ok else '✗'} |\n" for n, t, m, p, ok in report))
 print(f"\n{len(report)} 帧对比，{sum(1 for x in report if x[4])} 帧通过；失败 {fail} 项")
 sys.exit(1 if fail else 0)
