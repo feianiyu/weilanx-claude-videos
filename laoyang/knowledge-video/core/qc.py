@@ -15,6 +15,7 @@ async def frames(times):
         pg.on("console", lambda m: errs.append(m.text) if m.type in ("error", "warning") else None); pg.on("pageerror", lambda e: errs.append(str(e)))
         await pg.goto("file://" + os.path.abspath("build/index.html") + "?capture=1"); await pg.evaluate("document.fonts.ready"); await pg.wait_for_timeout(300)
         os.makedirs("build/qc", exist_ok=True); bad = 0
+        [os.remove(os.path.join("build/qc", x)) for x in os.listdir("build/qc") if x.startswith("q_")] if len(sys.argv) <= 2 else None   # 整片检查前清掉旧帧，免得联系表混进上次的帧
         for ts in times:
             await pg.evaluate(f"render({ts})"); iss = sorted(set(await pg.evaluate(CHECK)))
             await pg.screenshot(path=f"build/qc/q_{ts:06.2f}.png")

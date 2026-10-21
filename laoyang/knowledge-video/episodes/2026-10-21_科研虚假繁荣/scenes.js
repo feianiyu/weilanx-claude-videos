@@ -89,6 +89,8 @@ SCENES.c2={
 const CARDS=[['课题式','验收即解散','v08|课题式|s'],['生产型','只为画图更快','v08|生产型|s'],['农闲式','闲了才搞科研','v08|农闲式|s'],['被动式','搞科研少拿奖金','v09|被动式|s'],['孤岛式','专利锁进档案柜','v09|孤岛式|s']];
 const CPOS=[[160,800],[422,800],[684,800],[291,990],[553,990]];
 (function(){$('k3cards').innerHTML=CARDS.map((c,i)=>`<div class="box" id="k3k${i}" style="left:${CPOS[i][0]}px;top:${CPOS[i][1]}px;width:236px;height:160px;opacity:0"><div style="font-size:44px">${c[0]}</div><div style="font-size:30px;color:#B4AC9F;font-weight:700">${c[1]}</div></div>`).join('');})();
+const C3OUT=()=>T('v08|课题式|s')-0.75;                       // 「破了」停留约 1.3s 再逐字退场
+const C3FREE=()=>C3OUT()+TXDUR.out['逐字']-0.15;              // 卡片最早出现时刻（文字基本退完）
 const BUB=[[300,990,'v07|堆|s'],[540,940,'v07|凑|s'],[780,990,'v07|刷|s']];
 SCENES.c3={
  canvas(t,a){const tb=T('v07|破了|s');
@@ -98,14 +100,14 @@ SCENES.c3={
     X.save();X.strokeStyle=rgba(IV,0.35*a*grow);X.lineWidth=1.5;X.beginPath();X.arc(cx,cy,R,0,6.283);X.stroke();X.restore();}
    else if(t<tb+1.2){disperse(samplePts([[cx-R,cy],[cx,cy-R],[cx+R,cy],[cx,cy+R],[cx-R,cy]],48),t,tb,a,IV,300+j*40,1.6);}});
   // 病历卡：变灰后划一道
-  CARDS.forEach((c,i)=>{const td=T(c[2])+0.8;const q=eo(cl((t-td)/0.35));if(q<=0)return;const [x,y]=CPOS[i];line([[x+18,y+142],[lerp(x+18,x+218,q),lerp(y+142,y+18,q)]],GR,2.5,a*0.9);});
+  CARDS.forEach((c,i)=>{const td=Math.max(T(c[2]),C3FREE())+0.8;const q=eo(cl((t-td)/0.35));if(q<=0)return;const [x,y]=CPOS[i];line([[x+18,y+142],[lerp(x+18,x+218,q),lerp(y+142,y+18,q)]],GR,2.5,a*0.9);});
   // 孤岛式：上锁
   const tl=T('v09|档案柜|s'),lq=eo(cl((t-tl)/0.3));if(lq>0){const [x,y]=CPOS[4],cx=x+200,cy=y+30;X.save();X.globalAlpha=a*lq;X.strokeStyle=AU;X.lineWidth=4;X.beginPath();X.arc(cx,cy-6,14,Math.PI,0);X.stroke();X.fillStyle=AU;X.fillRect(cx-19,cy-6,38,30);X.restore();}},
- free(t,a){const tb=T('v07|破了|s'),tOut=T('v08|病症|s')-TXDUR.out['逐字']-0.05;
+ free(t,a){const tb=T('v07|破了|s'),tOut=C3OUT();
   showText('k3core',{lines:[[['虚假繁荣，',null],['破了',GDc()]]],size:84,cy:1000},t,tb-TXDUR.in['碎裂'],tOut,'碎裂','逐字',a);
   impactRing(t,tb,540,1000,420,110,a*(t<tOut?1:0),AU);},
  dom(t){const tb=T('v07|破了|s');[['k3a','v07|堆|s'],['k3b','v07|凑|s'],['k3c','v07|刷|s']].forEach(([id,k])=>op(id,cl((t-T(k))/0.3)*(1-cl((t-tb)/0.2))));
-  CARDS.forEach((c,i)=>{const ti=T(c[2]);const p=eo(cl((t-ti+0.1)/0.3));const e=op('k3k'+i,p);e.style.transform=`translateY(${(-30*(1-p)).toFixed(1)}px)`;
+  CARDS.forEach((c,i)=>{const ti=Math.max(T(c[2]),C3FREE());const p=eo(cl((t-ti+0.1)/0.3));const e=op('k3k'+i,p);e.style.transform=`translateY(${(-30*(1-p)).toFixed(1)}px)`;
    const g=cl((t-ti-0.8)/0.4);e.style.color=g>0.5?'#8C857A':'#fff';e.style.borderColor=g>0.5?'rgba(140,133,122,.4)':'rgba(255,236,200,.32)';});
   op('k3src',cl((t-T('v08|病症|s'))/0.4));}};
 function GDc(){return '#F0B429';}
