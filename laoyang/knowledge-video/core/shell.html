@@ -58,6 +58,14 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 #ui button{background:#F5A623;color:#210;border:0;border-radius:6px;padding:8px 14px;font-weight:700;font-size:15px}
 #ui input{flex:1}
 .cap #ui{display:none}
+/* ===== v2 版式（lines.json 有 heads 时启用）：去掉眉标和卡片标题，中间区扩到 y600 起；
+   顶部大字 = 随章节/关键词切换的「核心观点头条」，文章标题挪到 logo 行右侧灰色小字 ===== */
+#hd{left:60px;width:960px;top:214px;height:236px;display:none}
+.hl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--o);font-weight:900;letter-spacing:3px;line-height:1.16;text-shadow:0 3px 14px rgba(0,0,0,.6);white-space:nowrap}
+.hl em{font-style:normal;color:#fff}
+#epT{right:140px;top:163px;font-size:30px;font-weight:700;color:#B4AC9F;letter-spacing:2px;white-space:nowrap;display:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.v2 #t1,.v2 #t2,.v2 .tag,.v2 .h1{display:none}
+.v2 #hd,.v2 #epT{display:block}
 /*@EP_CSS*/
 </style></head>
 <body>
@@ -66,6 +74,8 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
  <div id="logo" class="abs">__CUBE56__<span>老杨魔方</span></div>
  <div id="t1" class="abs">__T1__</div>
  <div id="t2" class="abs">__T2__</div>
+ <div id="hd" class="abs"><div class="hl" id="hlB"></div><div class="hl" id="hlA"></div></div>
+ <div id="epT" class="abs">__T1__</div>
  <div id="panel" class="abs"></div>
  <div id="prog" class="abs"></div>
  <canvas id="cv" width="1080" height="1920"></canvas>
@@ -137,6 +147,14 @@ const subEl=$('sub');let lastSub=-2;
 const scenes=order.map(id=>document.querySelector(`.scene[data-sec="${id}"]`));
 order.forEach((id,i)=>{if(!scenes[i])console.error('scene DOM missing',id);if(id!==ENDSEC&&!SCENES[id])console.error('SCENES missing',id);});
 const bg=$('bg');
+// v2 核心观点头条：D.heads=[{t,html,fs}]，按时间切换：旧的上移淡出 0.25s，新的模糊浮现 0.35s
+const HEADS=D.heads||[];if(HEADS.length)$('v').classList.add('v2');
+const hlA=$('hlA'),hlB=$('hlB');let hdIdx=-2;
+function heads(t){if(!HEADS.length)return;let i=0;for(let k=0;k<HEADS.length;k++)if(t>=HEADS[k].t)i=k;
+ if(i!==hdIdx){hdIdx=i;const h=HEADS[i];hlA.innerHTML=h.html;hlA.style.fontSize=h.fs+'px';const p=HEADS[i-1];hlB.innerHTML=p?p.html:'';hlB.style.fontSize=p?p.fs+'px':'';}
+ const tc=HEADS[i].t,q=cl((t-tc)/0.25),e=eo(cl((t-tc-0.08)/0.35));const first=i===0;
+ hlB.style.opacity=first?0:(1-q).toFixed(3);hlB.style.transform=`translateY(${(-34*q).toFixed(1)}px)`;
+ const ea=first?1:e;hlA.style.opacity=ea.toFixed(3);hlA.style.transform=`translateY(${(26*(1-ea)).toFixed(1)}px)`;hlA.style.filter=ea<0.99?`blur(${(8*(1-ea)).toFixed(1)}px)`:'';}
 // 章节转场：lines.json → transitions {"c1":"smoke","c2":"sweep",...}
 const TRANS=Object.entries(D.transitions||{}).map(([id,v],i)=>{const [k,seed]=Array.isArray(v)?v:[v,900+i*37];return {t:S[id].start,k,seed};});
 
@@ -162,6 +180,7 @@ function render(t){
  order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].dom)SCENES[id].dom(tc,V[i],f);});
  const iE=order.length-1;
  if(V[iE]>0){rise('endT',eo(cl((tc-D.tl[D.lastLine][0]-0.2)/0.4)));if(D.endNext)rise('endN',eo(cl((tc-D.tl[D.lastLine][0]-0.7)/0.4)));const P=lgT();op('endLogo',V[iE]*0.92*cl((tc-P.b+0.1)/0.12)*(1-cl((tc-P.c)/0.18)));}else op('endLogo',0);
+ heads(tc);
  // ----- 进度条 -----
  let act=-1;stT.forEach((s,i)=>{if(tc>=s)act=i;});let fx=60;if(act>=0){const p=io(cl((tc-stT[act])/0.5));const pv=act>0?DX[act-1]:60;fx=pv+(DX[act]-pv)*p;}
  pfill.style.width=Math.max(0,fx-60)+'px';prog.style.opacity=rest?0.5:1;

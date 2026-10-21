@@ -81,7 +81,7 @@ tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp
        .replace("__ENDSEC__", last_sec).replace("__ENDNEXT__", ENDNEXT_HTML).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
 SFXLIST = D.get("sfx", [])
 # 锚点：scenes.js 里任何写成 'v07|词|s' 的字符串都算（包括写在数组里的），加上 scenes.html 的 data-at 和音效表
-specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST}
+specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST} | {h[0] for h in D.get("heads", []) if h[0].startswith("v")}
 A = {s: anchor(s) for s in sorted(specs)}
 
 # sections (cards)
@@ -285,8 +285,26 @@ ALPH = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 wave_s = "".join(ALPH[int(round(v * 35))] for v in lv)
 
 REST_D = {"sec": L[REST]["sec"], "t": tl[REST][0]} if REST else None
+# v2 头条：[[章节id 或 锚点, "文字"]]，"|" 手动换行，*词* 白色强调；字号按最长一行自适应（≤92px，宽 ≤900px，最多 2 行）
+def head_html(txt):
+    lines_ = txt.split("|") if "|" in txt else [txt]
+    if len(lines_) == 1 and cw(txt.replace("*", "")) > 9:
+        cut = [i + 1 for i, ch in enumerate(txt[:-1]) if ch in "，、：；？！"]
+        if cut:
+            m = min(cut, key=lambda i: abs(cw(txt[:i].replace("*", "")) - cw(txt[i:].replace("*", ""))))
+            lines_ = [txt[:m], txt[m:]]
+    assert len(lines_) <= 2, ("头条最多两行", txt)
+    fs = int(min(92, 900 / max(cw(x.replace("*", "")) for x in lines_)))
+    esc = lambda x: re.sub(r"\*([^*]+)\*", r"<em>\1</em>", x.replace("&", "&amp;").replace("<", "&lt;"))
+    return "<br>".join(esc(x) for x in lines_), fs
+HEADS = []
+for key, txt in D.get("heads", []):
+    t_ = 0.0 if key == secs[0]["id"] else (next(s["start"] for s in secs if s["id"] == key) if not key.startswith("v") else A[key] - 0.15)
+    h_, fs_ = head_html(txt); HEADS.append({"t": round(t_, 3), "html": h_, "fs": fs_, "src": txt})
+HEADS.sort(key=lambda x: x["t"])
+for h in HEADS: print("HEAD", h["t"], h["fs"], h["src"])
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
-        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", "")}
+        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS}
 meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
