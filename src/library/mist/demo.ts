@@ -22,7 +22,7 @@ export const MIST_DEMO_BURST: MistEvent[] = [
 ];
 export const MIST_DEMO_CONTRACT: MistEvent[] = [
   {from: mb(22), attack: 3, hold: mb(2) - 6, release: 3},
-  {from: mb(40), attack: 2, hold: mb(4) - 5, release: 3},
+  {from: mb(40), attack: 5, hold: mb(4) - 8, release: 3},
 ];
 export const MIST_DEMO_TWIST: MistEvent[] = [{from: mb(32), attack: mb(8), hold: 0, release: 4, ease: 'in'}];
 

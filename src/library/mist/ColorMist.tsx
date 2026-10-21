@@ -422,7 +422,10 @@ export const ColorMist: React.FC<{
       const sz = s.size[i] * scale * (isWhite ? 1.3 : 1) * (1 + 0.3 * d.burst);
       if (trails) {
         position(s, i, prev, pp);
-        pg.strokeStyle = `rgba(${rgb},${a * (0.85 - 0.45 * d.burst)})`;
+        // 拖尾越长越暗：总光量跟着粒子数走，不跟着拖尾面积走，爆炸那一帧不会整屏变白
+        const len = Math.hypot(tmp[0] - pp[0], tmp[1] - pp[1]);
+        const la = a * Math.min(1, 14 / Math.max(1, len)) * 0.85;
+        pg.strokeStyle = `rgba(${rgb},${la})`;
         pg.lineWidth = sz;
         pg.beginPath();
         pg.moveTo(pp[0], pp[1]);
