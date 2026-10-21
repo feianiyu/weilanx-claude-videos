@@ -45,12 +45,12 @@ function txLayer(key,spec){
 function txHold(g,L){g.drawImage(L.c,0,L.top);}
 // ---------- 粒子 ----------
 function txParticles(g,L,q,t,mode){const N=L.pts.length,w=L.maxx-L.minx;g.save();g.globalCompositeOperation='lighter';
- for(let i=0;i<N;i++){const [x,y,col]=L.pts[i];let px,py,al;
-  if(mode==='in'){const dl=rnd(i*1.7)*0.3+(x-L.minx)/w*0.15,u=eo(cl((q-dl)/0.55));if(u<=0)continue;
-   const an=rnd(i*3.1)*6.283,r0=260+rnd(i*5.3)*520,sx=x+Math.cos(an)*r0,sy=y+Math.sin(an)*r0*0.6;
-   px=lerp(sx,x,u)+Math.sin(Math.PI*u)*40*(rnd(i*7.9)-.5);py=lerp(sy,y,u);al=u*(1-cl((q-0.82)/0.18));}
-  else{const dl=(x-L.minx)/w*0.38+rnd(i*2.9)*0.08,u=cl((q-dl)/0.6);if(u<=0){px=x;py=y;al=cl(q/0.06);}   // 风从左吹到右
-   else{const e=eo(u);px=x+(120+320*rnd(i*4.3))*e+nz(i,t,0.8)*20*u;py=y-(30+150*rnd(i*6.1))*e+nz(i+9,t,0.7)*14*u;al=1-u;}}
+ for(let i=0;i<N;i++){const [x,y,col]=L.pts[i];let px,py,al;const k=x*0.7311+y*1.3717;   // 随机种子跟位置走，不跟序号走：不同机器字体抗锯齿差一两个边缘点时，其余粒子轨迹不变
+  if(mode==='in'){const dl=rnd(k*1.7)*0.3+(x-L.minx)/w*0.15,u=eo(cl((q-dl)/0.55));if(u<=0)continue;
+   const an=rnd(k*3.1)*6.283,r0=260+rnd(k*5.3)*520,sx=x+Math.cos(an)*r0,sy=y+Math.sin(an)*r0*0.6;
+   px=lerp(sx,x,u)+Math.sin(Math.PI*u)*40*(rnd(k*7.9)-.5);py=lerp(sy,y,u);al=u*(1-cl((q-0.82)/0.18));}
+  else{const dl=(x-L.minx)/w*0.38+rnd(k*2.9)*0.08,u=cl((q-dl)/0.6);if(u<=0){px=x;py=y;al=cl(q/0.06);}   // 风从左吹到右
+   else{const e=eo(u);px=x+(120+320*rnd(k*4.3))*e+nz(k,t,0.8)*20*u;py=y-(30+150*rnd(k*6.1))*e+nz(k+9,t,0.7)*14*u;al=1-u;}}
   if(al<=0.01)continue;g.globalAlpha=al;g.fillStyle=col;g.fillRect(px-1.1,py+L.top-1.1,2.2,2.2);}
  g.restore();
  if(mode==='in'){const a=cl((q-0.82)/0.18);if(a>0){g.globalAlpha=a;txHold(g,L);g.globalAlpha=1;}}
