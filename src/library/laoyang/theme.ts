@@ -1,4 +1,5 @@
 import type React from 'react';
+import {continueRender, delayRender, staticFile} from 'remotion';
 import {clamp01} from '../anim';
 
 /**
@@ -26,14 +27,44 @@ export const L = {
 /** 安全区（像素） */
 export const SAFE = {left: 100, right: 960, top: 250, bottom: 1560};
 
+/** 浅底（反色段）色板：按看板，浅底用深绿 logo */
+export const LL = {
+  bg: '#F2F1EC', // 米白
+  ink: '#121412', // 墨黑
+  green: '#0B5A2E', // 深绿：logo、大字
+  greenBrand: '#13A24E', // 品牌绿：短线
+  gray: '#8C938E',
+  hair: '#C9CCC8', // 细线
+};
+
 /**
- * 字体：正文粗黑体（Noto Sans CJK SC / 思源黑体 Heavy），强调词宋体 700，副标宋体 500。
- * 本机没装思源黑体时会回落到苹方 / 微软雅黑，笔画会偏细——想要看板那种重笔画，装一套「思源黑体」或「Noto Sans SC」即可。
+ * 字体随仓库带上（public/fonts/laoyang/，SIL OFL）：思源黑体 / Noto Sans SC 的 Black 与 Medium、Noto Serif SC Bold、Inter。
+ * 中文是 GB2312 一二级常用字的子集（约 7000 字 + 常用标点和 → ↑ ↓），文案里出现生僻字会回落到系统字体。
  */
+const FACES: [string, string, string][] = [
+  ['LY Sans', 'fonts/laoyang/LYSans-Black.woff', '900'],
+  ['LY Sans', 'fonts/laoyang/LYSans-Medium.woff', '500'],
+  ['LY Serif', 'fonts/laoyang/LYSerif-Bold.woff', '700'],
+  ['LY Num', 'fonts/laoyang/InterDisplay-ExtraBold.woff', '800'],
+  ['LY Latin', 'fonts/laoyang/Inter-SemiBold.woff', '600'],
+];
+if (typeof document !== 'undefined') {
+  const handle = delayRender('load laoyang fonts');
+  Promise.all(
+    FACES.map(([family, file, weight]) => {
+      const face = new FontFace(family, `url(${staticFile(file)})`, {weight});
+      return face.load().then((loaded) => document.fonts.add(loaded));
+    }),
+  )
+    .catch((err) => console.error(err))
+    .finally(() => continueRender(handle));
+}
+
 export const LF = {
-  sans: `'Noto Sans CJK SC', 'Noto Sans SC', 'Source Han Sans SC', 'Source Han Sans CN', 'PingFang SC', 'Microsoft YaHei', sans-serif`,
-  serif: `'Noto Serif CJK SC', 'Noto Serif SC', 'Source Han Serif SC', 'Source Han Serif CN', 'Songti SC', 'STSong', serif`,
-  latin: `'Inter', 'Helvetica Neue', 'Arial', sans-serif`,
+  sans: `'LY Sans', 'Noto Sans CJK SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif`,
+  serif: `'LY Serif', 'Noto Serif CJK SC', 'Noto Serif SC', 'Songti SC', 'STSong', serif`,
+  num: `'LY Num', 'Inter Display', 'Inter', 'Helvetica Neue', Arial, sans-serif`,
+  latin: `'LY Latin', 'Inter', 'Helvetica Neue', Arial, sans-serif`,
 };
 
 /** 发光字：同色多层外发光 */
