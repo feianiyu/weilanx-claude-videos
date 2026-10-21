@@ -1,0 +1,115 @@
+{
+ "_说明": "新一期：复制本目录到 episodes/<日期_主题>/，改这里 + scenes.html + scenes.js。字段说明见 STANDARD.md §3",
+ "series": {
+  "title": "主题四到六字",
+  "sub": "一句钩子副标题，不超过14字"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 经营信号 ——",
+  "title": "封面大字<br>第二行",
+  "sub": "封面副标一句话"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "",
+ "bgNote": "填可商用图片的下载地址（Pexels 等），竖屏原生 2160×3840，C 档调暗暖",
+ "voice": {
+  "name": "zh-CN-YunyangNeural",
+  "rate": "+25%",
+  "pitch": "+0Hz",
+  "engine": "edge-tts"
+ },
+ "gapSec": 0.3,
+ "secGap": 0.6,
+ "bgmUnder": 7.0,
+ "bgm": {
+  "file": "audio/bgm.mp3",
+  "url": "",
+  "src": "曲名 / 作者 / 许可"
+ },
+ "beat": {
+  "bpm": 100.0,
+  "period": 0.6,
+  "t0": 0.0,
+  "src": "core/beatfit.py audio/bgm.mp3 95 <粗测BPM>"
+ },
+ "restBefore": "v04",
+ "bgmSection": null,
+ "progress": [
+  [
+   "开场",
+   "c0"
+  ],
+  [
+   "事实",
+   "c1"
+  ],
+  [
+   "判断",
+   "c2"
+  ]
+ ],
+ "transitions": {
+  "c1": "smoke",
+  "c2": "sweep",
+  "c3": "smoke"
+ },
+ "sfx": [
+  [
+   "v01|一句|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v04|我的判断|s",
+   "impact",
+   -0.09
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3",
+   "src": "Mixkit #1492 Cinematic whoosh fast transition"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3",
+   "src": "Mixkit #2908 Movie trailer epic impact"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "一句话钩子，最好带一个反常识的数字。",
+   "dur": 3.99
+  },
+  "v02": {
+   "sec": "c1",
+   "tts": "第一个事实，二零二六年某机构公布了一个数。",
+   "sub": "第一个事实，2026年某机构公布了一个数。",
+   "dur": 4.64
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "第二个事实，说明趋势已经形成。",
+   "dur": 3.34
+  },
+  "v04": {
+   "sec": "c2",
+   "sub": "我的判断是：这里放全片唯一的结论。",
+   "dur": 3.77
+  },
+  "v05": {
+   "sec": "c3",
+   "sub": "关注老杨魔方。",
+   "dur": 1.63
+  }
+ }
+}

@@ -1,0 +1,409 @@
+{
+ "_说明": "每期只改这个文件 + scenes.html + scenes.js。字段说明见仓库 STANDARD.md §3",
+ "series": {
+  "title": "规划院转型",
+  "sub": "40亿的楼，2000万求人盘活"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 经营信号 ——",
+  "title": "40亿的楼<br>2000万",
+  "sub": "求人盘活，规划院接吗？"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/12692135/pexels-photo-12692135.jpeg?w=2160&h=3840&fit=crop",
+ "bgNote": "成片用的是 C 档调色后的版本（在作者 Google Drive 的 V2.3 源码包里：assets/bg/bg.jpg）；这里下载的是原图，偏亮",
+ "voice": {
+  "name": "zh-CN-YunyangNeural",
+  "rate": "+25%",
+  "pitch": "+0Hz",
+  "engine": "edge-tts"
+ },
+ "gapSec": 0.3,
+ "secGap": 0.6,
+ "bgmUnder": 7.0,
+ "bgm": {
+  "file": "audio/bgm_mixkit_driving_ambition_32.mp3",
+  "url": "https://assets.mixkit.co/music/32/32.mp3",
+  "src": "Mixkit《Driving Ambition》by Ahjay Stelino（id 32）· Mixkit Stock Music Free License"
+ },
+ "beat": {
+  "bpm": 100.0,
+  "period": 0.6,
+  "t0": 0.0,
+  "src": "src/beatfit.py assets/bgm_mixkit_driving_ambition_32.mp3 95 99.4 → 100.0 BPM, 首拍 0.125s, 乐句线 38.525+9.6k"
+ },
+ "restBefore": "v09",
+ "bgmSection": 67.325,
+ "progress": [
+  [
+   "开场",
+   "c0"
+  ],
+  [
+   "退潮",
+   "c1"
+  ],
+  [
+   "换刀",
+   "c3"
+  ],
+  [
+   "观察",
+   "c4"
+  ],
+  [
+   "判断",
+   "c5"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "smoke",
+   900
+  ],
+  "c2": [
+   "sweep",
+   0
+  ],
+  "c4": [
+   "smoke",
+   950
+  ],
+  "c6": [
+   "sweep",
+   0
+  ],
+  "c7": [
+   "smoke",
+   990
+  ]
+ },
+ "sfx": [
+  [
+   "v01|一栋|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v01|大楼|s",
+   "land",
+   0.12
+  ],
+  [
+   "v01|两千万|s",
+   "shatter",
+   0.0
+  ],
+  [
+   "v02|专家|s",
+   "swish",
+   -0.05
+  ],
+  [
+   "v03|见底|s",
+   "sub",
+   0.25
+  ],
+  [
+   "v04|省市|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v04|省市|s",
+   "thud",
+   0.38
+  ],
+  [
+   "v04|省市|s",
+   "thud",
+   0.76
+  ],
+  [
+   "v04|交货|s",
+   "stamp",
+   0.18
+  ],
+  [
+   "v05|下降|s",
+   "boom",
+   0.55
+  ],
+  [
+   "v06|注销|s",
+   "smoke",
+   0.3
+  ],
+  [
+   "v07|换|s",
+   "glitch",
+   0.0
+  ],
+  [
+   "v07|八个|s",
+   "lock",
+   0.0
+  ],
+  [
+   "v07|广州|s",
+   "sparkle",
+   0.1
+  ],
+  [
+   "v07|智能体|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v08|转让|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v09|我|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v09|能|s",
+   "whoosh",
+   0.15
+  ],
+  [
+   "v10|你|s",
+   "vs",
+   0.25
+  ],
+  [
+   "v11|魔方|e",
+   "riser",
+   0.15
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "land": {
+   "file": "audio/sfx/3049.mp3",
+   "hit": 0.034,
+   "lvl": -9,
+   "src": "Mixkit #3049 Quest game heavy stomp",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3049/3049-preview.mp3"
+  },
+  "shatter": {
+   "file": "audio/sfx/759.mp3",
+   "hit": 0.022,
+   "lvl": -10,
+   "src": "Mixkit #759 Glass break with hammer thud",
+   "url": "https://assets.mixkit.co/active_storage/sfx/759/759-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "stamp": {
+   "file": "audio/sfx/3057.mp3",
+   "hit": 0.386,
+   "from": 0.2,
+   "to": 1.4,
+   "lvl": -9,
+   "src": "Mixkit #3057 Apocalyptic stomp impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3057/3057-preview.mp3"
+  },
+  "boom": {
+   "file": "audio/sfx/1143.mp3",
+   "hit": 0.632,
+   "lvl": -6,
+   "to": 2.4,
+   "src": "Mixkit #1143 Cinematic whoosh deep impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1143/1143-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "glitch": {
+   "file": "audio/sfx/2951.mp3",
+   "hit": 0.015,
+   "lvl": -13,
+   "src": "Mixkit #2951 Digital glitch break",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2951/2951-preview.mp3"
+  },
+  "lock": {
+   "file": "audio/sfx/3218.mp3",
+   "hit": 0.248,
+   "to": 1.2,
+   "lvl": -14,
+   "src": "Mixkit #3218 Positive tech alert",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3218/3218-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "hangNote": "tts 里「本行/投行/行业」写成「本航/投航/航业」，保证读 háng；字幕不变",
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "一栋投了40亿的大楼，业主愿意出2000万，只求有人把它盘活。",
+   "tts": "一栋投了四十亿的大楼，业主愿意出两千万，只求有人把它盘活。",
+   "screens": [
+    "一栋投了40亿的大楼，|业主愿意出2000万，",
+    "只求有人把它盘活。"
+   ],
+   "dur": 4.49
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "某专家说，接这一单的，应该是规划院。",
+   "dur": 3.02
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "规划院为什么要接这种活？因为老本行，见底了。",
+   "tts": "规划院为什么要接这种活？因为老本航，见底了。",
+   "dur": 3.82
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "2025年5月，全国省市县三级国土空间总体规划基本批复完成。最大的一单，交货了。",
+   "tts": "二零二五年五月，全国省市县三级国土空间总体规划基本批复完成。最大的一单，交货了。",
+   "screens": [
+    "2025年5月，全国省市县|三级国土空间总体规划",
+    "基本批复完成。|最大的一单，交货了。"
+   ],
+   "dur": 6.86
+  },
+  "v05": {
+   "sec": "c2",
+   "sub": "新订单跟不上。某上市公司2023年城乡规划类收入下降33.82%。",
+   "tts": "新订单跟不上。某上市公司二零二三年城乡规划类收入下降百分之三十三点八二。",
+   "screens": [
+    "新订单跟不上。|某上市公司",
+    "2023年城乡规划类收入|下降33.82%。"
+   ],
+   "dur": 6.0
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "今年5月，自然资源部一次注销了90家规划甲级资质，原因是没有按期申请延续。",
+   "tts": "今年五月，自然资源部一次注销了九十家规划甲级资质，原因是没有按期申请延续。",
+   "screens": [
+    "今年5月，自然资源部|一次注销了90家规划甲级资质，",
+    "原因是没有按期申请延续。"
+   ],
+   "dur": 5.88
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "还留在场上的，在换工具。厦门用AI找地，十分钟筛出八个候选地块；广州把13万份规划文本交给了智能体。",
+   "tts": "还留在场上的，在换工具。厦门用AI找地，十分钟筛出八个候选地块；广州把十三万份规划文本交给了智能体。",
+   "screens": [
+    "还留在场上的，在换工具。",
+    "厦门用AI找地，|十分钟筛出八个候选地块；",
+    "广州把13万份规划文本|交给了智能体。"
+   ],
+   "dur": 8.52
+  },
+  "v08": {
+   "sec": "c4",
+   "sub": "这两年我发现，大量中小规划设计院传统规划咨询业务不饱和，资质维护不下去，只能无奈转让出售。",
+   "screens": [
+    "这两年我发现，|大量中小规划设计院",
+    "传统规划咨询业务不饱和，|资质维护不下去，",
+    "只能无奈转让出售。"
+   ],
+   "dur": 7.08
+  },
+  "v09": {
+   "sec": "c5",
+   "sub": "我的判断是：规划行业不会消失，但只会画图或只做法定规划的规划院，业务会越来越少。能留下来的，要么懂AI，要么是懂存量资产运营管理的新型规划咨询企业。",
+   "screens": [
+    "我的判断是：|规划行业不会消失，",
+    "但只会画图或|只做法定规划的规划院，",
+    "业务会越来越少。",
+    "能留下来的，要么懂AI，",
+    "要么是懂存量资产运营|管理的新型规划咨询企业。"
+   ],
+   "tts": "我的判断是：规划航业不会消失，但只会画图或只做法定规划的规划院，业务会越来越少。能留下来的，要么懂AI，要么是懂存量资产运营管理的新型规划咨询企业。",
+   "dur": 11.38
+  },
+  "v10": {
+   "sec": "c6",
+   "sub": "你站哪边：规划院该去做城市投行，还是守住技术本行？",
+   "tts": "你站哪边：规划院该去做城市投航，还是守住技术本航？",
+   "dur": 4.06
+  },
+  "v11": {
+   "sec": "c7",
+   "sub": "关注老杨魔方。",
+   "dur": 1.87
+  }
+ }
+}

@@ -1,0 +1,7 @@
+# 生成物
+**/build/
+**/out/
+# 不允许再分发的第三方素材（用 core/fetch_assets.py 下载）
+**/audio/
+episodes/*/assets/bg.jpg
+starter/assets/bg.jpg

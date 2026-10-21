@@ -1,0 +1,33 @@
+# 老杨魔方 · 知识分享版：改了 laoyang/knowledge-video/ 就自动跑回归测试
+# 失败时把「左基准 / 右现在」的对比图作为 artifact 上传，在 PR 的 Checks 页下载查看
+name: 知识分享版回归测试
+on:
+  pull_request:
+    paths: ['laoyang/knowledge-video/**', '.github/workflows/laoyang-knowledge-video.yml']
+  push:
+    branches: [main]
+    paths: ['laoyang/knowledge-video/**']
+  workflow_dispatch:
+jobs:
+  regress:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 安装 ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: 安装 Python 依赖与 Chromium（版本与基准图生成环境一致）
+        run: |
+          pip install numpy pillow fonttools playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: 回归测试
+        run: python laoyang/knowledge-video/core/regress.py
+      - name: 上传对比图
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regress-diff
+          path: laoyang/knowledge-video/**/build/diff_*.png
