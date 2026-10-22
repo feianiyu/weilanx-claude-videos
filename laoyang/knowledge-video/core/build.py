@@ -300,7 +300,7 @@ def head_html(txt):
     assert len(lines_) <= 2, ("头条最多两行", txt)
     fs = int(min(78, 900 / max(cw(x.replace("*", "")) for x in lines_)))   # v2.1：上限 92 → 78（缩小约 15%）
     esc = lambda x: re.sub(r"\*([^*]+)\*", r"<em>\1</em>", x.replace("&", "&amp;").replace("<", "&lt;"))
-    return "<br>".join(esc(x) for x in lines_), fs
+    return "".join(f"<div>{esc(x)}</div>" for x in lines_), fs   # 每行一个块：.hl 是纵向 flex，裸文本和 <em> 会被拆成单独一行
 HEADS = []
 for key, txt in D.get("heads", []):
     t_ = 0.0 if key == secs[0]["id"] else (next(s["start"] for s in secs if s["id"] == key) if not key.startswith("v") else A[key] - 0.15)

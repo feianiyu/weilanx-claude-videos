@@ -1,0 +1,398 @@
+{
+ "series": {
+  "title": "城市更新，从工程改造走向长期运营",
+  "sub": "改完谁来运营，决定谁能持续赚钱"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 老板读研报 ——",
+  "title": "城市更新<br>走向长期运营",
+  "sub": "从工程改造到持续收入"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/12692135/pexels-photo-12692135.jpeg?w=2160&h=3840&fit=crop",
+ "bgNote": "成片用的是 C 档调色后的版本（在作者 Google Drive 的 V2.3 源码包里：assets/bg/bg.jpg）；这里下载的是原图，偏亮",
+ "voice": {
+  "name": "老杨复刻音色（火山引擎 seed-icl-2.0）",
+  "engine": "volc-icl",
+  "tempo": 1.15
+ },
+ "gapSec": 0.3,
+ "secGap": 0.6,
+ "bgmUnder": 7.9,
+ "bgm": {
+  "file": "audio/bgm_mixkit_driving_ambition_32.mp3",
+  "url": "https://assets.mixkit.co/music/32/32.mp3",
+  "src": "Mixkit《Driving Ambition》by Ahjay Stelino（id 32）· Mixkit Stock Music Free License"
+ },
+ "beat": {
+  "bpm": 100.0,
+  "period": 0.6,
+  "t0": 0.0,
+  "src": "src/beatfit.py assets/bgm_mixkit_driving_ambition_32.mp3 95 99.4 → 100.0 BPM, 首拍 0.125s, 乐句线 38.525+9.6k"
+ },
+ "restBefore": "v11",
+ "bgmSection": 86.525,
+ "progress": [
+  [
+   "开场",
+   "c0"
+  ],
+  [
+   "趋势",
+   "c1"
+  ],
+  [
+   "规模",
+   "c2"
+  ],
+  [
+   "机会",
+   "c3"
+  ],
+  [
+   "判断",
+   "c4"
+  ],
+  [
+   "行动",
+   "c5"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "sweep",
+   0
+  ],
+  "c2": [
+   "smoke",
+   900
+  ],
+  "c3": [
+   "sweep",
+   0
+  ],
+  "c4": [
+   "smoke",
+   950
+  ],
+  "c5": [
+   "sweep",
+   0
+  ]
+ },
+ "endFollow": false,
+ "heads": [
+  [
+   "c0",
+   "上海要盘活|75平方公里"
+  ],
+  [
+   "v02|不是|s",
+   "这批活，|不是谁会干谁拿"
+  ],
+  [
+   "c1",
+   "从工程改造，|走向*长期运营*"
+  ],
+  [
+   "v04|现在|s",
+   "策划时就定：|改完谁来运营"
+  ],
+  [
+   "c2",
+   "规模已经|定下来了"
+  ],
+  [
+   "v06|四十三|s",
+   "43个省市|已有量化任务"
+  ],
+  [
+   "v08|钱不少|s",
+   "钱不少，|分钱标准变了"
+  ],
+  [
+   "c3",
+   "机会延伸到|运营全链条"
+  ],
+  [
+   "v10|只做一段|s",
+   "只做一段，|只赚*一次*钱"
+  ],
+  [
+   "c4",
+   "改完能经营，|才是好项目"
+  ],
+  [
+   "c5",
+   "老板今天|先做*一件事*"
+  ],
+  [
+   "v13|交付后|s",
+   "每个项目|写清三项"
+  ],
+  [
+   "v15|要么|s",
+   "自建、合作，|或收购补上"
+  ]
+ ],
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "上海“十五五”要盘活75平方公里低效产业用地，更新150栋商务楼宇。",
+   "tts": "上海十五五要盘活七十五平方公里低效产业用地，更新一百五十栋商务楼宇。",
+   "dur": 7.47
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "但这批活，不是谁会设计、谁会施工，谁就能拿到。",
+   "dur": 5.0
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "10月22日发布的《2026中国城市更新年度报告》说得很明确：城市更新正在从工程改造，走向长期运营。",
+   "tts": "十月二十二日发布的二零二六中国城市更新年度报告说得很明确：城市更新正在从工程改造，走向长期运营。",
+   "dur": 10.47
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "过去项目交付就结束，现在从策划阶段就要定清楚：改完之后谁来运营，靠什么产生持续收入。",
+   "dur": 9.13
+  },
+  "v05": {
+   "sec": "c2",
+   "sub": "规模已经定下来了。《城市更新“十五五”规划》列了10项指标、23项重点任务、14项重大工程。",
+   "tts": "规模已经定下来了。城市更新十五五规划列了十项指标、二十三项重点任务、十四项重大工程。",
+   "dur": 9.13
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "到今年9月底，至少43个省市公布了量化任务，任务正在变成一个个具体项目。",
+   "tts": "到今年九月底，至少四十三个省市公布了量化任务，任务正在变成一个个具体项目。",
+   "dur": 8.08
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "北京2026年第一批就纳入1321个项目，年度计划投资1049.5亿元。",
+   "tts": "北京二零二六年第一批就纳入一千三百二十一个项目，年度计划投资一千零四十九点五亿元。",
+   "dur": 8.99,
+   "screens": [
+    "北京2026年第一批|就纳入1321个项目，",
+    "年度计划投资1049.5亿元。"
+   ]
+  },
+  "v08": {
+   "sec": "c2",
+   "sub": "钱不少，但分钱的标准变了。",
+   "dur": 2.9
+  },
+  "v09": {
+   "sec": "c3",
+   "sub": "报告对企业说得直接：机会已经从工程建设，延伸到资产整合、招商租赁、商业经营和社区服务。",
+   "dur": 9.31
+  },
+  "v10": {
+   "sec": "c3",
+   "sub": "只做一段的，只能拿到一次性的钱；能把改造和运营接起来的，才有后面的持续收入。",
+   "dur": 8.26
+  },
+  "v11": {
+   "sec": "c4",
+   "sub": "以后看一个更新项目，不只看改得好不好，还要看改完能不能一直用下去、经营下去。",
+   "dur": 8.26
+  },
+  "v12": {
+   "sec": "c5",
+   "sub": "设计院和工程公司的老板，今天先做一件事：把手上的更新类项目列出来，每个项目写清三项：",
+   "tts": "设计院和工程公司的老板，今天先做一件事：把手上的更新类项目列出来，每个项目写清三项：",
+   "dur": 9.13
+  },
+  "v13": {
+   "sec": "c5",
+   "sub": "交付后谁运营、运营收入从哪来、你们能多做哪一段。",
+   "dur": 5.26
+  },
+  "v14": {
+   "sec": "c5",
+   "sub": "写不出来的那一段，就是你们缺的能力。",
+   "dur": 3.99
+  },
+  "v15": {
+   "sec": "c5",
+   "sub": "要么自己建，要么找合作，要么收购一家小的专业公司补上。",
+   "dur": 5.91
+  }
+ },
+ "sfx": [
+  [
+   "v01|七十五|s",
+   "sub",
+   0.1
+  ],
+  [
+   "v02|拿到|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v03|长期运营|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v04|谁来运营|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v05|十项|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v05|二十三项|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v05|十四项|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v07|一千零四十九|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v08|标准|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v09|资产整合|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v09|招商租赁|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v09|商业经营|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v09|社区服务|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v10|接起来|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v11|以后|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v13|交付后|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v14|缺的能力|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v15|收购|e",
+   "riser",
+   0.15
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ }
+}
