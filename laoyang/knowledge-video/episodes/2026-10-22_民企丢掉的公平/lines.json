@@ -10,8 +10,8 @@
   "sub": "是规则公平"
  },
  "bg": "assets/bg.jpg",
- "bgUrl": "https://images.pexels.com/photos/1822927/pexels-photo-1822927.jpeg",
- "bgNote": "Pexels 1822927（Spiro Kafarakis）原图 3:4；成片用 9:16 中裁 + 压暗 0.5 / 饱和 0.55 / 偏暖 / 下部再压暗 / 模糊 1.5px（CREDITS.md）。fetch_assets 只下原图，CSS cover 也能用，但偏亮",
+ "bgUrl": "https://images.pexels.com/photos/4940270/pexels-photo-4940270.jpeg",
+ "bgNote": "Pexels 4940270 夜色港口岸桥（6000×4000）；成片用 9:16 裁切（中心 x=56%）+ 饱和 0.8 + 按高度分段压暗（顶 0.78 / 中间区 0.5 / 字幕区 0.28），见 CREDITS.md。fetch_assets 只下原图",
  "voice": {
   "engine": "volc-icl",
   "resource": "seed-icl-2.0",
