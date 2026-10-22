@@ -185,7 +185,11 @@ vo = np.zeros(N, np.float32)
 for k in keys:
     a = load(f"vo/{k}.mp3", L[k]["dur"]); i = int(tl[k][0] * SR); vo[i:i + len(a)] += a[:N - i]
 
-b = load(BGM, DUR + BGM_OFF + 5)[int(BGM_OFF * SR):]
+if BGM_OFF >= 0:
+    b = load(BGM, DUR + BGM_OFF + 5)[int(BGM_OFF * SR):]
+else:   # 片子比曲子的高潮位置还长：曲子从头起播，前面留空（原来负数切片会只剩曲尾几秒）
+    b = load(BGM, DUR + 5); b = np.concatenate([np.zeros(int(-BGM_OFF * SR), np.float32), b])
+    print(f"注意：bgmSection 早于判断句 {-BGM_OFF:.2f}s，配乐在 {-BGM_OFF:.2f}s 处才进；想要开头就有配乐，换一首更长的曲子或调 bgmSection")
 xf = int(3 * SR)
 while len(b) < N:
     ramp = np.linspace(0, 1, xf, dtype=np.float32)
