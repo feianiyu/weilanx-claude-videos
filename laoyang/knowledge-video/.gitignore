@@ -7,3 +7,6 @@ episodes/*/assets/bg.jpg
 starter/assets/bg.jpg
 # 用户本人声音的试听版（个人声音不进公开仓库）
 episodes/_voice_*/
+# 本人声音的配音不进公开仓库（已提交的旧期数不受影响）
+episodes/*/vo/
+episodes/*/vo_raw/
