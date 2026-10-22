@@ -5,3 +5,5 @@
 **/audio/
 episodes/*/assets/bg.jpg
 starter/assets/bg.jpg
+# 用户本人声音的试听版（个人声音不进公开仓库）
+episodes/_voice_*/
