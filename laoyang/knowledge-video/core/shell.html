@@ -60,12 +60,17 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 .cap #ui{display:none}
 /* ===== v2 版式（lines.json 有 heads 时启用）：去掉眉标和卡片标题，中间区扩到 y600 起；
    顶部大字 = 随章节/关键词切换的「核心观点头条」，文章标题挪到 logo 行右侧灰色小字 ===== */
-#hd{left:60px;width:960px;top:214px;height:236px;display:none}
+#hd{left:60px;width:960px;top:196px;height:206px;display:none}
 .hl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--o);font-weight:900;letter-spacing:3px;line-height:1.16;text-shadow:0 3px 14px rgba(0,0,0,.6);white-space:nowrap}
 .hl em{font-style:normal;color:#fff}
 #epT{right:140px;top:163px;font-size:30px;font-weight:700;color:#B4AC9F;letter-spacing:2px;white-space:nowrap;display:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
 .v2 #t1,.v2 #t2,.v2 .tag,.v2 .h1{display:none}
 .v2 #hd,.v2 #epT{display:block}
+.v2 #prog{top:418px}
+.v2 #panel{top:382px;height:1018px}
+/* v2.1：片尾不再出现「关注 老杨魔方」，只留系列预告（endNext），居中放大 */
+.nofollow #endT,.nofollow #endLogo{display:none}
+.nofollow #endN{top:1010px!important;font-size:54px!important;color:#E9E4DA!important;letter-spacing:4px!important}
 /*@EP_CSS*/
 </style></head>
 <body>
@@ -149,6 +154,11 @@ order.forEach((id,i)=>{if(!scenes[i])console.error('scene DOM missing',id);if(id
 const bg=$('bg');
 // v2 核心观点头条：D.heads=[{t,html,fs}]，按时间切换：旧的上移淡出 0.25s，新的模糊浮现 0.35s
 const HEADS=D.heads||[];if(HEADS.length)$('v').classList.add('v2');
+const V2=HEADS.length>0, SC=V2?1.077:1, OX=540, OY=1380;               // 中间区放大：以底边中点为锚
+if(V2){$('stage').style.transformOrigin=`${OX}px ${OY}px`;$('stage').style.transform=`scale(${SC})`;}
+const FOLLOW=D.endFollow!==undefined?D.endFollow:!V2;                // v2 起默认不出现「关注老杨魔方」
+if(!FOLLOW)$('v').classList.add('nofollow');
+function stageXf(){if(V2){X.translate(OX,OY);X.scale(SC,SC);X.translate(-OX,-OY);}}
 const hlA=$('hlA'),hlB=$('hlB');let hdIdx=-2;
 function heads(t){if(!HEADS.length)return;let i=0;for(let k=0;k<HEADS.length;k++)if(t>=HEADS[k].t)i=k;
  if(i!==hdIdx){hdIdx=i;const h=HEADS[i];hlA.innerHTML=h.html;hlA.style.fontSize=h.fs+'px';const p=HEADS[i-1];hlB.innerHTML=p?p.html:'';hlB.style.fontSize=p?p.fs+'px':'';}
@@ -165,21 +175,21 @@ function render(t){
  const rest=t>=restA&&t<restB?1:0;
  const tc=rest?restA:t;   // 收一拍：画面静止、变暗
  const V=order.map(id=>vis(id,tc));
- X.save();X.beginPath();X.rect(100,560,880,840);X.clip();
+ X.save();X.beginPath();if(V2)X.rect(100,500,880,900);else X.rect(100,560,880,840);X.clip();stageXf();
  X.globalAlpha=rest?0.35:1;
  texture(tc,HOOKS.texA?HOOKS.texA(tc,V):1,HOOKS.texBoost?HOOKS.texBoost(tc,V):0);
  TRANS.forEach(r=>{if(r.k==='smoke')smoke(tc,r.t-0.2,540,1000,760,520,14,1,r.seed);else if(r.k==='sweep')sweep(tc,r.t-0.1,0.7,1);});
  order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].canvas)SCENES[id].canvas(tc,V[i],f);});
- if(V[order.length-1]>0)endLogo(tc,V[order.length-1]);
+ if(V[order.length-1]>0&&FOLLOW)endLogo(tc,V[order.length-1]);
  X.restore();
  // 自由图层（不受中间区硬裁切，自己用 present() 羽化）：SCENES[id].free(t,a,f)
- X.save();X.globalAlpha=rest?0.35:1;order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].free)SCENES[id].free(tc,V[i],f);});X.restore();
+ X.save();stageXf();X.globalAlpha=rest?0.35:1;order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].free)SCENES[id].free(tc,V[i],f);});X.restore();
  // ----- DOM 场景 -----
  const rpi=order.indexOf(REST_PREV);
  scenes.forEach((el,i)=>{if(!el)return;const v=V[i]*(rest?(i===rpi?0.35:0):1);el.style.opacity=v.toFixed(3);el.style.visibility=v>0?'visible':'hidden';});
  order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].dom)SCENES[id].dom(tc,V[i],f);});
  const iE=order.length-1;
- if(V[iE]>0){rise('endT',eo(cl((tc-D.tl[D.lastLine][0]-0.2)/0.4)));if(D.endNext)rise('endN',eo(cl((tc-D.tl[D.lastLine][0]-0.7)/0.4)));const P=lgT();op('endLogo',V[iE]*0.92*cl((tc-P.b+0.1)/0.12)*(1-cl((tc-P.c)/0.18)));}else op('endLogo',0);
+ if(V[iE]>0){rise('endT',eo(cl((tc-D.tl[D.lastLine][0]-0.2)/0.4)));if(D.endNext)rise('endN',eo(cl((tc-D.tl[D.lastLine][0]-(FOLLOW?0.7:0.1))/0.4)));const P=lgT();op('endLogo',V[iE]*0.92*cl((tc-P.b+0.1)/0.12)*(1-cl((tc-P.c)/0.18)));}else op('endLogo',0);
  heads(tc);
  // ----- 进度条 -----
  let act=-1;stT.forEach((s,i)=>{if(tc>=s)act=i;});let fx=60;if(act>=0){const p=io(cl((tc-stT[act])/0.5));const pv=act>0?DX[act-1]:60;fx=pv+(DX[act]-pv)*p;}

@@ -294,7 +294,7 @@ def head_html(txt):
             m = min(cut, key=lambda i: abs(cw(txt[:i].replace("*", "")) - cw(txt[i:].replace("*", ""))))
             lines_ = [txt[:m], txt[m:]]
     assert len(lines_) <= 2, ("头条最多两行", txt)
-    fs = int(min(92, 900 / max(cw(x.replace("*", "")) for x in lines_)))
+    fs = int(min(78, 900 / max(cw(x.replace("*", "")) for x in lines_)))   # v2.1：上限 92 → 78（缩小约 15%）
     esc = lambda x: re.sub(r"\*([^*]+)\*", r"<em>\1</em>", x.replace("&", "&amp;").replace("<", "&lt;"))
     return "<br>".join(esc(x) for x in lines_), fs
 HEADS = []
@@ -304,7 +304,7 @@ for key, txt in D.get("heads", []):
 HEADS.sort(key=lambda x: x["t"])
 for h in HEADS: print("HEAD", h["t"], h["fs"], h["src"])
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
-        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS}
+        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})}
 meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
