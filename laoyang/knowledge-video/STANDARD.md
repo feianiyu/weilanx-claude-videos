@@ -144,6 +144,7 @@
    cp -r starter episodes/<日期_主题>
    python3 core/fake_vo.py     episodes/<期>     # 离线占位配音，先排版
    python3 core/gen_vo.py      episodes/<期>     # 真配音（可只重配：... v02 v05）
+   python3 core/gen_vo_volc.py episodes/<期>     # 或：老杨本人声音（云环境变量 VOLC_API_KEY / VOLC_SPEAKER_ID，放行 openspeech.bytedance.com），自动提速 + 对齐
    # 云端网络放行不了 Edge TTS 时：把 lines.json、gen_vo.py、fetch_assets.py、生成配音和素材.command 放进
    # 用户 Mac 的 materials/老杨魔方知识分享版/<编号-题目>/，请用户终端跑一次，再分小包回传
    python3 core/fetch_assets.py episodes/<期>    # 底图 + BGM + 音效
