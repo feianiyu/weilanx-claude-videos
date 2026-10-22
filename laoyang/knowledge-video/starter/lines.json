@@ -20,7 +20,7 @@
  },
  "gapSec": 0.3,
  "secGap": 0.6,
- "bgmUnder": 7.0,
+ "bgmUnder": 7.9,
  "bgm": {
   "file": "audio/bgm.mp3",
   "url": "",

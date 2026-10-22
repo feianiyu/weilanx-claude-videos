@@ -19,7 +19,7 @@
  },
  "gapSec": 0.3,
  "secGap": 0.6,
- "bgmUnder": 7.0,
+ "bgmUnder": 7.9,
  "bgm": {
   "file": "audio/bgm_mixkit_driving_ambition_32.mp3",
   "url": "https://assets.mixkit.co/music/32/32.mp3",
