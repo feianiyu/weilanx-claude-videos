@@ -117,6 +117,9 @@ import {Ep38CoverTall} from './episodes/ep38-butterfly/CoverTall';
 import {DURATION as EP52_DURATION, FPS as EP52_FPS, H as EP52_H, W as EP52_W} from './episodes/ep52-laoyang-template/timeline';
 import {Ep52Laoyang} from './episodes/ep52-laoyang-template/Ep52Laoyang';
 import {Ep52Cover} from './episodes/ep52-laoyang-template/Cover';
+import {DURATION as EP53_DURATION, FPS as EP53_FPS, H as EP53_H, W as EP53_W} from './episodes/ep53-laoyang-visible/timeline';
+import {Ep53Visible} from './episodes/ep53-laoyang-visible/Ep53Visible';
+import {Ep53Cover} from './episodes/ep53-laoyang-visible/Cover';
 import {DURATION as EP26_DURATION} from './episodes/ep26-opus-video/cues';
 import {EP26_H, EP26_W, Ep26OpusVideo} from './episodes/ep26-opus-video/Ep26OpusVideo';
 import {Ep26CoverTall} from './episodes/ep26-opus-video/Cover';
@@ -235,6 +238,8 @@ export const Root: React.FC = () => (
       <Composition id="ep52-laoyang-template" component={Ep52Laoyang} durationInFrames={EP52_DURATION} fps={EP52_FPS} width={EP52_W} height={EP52_H} />
       <Still id="ep52-laoyang-template-cover" component={Ep52Cover} width={1080} height={1920} />
       <Still id="ep52-laoyang-template-cover-34" component={Ep52Cover} width={1080} height={1440} />
+      <Composition id="ep53-laoyang-visible" component={Ep53Visible} durationInFrames={EP53_DURATION} fps={EP53_FPS} width={EP53_W} height={EP53_H} />
+      <Still id="ep53-laoyang-visible-cover" component={Ep53Cover} width={1080} height={1920} />
     </Folder>
     <Folder name="99-素材预览">
       <Composition id="library-wardrobe" component={Wardrobe} durationInFrames={150} fps={FPS} width={1080} height={1920} />
