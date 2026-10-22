@@ -37,8 +37,16 @@ def voiced(x):
 
 def weight(c): return 0.5 if c.isascii() else 1.0
 
+TEMPO = float(L.get("voice", {}).get("tempo", 1.0))   # 整体提速（音调不变）：原始配音放 vo_raw/，提速后写 vo/
+if TEMPO != 1.0:
+    os.makedirs("vo_raw", exist_ok=True)
+    for k in keys:
+        if not os.path.exists(f"vo_raw/{k}.mp3"): os.replace(f"vo/{k}.mp3", f"vo_raw/{k}.mp3")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", f"vo_raw/{k}.mp3", "-filter:a", f"atempo={TEMPO}", "-ar", "24000", "-b:a", "128k", f"vo/{k}.mp3"], check=True)
+    print(f"提速 ×{TEMPO}")
+
 for k in keys:
-    txt = L["lines"][k].get("tts", L["lines"][k]["sub"]).replace("关注老杨魔方，", "").replace("关注老杨魔方", "")
+    txt =L["lines"][k].get("tts", L["lines"][k]["sub"]).replace("关注老杨魔方，", "").replace("关注老杨魔方", "")
     segs = voiced(pcm(f"vo/{k}.mp3"))
     if not segs: raise SystemExit(f"{k}: 没检测到人声")
     # 短语（标点分隔，丢掉空的）

@@ -129,6 +129,7 @@
 ## 6. 声音规矩
 
 - 旁白：Edge TTS 云扬 +25%；whisper 抽查多音字。
+- 可选·本人声音（火山引擎复刻 seed-icl-2.0）：用户 Mac 上 `materials/老杨魔方知识分享版/volc_tts.py` 合成（凭证只在本机 tts.env）→ 放进 vo/ → lines.json `voice.tempo: 1.15`（用户定：原速太慢，提速 15%）→ `core/align_chars.py` 提速并按字估时间。本人声音的期目录以 `_voice_` 开头或不提交音频。
 - BGM：有主旋律、鼓组、高潮段；比人声低 **7.9 dB**（`bgmUnder: 7.9`，v2.1 起；原 7 dB，用户要求再降 10%）；1.5s 淡入、2.5s 淡出；「我的判断」前一拍静音。
 - 音效：Mixkit 采样，≤20 次，全部对齐画面动作；原始文件不进仓库，`core/fetch_assets.py` 下载。
 - 总线：压缩（−22dB, 2.5:1）→ 增益 → 限幅 0.89，迭代到 **−14 LUFS**。
