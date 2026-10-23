@@ -70,7 +70,7 @@
 
 ## 工作流 Skill
 
-`.claude/skills/` 里有九个工作流，在 Claude Code 里打开本工程、直接说要做什么就会触发对应的 skill：
+`.claude/skills/` 里有十个工作流，在 Claude Code 里打开本工程、直接说要做什么就会触发对应的 skill：
 
 | 风格 | skill | 交付方式 |
 |---|---|---|
@@ -83,6 +83,7 @@
 | Vox 拼贴科普（横屏，真实素材） | `weilanx-creator-vox-video` | 先 Studio 预览，确认后导出 |
 | 像素贴纸风口播（竖屏 3:4） | `weilanx-creator-pixel-video` | 先 Studio 预览，确认后导出 |
 | 老杨魔方 · 知识分享版（有旁白，竖屏 9:16） | `laoyang-knowledge-video` | 先定内容和文案，确认后出片；代码在 `laoyang/knowledge-video/`（Python + 网页渲染，不走 Remotion） |
+| 动效词典（第三方 motion-prompt，MIT） | `motion-prompt` | 按编号取动效 / 镜头 / 转场的规格和 Canvas 代码移植进片子；离线数据在 `vendor/motion-prompt/`（`export MOTION_PROMPT_BASE=$PWD/vendor/motion-prompt/api/v1`），中文名词表 `vendor/motion-prompt/名词表_中文.md` |
 
 部分步骤（配音、字幕识别、文生图封面、标题公式）依赖作者的私人工具，每个 skill 的「依赖（开源版说明）」一节写了替换方法。
 
