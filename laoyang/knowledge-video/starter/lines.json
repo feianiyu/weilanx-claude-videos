@@ -13,10 +13,10 @@
  "bgUrl": "",
  "bgNote": "填可商用图片的下载地址（Pexels 等），竖屏原生 2160×3840，C 档调暗暖",
  "voice": {
-  "name": "zh-CN-YunyangNeural",
-  "rate": "+25%",
-  "pitch": "+0Hz",
-  "engine": "edge-tts"
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.2,
+  "note": "v2.2 默认：老杨本人复刻音色（core/gen_vo_volc.py）；备选 Edge TTS：{\"name\":\"zh-CN-YunyangNeural\",\"rate\":\"+25%\"}"
  },
  "gapSec": 0.3,
  "secGap": 0.6,
