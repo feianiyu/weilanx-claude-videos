@@ -41,7 +41,7 @@ function drawDragon3D(ctx,t,S,cam,opt={}){ const R=opt.R||44, A=opt.a??1, part=o
   const P2=p=>proj(cam,p);
   const shade=nrm=>{ const nv=dirView(cam,nrm); return {b:Math.max(0,vd(nv,LIGHT)), nv}; };
   const facing=(p,nrm)=>{ const v=toView(cam,p), nv=dirView(cam,nrm); return vd(v,nv)<0; };
-  const GOLDc=(a)=>rgba(GOLD,a), WARMc=a=>rgba(WARM,a);
+  const LC=opt.col||GOLD, GOLDc=(a)=>rgba(LC,a), WARMc=a=>rgba(WARM,a);
   const fillCol=(b,rim,tint=0)=>{ const k=b*0.75+rim*0.3+tint; return `rgb(${(9+70*k)|0},${(11+52*k)|0},${(20+26*k)|0})`; };
   // ── 身体网格 ──
   const iEnd=Math.max(2,Math.round((n-1)*drawK)); const ring=[];
@@ -112,6 +112,11 @@ function drawDragon3D(ctx,t,S,cam,opt={}){ const R=opt.R||44, A=opt.a??1, part=o
   const F=vm(Fr.T[0],-1), U0=Fr.N[0]; const tl=opt.tilt??0.25; const Fh=vn(vl(F,Math.cos(tl),U0,Math.sin(tl))), U=vn(vl(U0,Math.cos(tl),F,-Math.sin(tl))), Sd=vc(Fh,U);
   const H0=va(S[0],vm(Fh,-R*0.15));
   const L3=(x,y,z)=>va(H0,vl(Fh,x*R,U,y*R,Sd,z*R));
+  if(opt.head2d){ const q0=P2(H0), q1=P2(L3(1,0,0)); const ang=Math.atan2(q1[1]-q0[1],q1[0]-q0[0]), hs=Math.hypot(q1[0]-q0[0],q1[1]-q0[1])/46;
+    // 颈部的鬃毛和头一起画在最上层
+    push(q0[2]-R*0.6,'head',()=>{}); const parts=['head','eye','horn','ear'];
+    items.push([q0[2]-R*0.8,'__head',()=>drawHead2D(ctx,t,q0[0],q0[1],ang,hs,{jaw,col:opt.col,part:n=>{ const p=part(n); return p; }})]); }
+  else {
   // 上颌 / 头骨：一根粗细变化的管
   const SK0=[[-0.3,0,0.95,0.95],[0.3,0.15,1.15,1.05],[0.9,0.3,1.2,1.0],[1.5,0.25,1.05,0.92],[2.0,0.1,0.85,0.78],[2.6,-0.02,0.66,0.62],[3.2,-0.05,0.58,0.55],[3.7,0.02,0.6,0.56],[4.05,0.12,0.68,0.62],[4.35,0.1,0.52,0.5],[4.55,0.06,0.15,0.15]];
   const SK=[]; for(let k=0;k<=40;k++) SK.push(catmull3(SK0.map(r=>[r[0],r[1],r[2]]),k/40*(SK0.length-1)).concat([catmull3(SK0.map(r=>[r[3],0,0]),k/40*(SK0.length-1))[0]]));
@@ -160,11 +165,12 @@ function drawDragon3D(ctx,t,S,cam,opt={}){ const R=opt.R||44, A=opt.a??1, part=o
   for(const sz of [-1,1]) for(let k=0;k<6;k++){ const pts=[]; for(let s=0;s<=7;s++){ const q=s/7; pts.push(JX(1.4+k*0.35-q*(1.6+k*0.2),-0.85-q*(1.2+k*0.15)+Math.sin(t*2.2+k+q*3)*0.15*q,sz*(0.5+q*0.5))); } lock(pts,'head',0.2*R,0.85); }
   // 长须：从鼻侧伸出，先向前上，再向后飘
   for(const sz of [-1,1]){ const pts=[]; for(let s=0;s<=40;s++){ const q=s/40; pts.push(L3(4.05+1.8*Math.sin(q*Math.PI*0.85)-q*8.5,0.15+sz*0.0+q*2.2*(sz>0?1:-0.4)+Math.sin(t*2.4+s*0.28)*0.9*q,sz*(0.4+q*2.2))); } strand(pts,'head',0.11*R,GOLDc,0.95); }
+  }
   // 火珠位置
   const pearlP=L3(5.4,1.3,0);
   // 画：远到近
   items.sort((a,b)=>b[0]-a[0]);
   ctx.save(); ctx.globalAlpha=A;
-  for(const [z,name,fn] of items){ const p=part(name); if(p.a<=0.01) continue; if(p.dx||p.dy||p.a<1){ ctx.save(); ctx.translate(p.dx,p.dy); ctx.globalAlpha=A*p.a; fn(); ctx.restore(); } else fn(); }
+  for(const [z,name,fn] of items){ const p=name==='__head'?NONE:part(name); if(p.a<=0.01) continue; if(p.dx||p.dy||p.a<1){ ctx.save(); ctx.translate(p.dx,p.dy); ctx.globalAlpha=A*p.a; fn(); ctx.restore(); } else fn(); }
   ctx.restore();
   return {pearl:P2(pearlP),head:P2(H0)}; }
