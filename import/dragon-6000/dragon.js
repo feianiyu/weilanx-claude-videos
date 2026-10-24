@@ -259,6 +259,19 @@ function burst(ctx,t,t0,x,y,s=1){ const kb=P(t,t0,t0+0.6); if(kb<=0||kb>=1) retu
   glow(ctx,x,y,(220*(1-kb)+30)*s,WHITE,(1-kb)*0.7); ctx.restore(); }
 
 // ───────── 合成 ─────────
+// ── 三维段落：脊线与相机 ──
+const WATER_Y=1170, CY=960;
+const PATH3=(()=>{ const K=[]; for(let tt=28;tt<=42.6;tt+=0.2){ const a=1.35*(tt-28); K.push([tt,470*Math.sin(a),-60+520*Math.sin(a*0.62+1),380*Math.cos(a)]); }
+  K.push([43.4,520,520,0],[44.3,-150,500,-60],[45.0,-560,300,0],[45.6,-420,60,40],[46.3,0,-300,0],[47.0,260,-700,-40],[47.7,200,-1150,0],[48.4,120,-1700,0],[49.5,60,-2600,0]); return K; })();
+function spine3At(t){ if(t<T.fly) return poseHero(t);
+  if(t<T.end){ const f=poseFollow(t,PATH3,3.1); const k=eIO(P(t,T.fly,T.fly+1.0)); return k<1?mix3(poseHero(t),f,k):f; }
+  return mix3(poseFollow(Math.min(t,48.2),PATH3,3.1),poseRing(t),eIO(P(t,T.end,T.end+2.4))); }
+function cam3At(t,S){ let o={yaw:0,pitch:0.06,D:1800,f:1500,cx:540,cy:CY,tgt:[0,0,0]};
+  if(t<T.fly) o.yaw=lerp(-0.45,0.35,eIO(P(t,T.drop,T.fly)));
+  else if(t<T.end){ o.yaw=lerp(0.35,0,eIO(P(t,T.fly,T.fly+1.5)));
+    if(t>=36.2&&t<40.6){ const k1=eIO(P(t,36.2,37.4)), k2=eIO(P(t,38.0,39.0)); o.D=lerp(1800,9000,k1); if(t>=38.0){ const mid=S[Math.round(S.length*0.4)]; o.D=lerp(9000,560,k2); o.tgt=mid.map(v=>v*k2); } } }
+  else { o.pitch=lerp(0.06,0.32,eIO(P(t,T.end,T.end+2))); o.yaw=lerp(0,0.4,eIO(P(t,T.end,DUR))); }
+  return makeCam(o); }
 function spineAt(t){ // 27 秒之后龙的脊线
   if(t<T.fly) return spinePose(t);
   if(t<T.end){ const k=eIO(P(t,T.fly,T.fly+0.9)); const f=spineFollow(t); return k<1?mixS(spinePose(t),f,k):f; }
@@ -271,31 +284,24 @@ function render(ctx,t){
   clouds(ctx,t,t<T.drop?0.6:1);
   const dim=1-0.75*P(t,T.dark,T.drop-0.1)*(t<T.drop?1:0);
   dust(ctx,t,(0.7+0.5*P(t,T.drop,T.drop+0.4))*dim);
-  // 开场：一条巨龙在云后掠过，只露出一段身子（见首不见尾）
-  if(t<6.4){ const oc=OFF.getContext('2d'); oc.setTransform(1,0,0,1,0,0); oc.clearRect(0,0,W,H); oc.translate(260+t*26,1180-t*10); oc.scale(2.1,2.1); oc.rotate(0.12); oc.translate(-480,-610); drawDragon(oc,t,spinePose(t+20),{w:46,a:1,lit:2,tilt:-0.05});
-    ctx.save(); ctx.globalAlpha=0.6*(1-P(t,5.0,6.3)); ctx.drawImage(OFF,0,0); ctx.restore(); clouds(ctx,t+40,1.3,[30,40,70]); }
+  // 开场：一颗巨大的龙头从暗处探出（三维近景）
+  if(t<6.4){ const oc=OFF.getContext('2d'); oc.setTransform(1,0,0,1,0,0); oc.clearRect(0,0,W,H); const S=poseHero(t+20), hp=S[0];
+    drawDragon3D(oc,t,S,makeCam({yaw:0.75-t*0.05,pitch:0.1,D:900,f:1500,cx:560,cy:1120,tgt:[hp[0]+120,hp[1]+40,hp[2]]}),{R:72,tilt:0.05});
+    ctx.save(); ctx.globalAlpha=0.62*(1-P(t,5.0,6.3)); ctx.drawImage(OFF,0,0); ctx.restore(); clouds(ctx,t+40,1.3,[30,40,70]); }
   ctx.globalAlpha=dim; scenePre(ctx,t); ctx.globalAlpha=1;
-  if(t>=T.drop){ let S=spineAt(t); const opt={w:t<T.fly+0.9?lerp(46,40,eIO(P(t,T.fly,T.fly+0.9))):(t>=T.end?lerp(40,44,eIO(P(t,T.end,T.end+2))):40),part:ninePart(t),draw:eIO(P(t,T.drop,T.drop+0.6)),lit:-1};
-    // 鳞片一片片亮起
-    opt.lit=lerp(-0.1,1.1,P(t,nineT(5),nineT(5)+1.4));
-    // 能细能巨：先缩成一根金线，再大到看不清全身，然后消失，再亮回来（36–42）
-    let sc=1, cx=540, cy=860, A=1;
-    if(t>=T.size&&t<T.qian){ const k1=eIO(P(t,36.2,37.4)), k2=eIO(P(t,38.0,39.0)), k3=eIO(P(t,39.6,40.4));
-      sc=lerp(1,0.16,k1); if(t>=38.0){ sc=lerp(0.16,3.6,k2); cy=lerp(860,700,k2); } if(t>=39.6){ A=1-k3; } if(t>=40.6){ sc=1; cy=860; A=ease(P(t,40.6,41.2)); } }
-    if(t>=T.qian&&t<T.qian+0.4){ A=1; }
+  if(t>=T.drop){ const S=spine3At(t), cam=cam3At(t, S); let A=1;
+    if(t>=39.6&&t<41.2) A=t<40.6?1-eIO(P(t,39.6,40.4)):ease(P(t,40.6,41.2));
+    const R=t<T.fly?72:(t<T.end?lerp(72,62,eIO(P(t,T.fly,T.fly+1))):lerp(62,58,eIO(P(t,T.end,T.end+2))));
     const cl=t<T.qian||t>=T.end; if(cl){ cloudScroll(ctx,170+Math.sin(t*0.3)*20,1300,0.9,0.85,t); cloudScroll(ctx,930,640+Math.sin(t*0.25)*14,0.6,0.7,t,-1); }
-    ctx.save(); ctx.translate(cx,cy); ctx.scale(sc,sc); ctx.translate(-540,-860); const hd=drawDragon(ctx,t,S,{...opt,a:A,tilt:t>=T.end?-0.5:(t<T.fly?-0.05:-0.25)});
-    // 火珠：在龙嘴前方；结尾落到团龙圈心
-    if(hd){ const d=hd.dir, up=[d[1]*(d[0]<0?1:-1),-d[0]*(d[0]<0?1:-1)]; let px=hd.head[0]+d[0]*hd.hs*265+up[0]*hd.hs*10, py=hd.head[1]+d[1]*hd.hs*265+up[1]*hd.hs*10;
-      const ke=eIO(P(t,T.end,T.end+2.2)); px=lerp(px,550,ke); py=lerp(py,830,ke); pearl(ctx,t,px,py,22,A*P(t,T.drop+0.3,T.drop+1.0)); }
-    ctx.restore();
+    const hd=drawDragon3D(ctx,t,S,cam,{R,a:A,part:ninePart(t),draw:eIO(P(t,T.drop,T.drop+0.7)),lit:lerp(-0.1,1.1,P(t,nineT(5),nineT(5)+1.4)),tilt:t>=T.end?0.3:0.05});
+    if(hd){ const ke=eIO(P(t,T.end,T.end+2.2)), c0=proj(cam,[0,0,0]); const px=lerp(hd.pearl[0],c0[0],ke), py=lerp(hd.pearl[1],c0[1],ke); pearl(ctx,t,px,py,Math.min(40,24*hd.pearl[3]*1.1),A*P(t,T.drop+0.3,T.drop+1.0)); }
     if(cl) cloudScroll(ctx,880+Math.sin(t*0.2)*16,1380,1.1,0.9,t,-1);
     if(t>=40.6&&t<41.4) burst(ctx,t,40.6,540,860,0.6);
     // 乾卦：水面线
-    const wA=win(t,T.qian,48.3,0.5); if(wA>0){ ctx.save(); ctx.strokeStyle=`rgba(170,195,230,${0.45*wA})`; ctx.lineWidth=1.4; for(let k=0;k<5;k++){ const y=1100+k*16; ctx.beginPath(); for(let x=0;x<=W;x+=20) x?ctx.lineTo(x,y+Math.sin(x*0.02+t*2+k)*3):ctx.moveTo(x,y); ctx.globalAlpha=1-k*0.18; ctx.stroke(); }
+    const wA=win(t,T.qian,48.3,0.5); if(wA>0){ ctx.save(); ctx.strokeStyle=`rgba(170,195,230,${0.45*wA})`; ctx.lineWidth=1.4; for(let k=0;k<5;k++){ const y=WATER_Y+k*16; ctx.beginPath(); for(let x=0;x<=W;x+=20) x?ctx.lineTo(x,y+Math.sin(x*0.02+t*2+k)*3):ctx.moveTo(x,y); ctx.globalAlpha=1-k*0.18; ctx.stroke(); }
       // 潜龙在水下：水面以下再压一层暗色
-      ctx.globalAlpha=1; const g=ctx.createLinearGradient(0,1100,0,1400); g.addColorStop(0,`rgba(5,10,22,${0.55*wA})`); g.addColorStop(1,`rgba(5,10,22,${0.8*wA})`); ctx.fillStyle=g; ctx.fillRect(0,1100,W,820); ctx.restore(); }
-    burst(ctx,t,T.drop,540,900); }
+      ctx.globalAlpha=1; const g=ctx.createLinearGradient(0,WATER_Y,0,WATER_Y+300); g.addColorStop(0,`rgba(5,10,22,${0.55*wA})`); g.addColorStop(1,`rgba(5,10,22,${0.8*wA})`); ctx.fillStyle=g; ctx.fillRect(0,WATER_Y,W,H); ctx.restore(); }
+    burst(ctx,t,T.drop,540,CY); }
   ctx.setTransform(1,0,0,1,0,0);
   texts(ctx,t);
   brand(ctx,t);
