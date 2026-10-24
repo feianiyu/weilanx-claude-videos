@@ -38,67 +38,150 @@ const PATH=[ // [时间, x, y]
 const LAG=2.1;
 function spineFollow(t,lag=LAG,K=PATH){ return Array.from({length:NS},(_,i)=>{ const u=i/(NS-1); return catmull(K,t-u*lag); }); }
 const HOOK=[[-5,1050,700],[-3,900,800],[0,700,900],[2,450,980],[4,250,1050],[6,60,1100],[8,-200,1150]];
-// 九似拼装时的静止姿态：一条 S 形，头在上方朝左
-function spinePose(t){ const k=t*0.6; return Array.from({length:NS},(_,i)=>{ const u=i/(NS-1); return [560+Math.sin(u*TAU*1.05+0.9+Math.sin(k+u*3)*0.06)*250*(0.55+0.45*Math.min(1,u*2)), 560+u*760]; }); }
+// 英雄姿态：升龙。头在左上、朝右上方的火珠昂首张口，身体向下盘一个大 S，尾巴甩回左下（三停：首至膊、膊至腰、腰至尾）
+const POSE_K=[[0,480,610],[1,340,690],[2,330,840],[3,500,910],[4,740,840],[5,850,950],[6,800,1110],[7,620,1180],[8,430,1120],[9,300,1210],[10,250,1360],[11,330,1470]];
+function spinePose(t){ const br=Math.sin(t*1.6)*6; const K=POSE_K.map(([k,x,y],i)=>[k,x+Math.sin(t*1.1+i*0.7)*5*(i/11),y+br*(1-i/11)]); return Array.from({length:NS},(_,i)=>catmull(K,i/(NS-1)*11)); }
 const mixS=(A,B,k)=>A.map((p,i)=>[lerp(p[0],B[i][0],k),lerp(p[1],B[i][1],k)]);
-function spineEnd(t){ const r=250; return Array.from({length:NS},(_,i)=>{ const u=i/(NS-1), th=(-62-u*236)*Math.PI/180+Math.sin(t*0.8+u*5)*0.01; return [560+Math.cos(th)*r, 760+Math.sin(th)*r]; }); }
+// 团龙：身体盘成一圈，头在圈顶向里昂起，对着圈心的火珠（呼应红山 C 形玉龙）
+function spineEnd(t){ const r=290; return Array.from({length:NS},(_,i)=>{ const u=i/(NS-1), th=(-118+u*318)*Math.PI/180+Math.sin(t*0.9+u*6)*0.012, rr=r*(1-0.16*u); return [550+Math.cos(th)*rr, 830+Math.sin(th)*rr]; }); }
 
-// ───────── 画龙（金线）：身体、鳞、背鳍、腹甲、腿爪、头、尾 ─────────
-// part(name) 返回该部件的位移/透明度（九似拼装用）；默认全在位
+// ───────── 画龙：明清成熟龙形 ─────────
+// 头大（约身宽的 2.5 倍），张口、獠牙、卷舌；如意形鼻、粗眉压眼；鹿角向后扫；鬃毛如火向后飘；长须；
+// 身体由尾到头逐节画（近头的身段压住远处的身段，盘绕才有前后）；背上一路火焰形背鳍；腹面一条腹甲带；满身鱼鳞；
+// 四腿粗壮，肘后有火焰毛，五爪张开；尾端火焰尾鳍。
 const NONE={dx:0,dy:0,a:1};
-function drawDragon(ctx,t,S,opt){ const F=frame(S), w0=opt.w||40, A=opt.a??1, part=opt.part||(()=>NONE), lit=opt.lit??2, col=opt.col||GOLD;
-  if(A<=0.01) return; ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
-  const sideL=[],sideR=[]; for(let i=0;i<NS;i++){ const u=i/(NS-1); sideL.push(at(F,u,1,w0)); sideR.push(at(F,u,-1,w0)); }
-  const withPart=(name,fn)=>{ const p=part(name); if(p.a<=0.01) return; ctx.save(); ctx.translate(p.dx,p.dy); ctx.globalAlpha=A*p.a; fn(); ctx.restore(); };
-  const line=(pts,i0,i1)=>{ ctx.beginPath(); for(let i=i0;i<=i1;i++) i===i0?ctx.moveTo(pts[i][0],pts[i][1]):ctx.lineTo(pts[i][0],pts[i][1]); ctx.stroke(); };
-  const iNeck=Math.round(0.16*(NS-1));
-  // 身体外形（项以后）+ 背鳍 + 尾
-  withPart('body',()=>{ const k=opt.draw??1, i1=Math.max(iNeck+1,Math.round(lerp(iNeck,NS-1,k)));
-    // 身体底色：极暗的填充，让金线浮起来
-    ctx.beginPath(); for(let i=iNeck;i<=i1;i++) i===iNeck?ctx.moveTo(...sideL[i]):ctx.lineTo(...sideL[i]); for(let i=i1;i>=iNeck;i--) ctx.lineTo(...sideR[i]); ctx.closePath(); ctx.fillStyle='rgba(8,10,18,0.78)'; ctx.fill();
-    ctx.strokeStyle=rgba(col,0.92); ctx.lineWidth=2.4; line(sideL,iNeck,i1); line(sideR,iNeck,i1);
-    for(let i=iNeck;i<=i1-2;i+=4){ const u=i/(NS-1), f=F[i], w=w0*widthAt(u); if(w<3) continue; const b=sideL[i], h=w*0.55*(1+0.25*Math.sin(i*1.7));
-      ctx.beginPath(); ctx.moveTo(b[0]-f.tx*w*0.18,b[1]-f.ty*w*0.18); ctx.lineTo(b[0]+f.nx*h+f.tx*w*0.25,b[1]+f.ny*h+f.ty*w*0.25); ctx.lineTo(b[0]+f.tx*w*0.3,b[1]+f.ty*w*0.3); ctx.strokeStyle=rgba(col,0.7); ctx.lineWidth=1.6; ctx.stroke(); }
-    if(k>=1){ const f=F[NS-1]; ctx.strokeStyle=rgba(col,0.85); ctx.lineWidth=1.8; for(let j=-2;j<=2;j++){ const L=w0*(1.6+0.4*Math.abs(j)), sw=Math.sin(t*3+j)*0.25;
-      ctx.beginPath(); ctx.moveTo(f.x,f.y); ctx.quadraticCurveTo(f.x+f.tx*L*0.6+f.nx*j*w0*0.35,f.y+f.ty*L*0.6+f.ny*j*w0*0.35,f.x+f.tx*L+f.nx*(j*w0*0.6+sw*w0),f.y+f.ty*L+f.ny*(j*w0*0.6+sw*w0)); ctx.stroke(); } } });
-  // 项：脖子一段外形 + 鬃毛
-  withPart('neck',()=>{ ctx.beginPath(); for(let i=0;i<=iNeck+1;i++) i===0?ctx.moveTo(...sideL[i]):ctx.lineTo(...sideL[i]); for(let i=iNeck+1;i>=0;i--) ctx.lineTo(...sideR[i]); ctx.closePath(); ctx.fillStyle='rgba(8,10,18,0.78)'; ctx.fill();
-    ctx.strokeStyle=rgba(col,0.92); ctx.lineWidth=2.4; line(sideL,0,iNeck+1); line(sideR,0,iNeck+1);
-    for(let i=2;i<iNeck;i+=3){ const f=F[i], b=sideL[i], L=w0*(0.9+0.5*Math.sin(i)), sw=Math.sin(t*2.2+i*0.6)*0.35; ctx.strokeStyle=rgba(col,0.6); ctx.lineWidth=1.4;
-      ctx.beginPath(); ctx.moveTo(b[0],b[1]); ctx.quadraticCurveTo(b[0]+f.nx*L*0.6+f.tx*L*0.5,b[1]+f.ny*L*0.6+f.ty*L*0.5,b[0]+f.nx*L*(0.7+sw*0.2)+f.tx*L*1.3,b[1]+f.ny*L*(0.7+sw*0.2)+f.ty*L*1.3); ctx.stroke(); } });
-  // 腹：腹甲横纹
-  withPart('belly',()=>{ ctx.strokeStyle=rgba(col,0.55); ctx.lineWidth=1.3; for(let i=iNeck;i<NS*0.9;i+=3){ const u=i/(NS-1), a=at(F,u,-1,w0), b=at(F,u,-0.45,w0); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke(); } });
-  // 鳞：三列鳞片，开口朝尾；lit 之前的鳞会亮起
-  withPart('scales',()=>{ for(let i=iNeck+2;i<NS*0.92;i+=3){ const u=i/(NS-1), f=F[i], w=w0*widthAt(u); if(w<5) continue; const ang=Math.atan2(f.ty,f.tx);
-      for(const j of [-0.05,0.4,0.8]){ if(j===0.8&&w<12) continue; const [cx,cy]=at(F,u,j-0.1,w0); const r=w*0.26; const on=u<lit?1:0, flash=Math.exp(-Math.pow((lit-u)*14,2));
-        ctx.strokeStyle=rgba(on?WARM:col,0.45+0.4*on+0.4*flash); ctx.lineWidth=1.2+flash*1.2; ctx.beginPath(); ctx.arc(cx,cy,r,ang+Math.PI/2,ang-Math.PI/2,false); ctx.stroke();
-        if(flash>0.3) glow(ctx,cx,cy,r*2.2,WARM,0.5*flash); } } });
-  // 掌与爪：四条腿
-  const legs=[[0.21,-1,0],[0.27,1,1],[0.6,-1,2],[0.66,1,3]];
-  const legGeom=(u,side,k)=>{ const f=F[Math.round(u*(NS-1))], w=w0*widthAt(u), b=at(F,u,side*0.9,w0); const out=[f.nx*side,f.ny*side], back=[f.tx,f.ty];
-    const sw=Math.sin(t*2.4+k*1.7)*0.3; const knee=[b[0]+out[0]*w*1.3+back[0]*w*(0.5+sw*0.4),b[1]+out[1]*w*1.3+back[1]*w*(0.5+sw*0.4)];
-    const palm=[knee[0]+out[0]*w*0.9-back[0]*w*(0.6-sw*0.5),knee[1]+out[1]*w*0.9-back[1]*w*(0.6-sw*0.5)]; return {b,knee,palm,out,back,w}; };
-  withPart('palm',()=>{ for(const [u,side,k] of legs){ const g=legGeom(u,side,k); ctx.strokeStyle=rgba(col,0.9); ctx.lineWidth=2.2; ctx.beginPath(); ctx.moveTo(...g.b); ctx.quadraticCurveTo(g.knee[0],g.knee[1],g.palm[0],g.palm[1]); ctx.stroke();
-      ctx.lineWidth=1.3; ctx.beginPath(); ctx.moveTo(g.b[0]+g.back[0]*g.w*0.5,g.b[1]+g.back[1]*g.w*0.5); ctx.quadraticCurveTo(g.knee[0]+g.back[0]*g.w*0.4,g.knee[1]+g.back[1]*g.w*0.4,g.palm[0]+g.back[0]*g.w*0.25,g.palm[1]+g.back[1]*g.w*0.25); ctx.stroke();
-      ctx.beginPath(); ctx.arc(g.palm[0],g.palm[1],g.w*0.22,0,TAU); ctx.stroke(); } });
-  withPart('claw',()=>{ for(const [u,side,k] of legs){ const g=legGeom(u,side,k); ctx.strokeStyle=rgba(WARM,0.95); ctx.lineWidth=1.8;
-      for(let c=-1.5;c<=1.5;c+=1){ const dir=[g.out[0]*0.8-g.back[0]*c*0.45,g.out[1]*0.8-g.back[1]*c*0.45], L=g.w*0.75, e=[g.palm[0]+dir[0]*L,g.palm[1]+dir[1]*L];
-        ctx.beginPath(); ctx.moveTo(g.palm[0]+dir[0]*g.w*0.2,g.palm[1]+dir[1]*g.w*0.2); ctx.quadraticCurveTo(e[0],e[1],e[0]-g.back[0]*g.w*0.25+g.out[0]*-g.w*0.05,e[1]-g.back[1]*g.w*0.25); ctx.stroke(); } } });
-  // 头：局部坐标，x 轴朝龙头前方
-  const f0=F[0], hx=-f0.tx, hy=-f0.ty, s=w0/32, flip=opt.flip?-1:(hx<0?-1:1); // 头始终「上方」朝画面上
-  const head=(name,fn)=>withPart(name,()=>{ ctx.save(); ctx.translate(f0.x,f0.y); ctx.transform(hx*s,hy*s,-hy*s*flip,hx*s*flip,0,0); fn(); ctx.restore(); });
-  head('head',()=>{ ctx.beginPath(); ctx.moveTo(-6,-34); ctx.bezierCurveTo(30,-44,70,-34,104,-22); ctx.quadraticCurveTo(122,-18,120,-4); ctx.quadraticCurveTo(112,2,96,4); ctx.lineTo(70,6); ctx.lineTo(98,14);
-    ctx.quadraticCurveTo(84,30,52,30); ctx.bezierCurveTo(30,32,10,34,-6,34); ctx.closePath(); ctx.fillStyle='rgba(8,10,18,0.85)'; ctx.fill(); ctx.strokeStyle=rgba(col,0.95); ctx.lineWidth=2.4/s; ctx.stroke();
-    ctx.lineWidth=1.4/s; ctx.beginPath(); ctx.moveTo(34,-38); ctx.quadraticCurveTo(48,-30,64,-34); ctx.stroke(); // 眉弓
-    for(let k=0;k<4;k++){ ctx.beginPath(); ctx.moveTo(74+k*7,6); ctx.lineTo(77+k*7,0); ctx.stroke(); } // 牙
-    // 须：从鼻端拖向身后，随时间摆
-    ctx.lineWidth=1.6/s; ctx.strokeStyle=rgba(col,0.85); for(const [y0,sg] of [[-14,-1],[-8,1]]){ ctx.beginPath(); ctx.moveTo(112,y0); for(let k=1;k<=24;k++){ const x=112+30-k*12, y=y0+sg*(k*2.4)+Math.sin(t*3+k*0.5)*k*0.9; ctx.lineTo(x,y); } ctx.stroke(); }
-    ctx.beginPath(); ctx.moveTo(60,30); ctx.quadraticCurveTo(40,58+Math.sin(t*2)*4,10,66); ctx.stroke(); }); // 须髯
-  head('eye',()=>{ ctx.strokeStyle=rgba(WARM,1); ctx.lineWidth=1.8/s; ctx.beginPath(); ctx.ellipse(52,-18,9,6,-0.2,0,TAU); ctx.stroke(); ctx.globalCompositeOperation='lighter'; glow(ctx,52,-18,16,WARM,0.95); glow(ctx,52,-18,4,WHITE,1); });
-  head('horn',()=>{ ctx.strokeStyle=rgba(col,0.95); ctx.lineWidth=2.4/s; const sw=Math.sin(t*1.5)*3; ctx.beginPath(); ctx.moveTo(26,-36); ctx.bezierCurveTo(10,-80,-30,-100,-70+sw,-128); ctx.stroke();
-    ctx.lineWidth=1.8/s; for(const [x0,y0,x1,y1] of [[8,-70,22,-108],[-20,-94,-14,-136],[-46,-112,-62,-148]]){ ctx.beginPath(); ctx.moveTo(x0,y0); ctx.quadraticCurveTo((x0+x1)/2+8,(y0+y1)/2,x1+sw,y1); ctx.stroke(); } });
-  head('ear',()=>{ ctx.strokeStyle=rgba(col,0.9); ctx.lineWidth=1.8/s; ctx.beginPath(); ctx.moveTo(10,-30); ctx.quadraticCurveTo(-16,-58,-44,-52); ctx.quadraticCurveTo(-18,-36,4,-24); ctx.stroke(); });
+const PROF=[[0,0.62],[0.05,0.78],[0.14,1.0],[0.3,1.0],[0.55,0.88],[0.8,0.55],[0.93,0.32],[1,0.14]];
+function prof(u){ let i=0; while(i<PROF.length-2&&u>PROF[i+1][0]) i++; const a=PROF[i],b=PROF[i+1]; return lerp(a[1],b[1],sm(clamp((u-a[0])/(b[0]-a[0]),0,1))); }
+const BODY='rgba(9,12,22,1)';
+function drawDragon(ctx,t,S,opt){ const F=frame(S), w0=opt.w||46, A=opt.a??1, part=opt.part||(()=>NONE), lit=opt.lit??2, col=opt.col||GOLD;
+  if(A<=0.01) return; const n=NS; const Wd=i=>w0*prof(i/(n-1));
+  const pt=(i,v)=>{ const f=F[i], w=Wd(i)*v; return [f.x+f.nx*w,f.y+f.ny*w]; }; // v=+1 背，v=-1 腹
+  const deferred=[]; const el=(name,fn)=>{ const p=part(name); if(p.a<=0.01) return; if(p.dx===0&&p.dy===0&&p.a>=1) fn(); else deferred.push([p,fn]); };
+  const drawK=opt.draw??1, iEnd=Math.max(2,Math.round((n-1)*drawK));
+  ctx.save(); ctx.globalAlpha=A; ctx.lineCap='round'; ctx.lineJoin='round';
+  const g=c=>rgba(col,c), gw=c=>rgba(WARM,c);
+  // 腿：挂在身段上；u、前后（front=朝头）、远近（far 先画、更暗）
+  const LEGS=[[0.21,1,1],[0.25,1,0],[0.58,0,1],[0.62,0,0]];
+  const legAt={}; LEGS.forEach(L=>{ legAt[Math.round(L[0]*(n-1))]=L; });
+  const drawLeg=(L)=>{ const [u,front,far]=L, i=Math.round(u*(n-1)), f=F[i], w=Wd(i)*1.4, b=pt(i,-0.55);
+    const out=[-f.nx,-f.ny], fw=[-f.tx,-f.ty], bk=[f.tx,f.ty], ph=t*2.0+i*0.3, grip=0.5+0.5*Math.sin(ph);
+    const dirA=front?[out[0]*0.75+fw[0]*0.7,out[1]*0.75+fw[1]*0.7]:[out[0]*0.7+bk[0]*0.75,out[1]*0.7+bk[1]*0.75];
+    const elbow=[b[0]+dirA[0]*w*1.65,b[1]+dirA[1]*w*1.65];
+    const dirB=front?[fw[0]*0.9+out[0]*0.45,fw[1]*0.9+out[1]*0.45]:[out[0]*0.95-bk[0]*0.25,out[1]*0.95-bk[1]*0.25];
+    const wr=[elbow[0]+dirB[0]*w*1.35+Math.sin(ph)*w*0.06,elbow[1]+dirB[1]*w*1.35];
+    const fade=far?0.55:1;
+    // 粗壮的腿：两段锥形
+    const limb=(p0,p1,r0,r1)=>{ const dx=p1[0]-p0[0], dy=p1[1]-p0[1], l=Math.hypot(dx,dy)||1, nx=-dy/l, ny=dx/l; ctx.beginPath(); ctx.moveTo(p0[0]+nx*r0,p0[1]+ny*r0);
+      ctx.quadraticCurveTo((p0[0]+p1[0])/2+nx*(r0+r1)*0.62,(p0[1]+p1[1])/2+ny*(r0+r1)*0.62,p1[0]+nx*r1,p1[1]+ny*r1); ctx.lineTo(p1[0]-nx*r1,p1[1]-ny*r1);
+      ctx.quadraticCurveTo((p0[0]+p1[0])/2-nx*(r0+r1)*0.55,(p0[1]+p1[1])/2-ny*(r0+r1)*0.55,p0[0]-nx*r0,p0[1]-ny*r0); ctx.closePath(); ctx.fillStyle=BODY; ctx.fill(); ctx.strokeStyle=g(0.9*fade); ctx.lineWidth=2.2; ctx.stroke();
+      for(let k=1;k<4;k++){ const q=[lerp(p0[0],p1[0],k/4),lerp(p0[1],p1[1],k/4)], r=lerp(r0,r1,k/4)*0.7; ctx.beginPath(); ctx.arc(q[0],q[1],r,Math.atan2(dy,dx)-1.2,Math.atan2(dy,dx)+1.2); ctx.strokeStyle=g(0.35*fade); ctx.lineWidth=1.1; ctx.stroke(); } };
+    el('palm',()=>{ limb(b,elbow,w*0.5,w*0.36); limb(elbow,wr,w*0.34,w*0.24);
+      // 肘后火焰毛
+      for(let k=0;k<4;k++){ const L2=w*(0.9+0.25*k), sw=Math.sin(t*2.6+k+i)*0.25, d=[bk[0]*0.8+out[0]*(0.2-k*0.18),bk[1]*0.8+out[1]*(0.2-k*0.18)];
+        ctx.beginPath(); ctx.moveTo(elbow[0],elbow[1]); ctx.quadraticCurveTo(elbow[0]+d[0]*L2*0.5-out[1]*sw*w,elbow[1]+d[1]*L2*0.5+out[0]*sw*w,elbow[0]+d[0]*L2+out[0]*sw*w*0.6,elbow[1]+d[1]*L2+out[1]*sw*w*0.6); ctx.strokeStyle=g(0.7*fade); ctx.lineWidth=1.6; ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(wr[0],wr[1],w*0.24,0,TAU); ctx.fillStyle=BODY; ctx.fill(); ctx.strokeStyle=g(0.9*fade); ctx.lineWidth=2; ctx.stroke(); });
+    // 五爪：张开如扇，每趾两节，末端弯钩
+    el('claw',()=>{ const base=Math.atan2(dirB[1],dirB[0]); for(let k=-2;k<=2;k++){ const an=base+k*(0.42+0.12*grip)*(k===-2?1.3:1), L1=w*0.42, L2=w*0.36;
+        const p1=[wr[0]+Math.cos(an)*L1,wr[1]+Math.sin(an)*L1], an2=an+(front?0.5:-0.5)*grip*0.6, p2=[p1[0]+Math.cos(an2)*L2,p1[1]+Math.sin(an2)*L2];
+        ctx.strokeStyle=g(0.95*fade); ctx.lineWidth=w*0.12; ctx.beginPath(); ctx.moveTo(wr[0],wr[1]); ctx.lineTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+        const an3=an2+(front?1.3:-1.3), tip=[p2[0]+Math.cos(an2)*w*0.22+Math.cos(an3)*w*0.18,p2[1]+Math.sin(an2)*w*0.22+Math.sin(an3)*w*0.18];
+        ctx.strokeStyle=gw(fade); ctx.lineWidth=w*0.07; ctx.beginPath(); ctx.moveTo(p2[0],p2[1]); ctx.quadraticCurveTo(p2[0]+Math.cos(an2)*w*0.3,p2[1]+Math.sin(an2)*w*0.3,tip[0],tip[1]); ctx.stroke(); } }); };
+  // 远侧的腿先画
+  LEGS.filter(L=>L[2]).forEach(L=>{ if(Math.round(L[0]*(n-1))<=iEnd) drawLeg(L); });
+  // 尾鳍
+  if(drawK>=1) el('body',()=>{ const f=F[n-1], w=w0*0.95; for(let j=-2;j<=2;j++){ const L=w*(2.3-Math.abs(j)*0.35), sw=Math.sin(t*2.5+j*0.8)*0.3, sp=j*0.42+sw*0.4;
+      const e=[f.x+f.tx*L+f.nx*sp*w,f.y+f.ty*L+f.ny*sp*w], m1=[f.x+f.tx*L*0.45+f.nx*(sp*0.5+0.28)*w,f.y+f.ty*L*0.45+f.ny*(sp*0.5+0.28)*w], m2=[f.x+f.tx*L*0.45+f.nx*(sp*0.5-0.28)*w,f.y+f.ty*L*0.45+f.ny*(sp*0.5-0.28)*w];
+      ctx.beginPath(); ctx.moveTo(f.x,f.y); ctx.quadraticCurveTo(m1[0],m1[1],e[0],e[1]); ctx.quadraticCurveTo(m2[0],m2[1],f.x,f.y); ctx.fillStyle=g(0.16); ctx.fill(); ctx.strokeStyle=g(0.85); ctx.lineWidth=1.8; ctx.stroke(); } });
+  // 身体：由尾到头逐节
+  for(let i=Math.min(iEnd,n-2);i>=0;i--){ const u=i/(n-1), neck=u<0.13, pname=neck?'neck':'body';
+    const a0=pt(i,1),a1=pt(i+1,1),b0=pt(i,-1),b1=pt(i+1,-1);
+    el(pname,()=>{ ctx.beginPath(); ctx.moveTo(...a0); ctx.lineTo(...a1); ctx.lineTo(...b1); ctx.lineTo(...b0); ctx.closePath(); ctx.fillStyle=BODY; ctx.fill(); ctx.strokeStyle=BODY; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.strokeStyle=g(0.95); ctx.lineWidth=2.6; ctx.beginPath(); ctx.moveTo(...a0); ctx.lineTo(...a1); ctx.stroke(); ctx.beginPath(); ctx.moveTo(...b0); ctx.lineTo(...b1); ctx.stroke();
+      // 背鳍：火焰形，向尾部扫
+      if(i%3===0&&u<0.93){ const f=F[i], w=Wd(i), h=w*(0.62+0.18*Math.sin(i*1.3)), sw=Math.sin(t*2+i*0.4)*0.12, c=pt(Math.min(n-1,i+2),1);
+        const tip=[a0[0]+f.nx*h+f.tx*w*(0.55+sw),a0[1]+f.ny*h+f.ty*w*(0.55+sw)];
+        ctx.beginPath(); ctx.moveTo(...a0); ctx.quadraticCurveTo(a0[0]+f.nx*h*0.8-f.tx*w*0.05,a0[1]+f.ny*h*0.8-f.ty*w*0.05,tip[0],tip[1]); ctx.quadraticCurveTo(c[0]+f.nx*h*0.25,c[1]+f.ny*h*0.25,c[0],c[1]);
+        ctx.fillStyle=g(0.18); ctx.fill(); ctx.strokeStyle=g(0.85); ctx.lineWidth=1.6; ctx.stroke(); }
+      // 背脊高光
+      const m0=pt(i,0.62), m1=pt(i+1,0.62); ctx.strokeStyle=g(0.22); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(...m0); ctx.lineTo(...m1); ctx.stroke(); });
+    // 腹甲带：腹面一条浅金色带，一节一节的横甲
+    el(neck?'neck':'belly',()=>{ const c0=pt(i,-0.42), c1=pt(i+1,-0.42); ctx.beginPath(); ctx.moveTo(...b0); ctx.lineTo(...b1); ctx.lineTo(...c1); ctx.lineTo(...c0); ctx.closePath(); ctx.fillStyle=g(0.13); ctx.fill();
+      ctx.strokeStyle=g(0.5); ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(...c0); ctx.lineTo(...c1); ctx.stroke();
+      if(i%2===0){ const f=F[i], w=Wd(i); ctx.beginPath(); ctx.moveTo(...b0); ctx.quadraticCurveTo(b0[0]+f.nx*w*0.3+f.tx*w*0.12,b0[1]+f.ny*w*0.3+f.ty*w*0.12,c0[0],c0[1]); ctx.strokeStyle=g(0.55); ctx.lineWidth=1.2; ctx.stroke(); } });
+    // 鳞：一排排鱼鳞，凸面朝尾，错位排列
+    if(!neck&&i%2===0&&u<0.95) el('scales',()=>{ const f=F[i], w=Wd(i), ang=Math.atan2(f.ty,f.tx), row=(i/2)%2, r=w*0.2;
+      for(let v=-0.25+row*0.18;v<0.92;v+=0.36){ const c=pt(i,v), on=u<lit?1:0, fl=Math.exp(-Math.pow((lit-u)*16,2));
+        ctx.beginPath(); ctx.arc(c[0],c[1],r,ang-Math.PI/2,ang+Math.PI/2); ctx.strokeStyle=on?gw(0.7+0.3*fl):g(0.5+0.5*fl); ctx.lineWidth=1.5+fl; ctx.stroke(); if(fl>0.35) glow(ctx,c[0],c[1],r*2.4,WARM,0.45*fl); } });
+    if(legAt[i]&&!legAt[i][2]) drawLeg(legAt[i]); }
+  // ───── 头（局部坐标：x 朝前，-y 朝上；单位约 1 px × hs）─────
+  const f0=F[0]; let hx=-f0.tx, hy=-f0.ty; const tilt=opt.tilt??-0.32; { const c=Math.cos(tilt*(hx<0?-1:1)), s=Math.sin(tilt*(hx<0?-1:1)); const x=hx*c-hy*s, y=hx*s+hy*c; hx=x; hy=y; }
+  const hs=w0/34, flip=hx<0?-1:1, jaw=0.32+0.08*Math.sin(t*1.7);
+  const head=(name,fn)=>el(name,()=>{ ctx.save(); ctx.translate(f0.x-hx*w0*0.15,f0.y-hy*w0*0.15); ctx.transform(hx*hs,hy*hs,-hy*hs*flip,hx*hs*flip,0,0); ctx.lineWidth=2.2/hs; fn(); ctx.restore(); });
+  const sk=(a)=>{ ctx.strokeStyle=g(a); }, LW=v=>{ ctx.lineWidth=v/hs; };
+  head('head',()=>{ // 鬃毛：先画几条填充的火焰舌，再画一束束细毛
+    for(let k=0;k<7;k++){ const s0=k/6, x0=lerp(40,-4,s0), y0=lerp(-56,26,s0), L=170+50*Math.sin(k*2.3), ph=t*2.2+k*0.9, dy=(s0-0.4)*120, w2=16+8*Math.sin(k);
+      const e=[x0-L,y0+dy+Math.sin(ph+2)*22]; ctx.beginPath(); ctx.moveTo(x0,y0-w2); ctx.bezierCurveTo(x0-L*0.4,y0-w2+dy*0.3+Math.sin(ph)*16,x0-L*0.75,y0+dy*0.8-Math.sin(ph+1)*20-w2*0.4,e[0],e[1]);
+      ctx.bezierCurveTo(x0-L*0.7,y0+dy*0.75-Math.sin(ph+1)*20+w2*0.5,x0-L*0.35,y0+w2+dy*0.3+Math.sin(ph)*16,x0,y0+w2); ctx.closePath(); ctx.fillStyle=g(0.12); ctx.fill(); sk(0.8); LW(1.8); ctx.stroke(); }
+    for(let k=0;k<13;k++){ const s0=k/12, x0=lerp(34,-6,s0), y0=lerp(-52,30,s0), L=150+60*Math.sin(k*1.9)+40*(1-Math.abs(s0-0.4)), ph=t*2.4+k*0.8, dy=(s0-0.45)*90;
+      ctx.beginPath(); ctx.moveTo(x0,y0); ctx.bezierCurveTo(x0-L*0.35,y0+dy*0.3+Math.sin(ph)*14,x0-L*0.7,y0+dy*0.8-Math.sin(ph+1)*18,x0-L,y0+dy+Math.sin(ph+2)*20);
+      sk(0.75); LW(k%3===0?2.6:1.6); ctx.stroke(); }
+    // 下颌（张开）
+    ctx.save(); ctx.translate(66,-2); ctx.rotate(jaw); ctx.translate(-66,2);
+    ctx.beginPath(); ctx.moveTo(66,-2); ctx.lineTo(150,10); ctx.bezierCurveTo(170,12,184,22,182,34); ctx.bezierCurveTo(178,46,160,50,140,48); ctx.bezierCurveTo(110,46,70,38,40,30); ctx.lineTo(14,22); ctx.closePath();
+    ctx.fillStyle=BODY; ctx.fill(); sk(0.95); LW(2.4); ctx.stroke();
+    for(let k=0;k<6;k++){ const x=80+k*12, y=lerp(0,9,(x-66)/84); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+4,y-8); ctx.lineTo(x+8,y+1); ctx.strokeStyle=gw(0.9); LW(1.5); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(142,10); ctx.quadraticCurveTo(150,-6,152,-22); ctx.quadraticCurveTo(156,-4,152,12); ctx.fillStyle=gw(0.95); ctx.fill(); // 下獠牙
+    // 须髯
+    for(let k=0;k<5;k++){ ctx.beginPath(); const x0=120+k*12, y0=46; ctx.moveTo(x0,y0); ctx.bezierCurveTo(x0-10,y0+30,x0-40+Math.sin(t*2+k)*8,y0+60,x0-70-k*6,y0+90+Math.sin(t*2.2+k)*10); sk(0.6); LW(1.4); ctx.stroke(); }
+    ctx.restore();
+    // 口腔与卷舌
+    ctx.beginPath(); ctx.moveTo(66,-2); ctx.lineTo(196,-18); ctx.lineTo(150+30*Math.sin(jaw),10+70*Math.sin(jaw)); ctx.closePath(); ctx.fillStyle='rgba(70,14,10,0.9)'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(90,10); ctx.bezierCurveTo(140,22,190,14,220,-4); ctx.bezierCurveTo(232,-12,228,-26,216,-24); ctx.bezierCurveTo(208,-22,208,-12,216,-10); ctx.strokeStyle=rgba([230,120,90],0.9); LW(3.2); ctx.stroke();
+    // 上颌与头骨
+    ctx.beginPath(); ctx.moveTo(0,-38); ctx.bezierCurveTo(20,-60,52,-72,84,-74); ctx.bezierCurveTo(102,-76,114,-66,124,-58); ctx.bezierCurveTo(142,-52,158,-56,170,-64);
+    ctx.bezierCurveTo(190,-76,214,-64,212,-44); ctx.bezierCurveTo(211,-32,202,-24,196,-18); ctx.lineTo(120,-10); ctx.lineTo(66,-2); ctx.bezierCurveTo(42,4,18,12,0,16); ctx.closePath();
+    ctx.fillStyle=BODY; ctx.fill(); sk(0.98); LW(2.6); ctx.stroke();
+    for(let k=0;k<7;k++){ const x=126+k*10, y=lerp(-10,-17,(x-120)/76); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+4,y+8); ctx.lineTo(x+8,y); ctx.strokeStyle=gw(0.9); LW(1.5); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(182,-17); ctx.quadraticCurveTo(186,0,180,14); ctx.quadraticCurveTo(178,0,174,-16); ctx.fillStyle=gw(0.95); ctx.fill(); // 上獠牙
+    // 如意鼻：鼻头一个回卷
+    ctx.beginPath(); ctx.arc(192,-50,9,Math.PI*0.2,Math.PI*1.8); ctx.moveTo(176,-66); ctx.quadraticCurveTo(170,-48,184,-40); sk(0.85); LW(1.8); ctx.stroke();
+    // 腮边火焰
+    for(let k=0;k<4;k++){ const y0=4+k*8, sw=Math.sin(t*2.8+k)*6; ctx.beginPath(); ctx.moveTo(50,y0); ctx.quadraticCurveTo(20,y0+10+k*6,-26-k*8,y0+20+k*10+sw); sk(0.7); LW(1.6); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(40,-20); ctx.bezierCurveTo(70,-34,100,-30,128,-30); sk(0.55); LW(1.4); ctx.stroke(); // 颧骨
+    ctx.beginPath(); ctx.moveTo(126,-56); ctx.bezierCurveTo(146,-50,160,-46,176,-48); sk(0.5); LW(1.2); ctx.stroke(); // 鼻梁
+    for(let k=0;k<5;k++){ ctx.beginPath(); ctx.arc(14+k*13,-30+k*1,7,-Math.PI*0.9,-Math.PI*0.1); sk(0.4); LW(1.1); ctx.stroke(); } // 头后小鳞
+    // 头顶纹
+    ctx.beginPath(); ctx.moveTo(30,-50); ctx.quadraticCurveTo(70,-60,110,-56); sk(0.4); LW(1.2); ctx.stroke();
+    // 须：两根长须，一根向上后扫，一根向下后飘
+    for(const [x0,y0,dir] of [[196,-36,-1],[188,-26,1]]){ LW(2.6); ctx.beginPath(); ctx.moveTo(x0,y0); for(let k=1;k<=34;k++){ const s=k/34, x=x0+70*Math.sin(s*Math.PI*0.9)-s*330, y=y0+dir*(s*120)+Math.sin(t*2.4+k*0.32)*22*s; ctx.lineTo(x,y); } sk(0.9); ctx.stroke(); } });
+  head('ear',()=>{ ctx.beginPath(); ctx.moveTo(30,-46); ctx.quadraticCurveTo(-2,-92,-40,-88); ctx.quadraticCurveTo(-8,-66,24,-36); ctx.fillStyle=BODY; ctx.fill(); sk(0.9); LW(2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(22,-48); ctx.quadraticCurveTo(0,-74,-24,-80); sk(0.45); LW(1.2); ctx.stroke(); });
+  head('horn',()=>{ const sw=Math.sin(t*1.3)*3;
+    for(const [ox,oy,al] of [[16,6,0.45],[0,0,1]]){ ctx.save(); ctx.translate(ox,oy); sk(0.95*al); ctx.lineCap='round';
+      LW(5); ctx.beginPath(); ctx.moveTo(66,-70); ctx.bezierCurveTo(40,-128,-20,-150,-110+sw,-196); ctx.stroke();
+      LW(3.2); for(const [x0,y0,x1,y1] of [[28,-122,40,-178],[-24,-150,-14,-212],[-70,-172,-86,-226]]){ ctx.beginPath(); ctx.moveTo(x0,y0); ctx.quadraticCurveTo((x0+x1)/2+10,(y0+y1)/2,x1+sw,y1); ctx.stroke(); }
+      ctx.restore(); } });
+  head('eye',()=>{ // 粗眉压眼，眉毛如火向后
+    for(let k=0;k<4;k++){ ctx.beginPath(); ctx.moveTo(122-k*6,-62-k*2); ctx.bezierCurveTo(100-k*8,-86-k*6,60-k*10,-96-k*8,24-k*12,-100-k*6+Math.sin(t*2+k)*6); sk(0.85); LW(k?1.6:2.6); ctx.stroke(); }
+    ctx.beginPath(); ctx.ellipse(106,-48,15,10,-0.28,0,TAU); ctx.fillStyle=gw(0.92); ctx.fill(); sk(1); LW(2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(110,-48,5.5,0,TAU); ctx.fillStyle='#0a0a0a'; ctx.fill(); ctx.globalCompositeOperation='lighter'; glow(ctx,106,-48,30,WARM,0.8); glow(ctx,104,-51,3,WHITE,1); });
+  // 拼装中尚未到位的部件：带位移画在最上面
+  for(const [p,fn] of deferred){ ctx.save(); ctx.translate(p.dx,p.dy); ctx.globalAlpha=A*p.a; fn(); ctx.restore(); }
+  ctx.restore();
+  return {head:[f0.x,f0.y],dir:[hx,hy],hs}; }
+// 火珠：龙戏珠
+function pearl(ctx,t,x,y,r,a){ if(a<=0.01) return; ctx.save(); ctx.globalAlpha=a; ctx.globalCompositeOperation='lighter'; glow(ctx,x,y,r*4,[255,170,90],0.55); glow(ctx,x,y,r*1.6,WARM,0.9);
+  ctx.globalCompositeOperation='source-over'; ctx.beginPath(); ctx.arc(x,y,r,0,TAU); const g=ctx.createRadialGradient(x-r*0.3,y-r*0.3,0,x,y,r); g.addColorStop(0,'rgba(255,250,230,0.95)'); g.addColorStop(1,'rgba(255,190,110,0.6)'); ctx.fillStyle=g; ctx.fill();
+  ctx.strokeStyle='rgba(255,212,140,0.9)'; ctx.lineWidth=1.6; ctx.beginPath(); for(let k=0;k<=60;k++){ const a2=k/60*TAU*1.5+t*1.5, rr=r*(0.15+0.75*k/60); k?ctx.lineTo(x+Math.cos(a2)*rr,y+Math.sin(a2)*rr):ctx.moveTo(x,y); } ctx.stroke();
+  for(let k=0;k<9;k++){ const an=k/9*TAU+t*0.8, L=r*(1.7+0.5*Math.sin(t*3+k)), sw=Math.sin(t*2.5+k)*0.4; ctx.beginPath(); ctx.moveTo(x+Math.cos(an)*r,y+Math.sin(an)*r);
+    ctx.quadraticCurveTo(x+Math.cos(an+0.3)*L*0.8,y+Math.sin(an+0.3)*L*0.8,x+Math.cos(an+0.5+sw)*L,y+Math.sin(an+0.5+sw)*L); ctx.strokeStyle='rgba(255,180,100,0.75)'; ctx.lineWidth=2; ctx.stroke(); }
   ctx.restore(); }
+// 祥云：卷云纹（一个主卷 + 两个小卷 + 云尾）
+function cloudScroll(ctx,x,y,s,a,t,mir=1){ if(a<=0.01) return; ctx.save(); ctx.translate(x,y); ctx.scale(s*mir,s); ctx.globalAlpha=a;
+  const spiral=(cx,cy,r,turn)=>{ ctx.beginPath(); for(let k=0;k<=48;k++){ const q=k/48, an=-Math.PI/2+q*TAU*turn, rr=r*(1-q*0.8); k?ctx.lineTo(cx+Math.cos(an)*rr,cy+Math.sin(an)*rr):ctx.moveTo(cx+Math.cos(an)*rr,cy+Math.sin(an)*rr); } ctx.stroke(); };
+  ctx.beginPath(); ctx.moveTo(-110,30); ctx.bezierCurveTo(-120,-20,-60,-46,-20,-30); ctx.bezierCurveTo(0,-70,70,-70,80,-20); ctx.bezierCurveTo(120,-20,130,30,100,30); ctx.closePath(); ctx.fillStyle='rgba(9,12,22,0.92)'; ctx.fill();
+  ctx.strokeStyle='rgba(255,212,140,0.8)'; ctx.lineWidth=2/s; ctx.stroke(); ctx.lineWidth=1.6/s; spiral(28,-22,30,1.4); spiral(-56,-10,22,1.2); spiral(96,6,14,1.1);
+  ctx.beginPath(); ctx.moveTo(100,30); ctx.bezierCurveTo(160,36,200,10,250+Math.sin(t)*10,26); ctx.stroke(); ctx.restore(); }
 
 // ───────── 环境：金尘、云 ─────────
 const DUST=(()=>{const r=rng(5);return Array.from({length:420},()=>({x:r()*W,y:r()*H,z:0.2+r()*0.8,ph:r()*6.28,f:0.4+r()*1.2,b:r()}));})();
@@ -180,6 +263,7 @@ function spineAt(t){ // 27 秒之后龙的脊线
   if(t<T.fly) return spinePose(t);
   if(t<T.end){ const k=eIO(P(t,T.fly,T.fly+0.9)); const f=spineFollow(t); return k<1?mixS(spinePose(t),f,k):f; }
   return mixS(spineFollow(Math.min(t,48.0)),spineEnd(t),eIO(P(t,T.end,T.end+2.2))); }
+const OFF=document.createElement('canvas'); OFF.width=W; OFF.height=H;
 function render(ctx,t){
   ctx.setTransform(1,0,0,1,0,0); const bg=ctx.createRadialGradient(540,860,0,540,860,1300); bg.addColorStop(0,'#141a2c'); bg.addColorStop(0.55,'#070a14'); bg.addColorStop(1,'#020308'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
   // 冲击震屏（#024）
@@ -188,9 +272,10 @@ function render(ctx,t){
   const dim=1-0.75*P(t,T.dark,T.drop-0.1)*(t<T.drop?1:0);
   dust(ctx,t,(0.7+0.5*P(t,T.drop,T.drop+0.4))*dim);
   // 开场：一条巨龙在云后掠过，只露出一段身子（见首不见尾）
-  if(t<6.4){ ctx.save(); ctx.translate(540,860); ctx.scale(2.4,2.4); ctx.translate(-540,-860); drawDragon(ctx,t,spineFollow(t,2.6,HOOK),{w:42,a:0.42*(1-P(t,5.0,6.3)),lit:2}); ctx.restore(); clouds(ctx,t+40,1.3,[30,40,70]); }
+  if(t<6.4){ const oc=OFF.getContext('2d'); oc.setTransform(1,0,0,1,0,0); oc.clearRect(0,0,W,H); oc.translate(260+t*26,1180-t*10); oc.scale(2.1,2.1); oc.rotate(0.12); oc.translate(-480,-610); drawDragon(oc,t,spinePose(t+20),{w:46,a:1,lit:2,tilt:-0.05});
+    ctx.save(); ctx.globalAlpha=0.6*(1-P(t,5.0,6.3)); ctx.drawImage(OFF,0,0); ctx.restore(); clouds(ctx,t+40,1.3,[30,40,70]); }
   ctx.globalAlpha=dim; scenePre(ctx,t); ctx.globalAlpha=1;
-  if(t>=T.drop){ let S=spineAt(t); const opt={w:t<T.fly+0.9?lerp(52,42,eIO(P(t,T.fly,T.fly+0.9))):42,part:ninePart(t),draw:eIO(P(t,T.drop,T.drop+0.6)),lit:-1};
+  if(t>=T.drop){ let S=spineAt(t); const opt={w:t<T.fly+0.9?lerp(46,40,eIO(P(t,T.fly,T.fly+0.9))):(t>=T.end?lerp(40,44,eIO(P(t,T.end,T.end+2))):40),part:ninePart(t),draw:eIO(P(t,T.drop,T.drop+0.6)),lit:-1};
     // 鳞片一片片亮起
     opt.lit=lerp(-0.1,1.1,P(t,nineT(5),nineT(5)+1.4));
     // 能细能巨：先缩成一根金线，再大到看不清全身，然后消失，再亮回来（36–42）
@@ -198,7 +283,13 @@ function render(ctx,t){
     if(t>=T.size&&t<T.qian){ const k1=eIO(P(t,36.2,37.4)), k2=eIO(P(t,38.0,39.0)), k3=eIO(P(t,39.6,40.4));
       sc=lerp(1,0.16,k1); if(t>=38.0){ sc=lerp(0.16,3.6,k2); cy=lerp(860,700,k2); } if(t>=39.6){ A=1-k3; } if(t>=40.6){ sc=1; cy=860; A=ease(P(t,40.6,41.2)); } }
     if(t>=T.qian&&t<T.qian+0.4){ A=1; }
-    ctx.save(); ctx.translate(cx,cy); ctx.scale(sc,sc); ctx.translate(-540,-860); drawDragon(ctx,t,S,{...opt,a:A}); ctx.restore();
+    const cl=t<T.qian||t>=T.end; if(cl){ cloudScroll(ctx,170+Math.sin(t*0.3)*20,1300,0.9,0.85,t); cloudScroll(ctx,930,640+Math.sin(t*0.25)*14,0.6,0.7,t,-1); }
+    ctx.save(); ctx.translate(cx,cy); ctx.scale(sc,sc); ctx.translate(-540,-860); const hd=drawDragon(ctx,t,S,{...opt,a:A,tilt:t>=T.end?-0.5:(t<T.fly?-0.05:-0.25)});
+    // 火珠：在龙嘴前方；结尾落到团龙圈心
+    if(hd){ const d=hd.dir, up=[d[1]*(d[0]<0?1:-1),-d[0]*(d[0]<0?1:-1)]; let px=hd.head[0]+d[0]*hd.hs*265+up[0]*hd.hs*10, py=hd.head[1]+d[1]*hd.hs*265+up[1]*hd.hs*10;
+      const ke=eIO(P(t,T.end,T.end+2.2)); px=lerp(px,550,ke); py=lerp(py,830,ke); pearl(ctx,t,px,py,22,A*P(t,T.drop+0.3,T.drop+1.0)); }
+    ctx.restore();
+    if(cl) cloudScroll(ctx,880+Math.sin(t*0.2)*16,1380,1.1,0.9,t,-1);
     if(t>=40.6&&t<41.4) burst(ctx,t,40.6,540,860,0.6);
     // 乾卦：水面线
     const wA=win(t,T.qian,48.3,0.5); if(wA>0){ ctx.save(); ctx.strokeStyle=`rgba(170,195,230,${0.45*wA})`; ctx.lineWidth=1.4; for(let k=0;k<5;k++){ const y=1100+k*16; ctx.beginPath(); for(let x=0;x<=W;x+=20) x?ctx.lineTo(x,y+Math.sin(x*0.02+t*2+k)*3):ctx.moveTo(x,y); ctx.globalAlpha=1-k*0.18; ctx.stroke(); }
@@ -231,7 +322,7 @@ function texts(ctx,t){
   say(ctx,t,'能细能巨',540,300,96,36.1,38.9); say(ctx,t,'能幽能明',540,300,96,39.1,41.8); src(ctx,t,'东汉 · 许慎《说文解字》',420,36.6,41.8);
   [['潜龙勿用',42.1],['见龙在田',43.6],['飞龙在天',45.1],['亢龙有悔',46.6]].forEach(([s,a])=>say(ctx,t,s,540,290,96,a,a+1.45,{tin:0.35,tout:0.2}));
   src(ctx,t,'《周易 · 乾》',400,42.4,48.0);
-  say(ctx,t,'6000 年，样子改了无数次',540,330,64,48.4,51.2); say(ctx,t,'能屈能伸，一直没改',540,330,72,51.4,54.0);
+  say(ctx,t,'6000 年，样子改了无数次',540,1250,64,48.4,51.2); say(ctx,t,'能屈能伸，一直没改',540,1250,72,51.4,54.0);
   say(ctx,t,'你觉得龙——',540,1180,64,54.2,DUR); say(ctx,t,'是古人见过的，还是想出来的？',540,1275,52,54.9,DUR); }
 function brand(ctx,t){ ctx.save(); ctx.globalCompositeOperation='lighter'; glow(ctx,86,210,16,GOLD,0.9); glow(ctx,86,210,3,WHITE,1); ctx.restore();
   ctx.save(); ctx.font=`700 30px ${SANS}`; ctx.textBaseline='middle'; ctx.fillStyle='rgba(255,214,150,0.85)'; ctx.fillText('思想可见',110,211); ctx.restore(); }
