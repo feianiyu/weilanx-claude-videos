@@ -66,7 +66,8 @@ def anchor(spec):
 
 CUBE = ('<g fill="none" stroke="#3EF09A" stroke-width="11.5"><polyline points="-29,-33 0,-50 29,-33"/><polyline points="-45,-24 0,2 45,-24"/>'
         '<polyline points="-41,-8 -41,24 -12,41"/><polyline points="41,-8 41,24 12,41"/></g><polygon points="-5.75,2 5.75,2 5.75,46.7 0,50 -5.75,46.7" fill="#3EF09A"/>')
-shell = open(f"{CORE}/shell.html", encoding="utf-8").read()
+LAYOUT = D.get("layout", "v2")   # v3（2026-10-27）：简版——全幅底图 + 顶部大标题 + 单张数据卡 + 来源行，外壳见 core/shell_v3.html
+shell = open(f"{CORE}/shell_v3.html" if LAYOUT == "v3" else f"{CORE}/shell.html", encoding="utf-8").read()
 # 片尾预告（可选，系列片用）：lines.json "endNext": "下期讲：怎么去" → 冒号前灰、冒号后橙
 _en = D.get("endNext", "")
 ENDNEXT_HTML = (_en.split("：", 1)[0] + "：<span style=\"color:var(--o)\">" + _en.split("：", 1)[1] + "</span>") if "：" in _en else _en
@@ -81,7 +82,7 @@ tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp
        .replace("__ENDSEC__", last_sec).replace("__ENDNEXT__", ENDNEXT_HTML).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
 SFXLIST = D.get("sfx", [])
 # 锚点：scenes.js 里任何写成 'v07|词|s' 的字符串都算（包括写在数组里的），加上 scenes.html 的 data-at 和音效表
-specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST} | {h[0] for h in D.get("heads", []) if h[0].startswith("v")}
+specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST} | {h[0] for h in D.get("heads", []) if h[0].startswith("v")} | {h[0] for h in D.get("sources", []) if h[0].startswith("v")}
 A = {s: anchor(s) for s in sorted(specs)}
 
 # sections (cards)
@@ -306,14 +307,17 @@ for key, txt in D.get("heads", []):
     t_ = 0.0 if key == secs[0]["id"] else (next(s["start"] for s in secs if s["id"] == key) if not key.startswith("v") else A[key] - 0.15)
     h_, fs_ = head_html(txt); HEADS.append({"t": round(t_, 3), "html": h_, "fs": fs_, "src": txt})
 HEADS.sort(key=lambda x: x["t"])
+# v3 来源行：[[章节id 或 锚点, "来源：…"]]，空字符串 = 隐去
+SRCS = sorted([{"t": round(0.0 if key == secs[0]["id"] else (next(x["start"] for x in secs if x["id"] == key) if not key.startswith("v") else A[key] - 0.15), 3), "txt": txt}
+               for key, txt in D.get("sources", [])], key=lambda x: x["t"])
 for h in HEADS: print("HEAD", h["t"], h["fs"], h["src"])
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
-        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})}
+        "progress": D.get("progress", []), "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, "srcs": SRCS, "layout": LAYOUT, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})}
 meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
 
-chars = "".join(sorted(set(re.sub(r"<[^>]+>", "", tpl) + ep_js + "".join(L[k]["sub"] for k in keys) + "0123456789.%：（）·＋…≠“”《》→—✕▶❚播放暂停" + D["series"]["title"] + D["series"]["sub"])))
+chars = "".join(sorted(set(re.sub(r"<[^>]+>", "", tpl) + ep_js + "".join(L[k]["sub"] for k in keys) + "0123456789.%：（）·＋…≠“”《》→—✕▶❚播放暂停" + D["series"]["title"] + D["series"]["sub"] + "".join(x[1] for x in D.get("sources", [])))))
 open("build/chars.txt", "w").write(chars)
 subprocess.run(["pyftsubset", f"{CORE}/assets/NotoSansSC.ttf", "--text-file=build/chars.txt",
                 "--output-file=build/font.ttf", "--layout-features=*"], check=True)
