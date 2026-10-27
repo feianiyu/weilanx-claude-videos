@@ -1,0 +1,368 @@
+{
+ "_说明": "标准版 · 管人池第一期 · 文案用户审核通过（10-27）· 老杨本人声音 ×1.2 · 不出现关注语",
+ "series": {
+  "title": "老板最贵的一句话",
+  "sub": "授权，是把边界讲清楚",
+  "fullTitle": "「你看着办」，是老板最贵的一句话"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 ——",
+  "title": "「你看着办」",
+  "sub": "你说信任，他听到甩锅"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg",
+ "bgNote": "Pexels 5668858 办公桌对面的中年管理者、前景有人在本子上记（6000×4000）；9:16 裁切（中心 x=60%）+ 饱和 0.6 + 偏暖 + 按高度分段压暗（顶 0.6 / 中间区 0.38 / 字幕区 0.27）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.2
+ },
+ "gapSec": 0.15,
+ "secGap": 0.6,
+ "bgmUnder": 7.9,
+ "bgm": {
+  "file": "audio/bgm_mixkit_594.mp3",
+  "url": "https://assets.mixkit.co/music/594/594.mp3",
+  "src": "Mixkit 曲目 id 594（Mixkit Stock Music Free License）；118.01s 全乐队进入"
+ },
+ "beat": {
+  "bpm": 119.9,
+  "period": 0.50042,
+  "t0": 0.415,
+  "src": "同第四期（core/beatfit.py）"
+ },
+ "restBefore": "v08",
+ "bgmSection": 118.01,
+ "progress": [
+  [
+   "场景",
+   "c1"
+  ],
+  [
+   "判断",
+   "c2"
+  ],
+  [
+   "机制",
+   "c3"
+  ],
+  [
+   "行动",
+   "c4"
+  ],
+  [
+   "边界",
+   "c5"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "smoke",
+   900
+  ],
+  "c2": [
+   "sweep",
+   0
+  ],
+  "c3": [
+   "smoke",
+   950
+  ],
+  "c4": [
+   "sweep",
+   0
+  ],
+  "c5": [
+   "smoke",
+   990
+  ]
+ },
+ "heads": [
+  [
+   "c0",
+   "「你看着办」|＝ 砸了算你的？"
+  ],
+  [
+   "c1",
+   "交下去的事，|又被推了回来"
+  ],
+  [
+   "c2",
+   "四个字，|少说了三件事"
+  ],
+  [
+   "c3",
+   "聪明人只会|把决定推回来"
+  ],
+  [
+   "c4",
+   "把「看着办」|换成三句话"
+  ],
+  [
+   "c5",
+   "放手之前，|先把边界画好"
+  ]
+ ],
+ "sfx": [
+  [
+   "v01|你看着办|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v03|办砸了|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v04|交下去|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v05|三个方案|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v06|火了|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v07|委屈|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v08|问题不在|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v09|三件事|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v11|推给了他|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v12|推回给你|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v13|越来越忙|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v14|三句话|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v15|先来找我|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v17|边界|s",
+   "sparkle",
+   0.2
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "你看着办。",
+   "dur": 1.27
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "老板说这句话，以为给的是信任。",
+   "dur": 3.07
+  },
+  "v03": {
+   "sec": "c0",
+   "sub": "员工听到的却是：办砸了，算你的。",
+   "dur": 3.46
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "一件事交下去，老板说：你看着办。",
+   "dur": 3.1
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "三天后，员工拿来三个方案，请你挑。",
+   "dur": 3.41
+  },
+  "v06": {
+   "sec": "c1",
+   "sub": "你火了：这点事还要问我？",
+   "dur": 2.42
+  },
+  "v07": {
+   "sec": "c1",
+   "sub": "他也委屈：上次我自己定了，你说不对。",
+   "dur": 3.62
+  },
+  "v08": {
+   "sec": "c2",
+   "sub": "问题不在员工不担事。",
+   "dur": 2.11
+  },
+  "v09": {
+   "sec": "c2",
+   "sub": "是「你看着办」这四个字，少说了三件事：",
+   "dur": 3.6
+  },
+  "v10": {
+   "sec": "c2",
+   "sub": "要什么结果，能动用多少，到哪一步必须回来找你。",
+   "dur": 4.61,
+   "screens": [
+    "要什么结果，能动用多少，|到哪一步必须回来找你。"
+   ]
+  },
+  "v11": {
+   "sec": "c3",
+   "sub": "这三件事不说清楚，「看着办」就不是授权，是把风险推给了他。",
+   "dur": 5.4,
+   "screens": [
+    "这三件事不说清楚，|「看着办」就不是授权，",
+    "是把风险推给了他。"
+   ]
+  },
+  "v12": {
+   "sec": "c3",
+   "sub": "聪明的人只会做一件事：把决定推回给你。",
+   "dur": 3.6
+  },
+  "v13": {
+   "sec": "c3",
+   "sub": "时间一长，你越来越忙，团队越来越「不担事」。",
+   "dur": 4.1
+  },
+  "v14": {
+   "sec": "c4",
+   "sub": "下次想说「你看着办」，换成三句话：",
+   "dur": 3.43
+  },
+  "v15": {
+   "sec": "c4",
+   "sub": "我要的是什么；你能动用多少；超过哪条线，先来找我。",
+   "dur": 5.28,
+   "screens": [
+    "我要的是什么；|你能动用多少；",
+    "超过哪条线，先来找我。"
+   ]
+  },
+  "v16": {
+   "sec": "c4",
+   "sub": "这三句说清楚，剩下的，才真的让他看着办。",
+   "dur": 4.44
+  },
+  "v17": {
+   "sec": "c5",
+   "sub": "授权，不是放手不管，是把边界讲清楚。",
+   "dur": 4.3
+  },
+  "v18": {
+   "sec": "c5",
+   "sub": "你听过最让人头疼的一句「你看着办」，是在什么时候？",
+   "dur": 4.1,
+   "screens": [
+    "你听过最让人头疼的|一句「你看着办」，",
+    "是在什么时候？"
+   ]
+  }
+ },
+ "endNext": ""
+}

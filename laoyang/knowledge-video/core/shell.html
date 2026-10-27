@@ -53,9 +53,10 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 #wave{left:360px;top:1404px;width:360px;height:44px;display:flex;align-items:center;justify-content:space-between}
 #wave i{display:block;width:6px;height:4px;border-radius:3px;background:var(--o);opacity:.9}
 /* v2.3 主讲人头像：声波左侧小圆，跟着声音发光（core/assets/avatar.png 存在时启用；lines.json "avatar": false 关掉） */
-#avatar{left:322px;top:1372px;width:100px;height:100px;border-radius:50%;border:3px solid var(--o);display:none;will-change:transform,box-shadow}
+#avatar{left:324px;top:1356px;width:96px;height:96px;border-radius:50%;border:3px solid var(--o);display:none;will-change:transform,box-shadow}
 .hasav #avatar{display:block}
-.hasav #wave{left:438px;width:320px}
+.hasav #wave{left:436px;width:320px;top:1382px}
+.hasav #sub{top:1490px}   /* 头像底边 1452，字幕下移拉开约 40px；两行字幕底边 1630，不压署名 */
 #sub{left:120px;top:1462px;width:840px;text-align:center;font-size:52px;font-weight:800;line-height:70px;text-shadow:0 2px 10px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.8)}
 #sig{left:0;width:1080px;top:1652px;display:flex;align-items:center;justify-content:center;gap:14px;white-space:nowrap}
 #ui{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:rgba(14,12,8,.92);display:flex;gap:10px;align-items:center;color:#fed;font:14px sans-serif;z-index:99}
