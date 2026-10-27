@@ -10,8 +10,8 @@
   "sub": "从工程改造，走向长期运营"
  },
  "bg": "assets/bg.jpg",
- "bgUrl": "https://images.pexels.com/photos/34911458/pexels-photo-34911458.jpeg",
- "bgNote": "Pexels 34911458 黄昏老楼与塔吊（原生竖版 2224×3953）；v3：9:16 中裁 + 分离色调（亮部金橙、暗部墨绿黑）+ 地平线后一抹暖光 + 轻压暗（顶 0.95 → 底 0.62），上下由外壳遮罩再压",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494 积云下的高层住宅（原生竖版 3224×4868，清晰）；core/grade_bg.py 调色（暗部墨绿黑、亮部金橙），9:16 中裁，只缩不放",
  "voice": {
   "engine": "volc-icl",
   "resource": "seed-icl-2.0",
