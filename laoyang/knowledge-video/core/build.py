@@ -318,6 +318,10 @@ open("build/chars.txt", "w").write(chars)
 subprocess.run(["pyftsubset", f"{CORE}/assets/NotoSansSC.ttf", "--text-file=build/chars.txt",
                 "--output-file=build/font.ttf", "--layout-features=*"], check=True)
 
+# 主讲人头像（v2.3）：core/assets/avatar.png（个人肖像，不进仓库）；回归测试和 "avatar": false 时不加
+AVP = f"{CORE}/assets/avatar.png"
+data["avatar"] = bool(not REGRESS and D.get("avatar", True) and os.path.exists(AVP))
+tpl = tpl.replace("__AVATAR__", "data:image/png;base64," + base64.b64encode(open(AVP, "rb").read()).decode() if data["avatar"] else "data:,")
 dj = json.dumps(data, ensure_ascii=False)
 for m in set(re.findall(r"__IMG:([\w.]+)__", tpl)):
     tpl = tpl.replace(f"__IMG:{m}__", "data:image/jpeg;base64," + base64.b64encode(open("assets/" + m, "rb").read()).decode())

@@ -52,6 +52,10 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 /* 底部：声波 → 字幕 → 署名 */
 #wave{left:360px;top:1404px;width:360px;height:44px;display:flex;align-items:center;justify-content:space-between}
 #wave i{display:block;width:6px;height:4px;border-radius:3px;background:var(--o);opacity:.9}
+/* v2.3 主讲人头像：声波左侧小圆，跟着声音发光（core/assets/avatar.png 存在时启用；lines.json "avatar": false 关掉） */
+#avatar{left:322px;top:1372px;width:100px;height:100px;border-radius:50%;border:3px solid var(--o);display:none;will-change:transform,box-shadow}
+.hasav #avatar{display:block}
+.hasav #wave{left:438px;width:320px}
 #sub{left:120px;top:1462px;width:840px;text-align:center;font-size:52px;font-weight:800;line-height:70px;text-shadow:0 2px 10px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.8)}
 #sig{left:0;width:1080px;top:1652px;display:flex;align-items:center;justify-content:center;gap:14px;white-space:nowrap}
 #ui{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:rgba(14,12,8,.92);display:flex;gap:10px;align-items:center;color:#fed;font:14px sans-serif;z-index:99}
@@ -93,6 +97,7 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
    <div class="t" id="endN" style="left:0;width:1080px;text-align:center;top:1200px;font-size:36px;font-weight:800;letter-spacing:2px;color:#C9C2B6;opacity:0">__ENDNEXT__</div>
   </div>
  </div>
+ <img id="avatar" class="abs" src="__AVATAR__" alt="">
  <div id="wave" class="abs"></div>
  <div id="sub" class="abs"></div>
  <div id="sig" class="abs">__CUBE56__<span>老杨魔方</span></div>
@@ -148,6 +153,8 @@ const pfill=prog.querySelector('.fill'),pdots=[...prog.querySelectorAll('.d')],p
 // ---------------- 声波、字幕、场景节点 ----------------
 const wv=$('wave');const NB=28;wv.innerHTML='<i></i>'.repeat(NB);const bars=[...wv.children];
 const WS=D.wave||'';const env=[...Array(NB)].map((_,i)=>0.45+0.55*Math.sin(Math.PI*(i+.5)/NB));
+const AV=$('avatar');if(D.avatar)$('v').classList.add('hasav');
+const lvAt=g=>WS.length?parseInt(WS[Math.min(WS.length-1,Math.max(0,g))],36)/35:0;
 const subEl=$('sub');let lastSub=-2;
 const scenes=order.map(id=>document.querySelector(`.scene[data-sec="${id}"]`));
 order.forEach((id,i)=>{if(!scenes[i])console.error('scene DOM missing',id);if(id!==ENDSEC&&!SCENES[id])console.error('SCENES missing',id);});
@@ -199,6 +206,11 @@ function render(t){
  // ----- 声波（真实时间） -----
  const lv=WS.length?parseInt(WS[Math.min(WS.length-1,Math.max(0,f))],36)/35:0;
  bars.forEach((b,i)=>{const j=0.62+0.38*Math.abs(Math.sin(f*0.37+i*1.93)*Math.cos(f*0.21+i*0.71));b.style.height=(4+40*lv*env[i]*j).toFixed(1)+'px';});
+ // ----- 头像：近 6 帧声音包络（平滑，不闪）→ 光晕 + 轻微放大；不说话时微暗 -----
+ if(D.avatar){let m=0;for(let k=-4;k<=1;k++)m+=lvAt(f+k);m/=6;const q=Math.min(1,m*1.6);
+  AV.style.transform=`scale(${(1+0.05*q).toFixed(3)})`;
+  AV.style.boxShadow=`0 0 0 3px rgba(0,0,0,.35),0 0 ${(6+26*q).toFixed(1)}px ${(1+7*q).toFixed(1)}px rgba(245,166,35,${(0.18+0.6*q).toFixed(2)})`;
+  AV.style.filter=`brightness(${(0.82+0.18*q).toFixed(3)})`;}
  // ----- 字幕 -----
  const tt=f/30;let si=-1;for(let i=0;i<D.subs.length;i++){const s=D.subs[i];if(tt>=s.s-0.05&&tt<s.e+0.2){si=i;break;}}
  if(si!==lastSub){if(si>=0){const s=D.subs[si];subEl.innerHTML=s.lines.map(x=>x.replace(/&/g,'&amp;').replace(/</g,'&lt;')).join('<br>');subEl.style.fontSize=s.fs+'px';}else subEl.innerHTML='';lastSub=si;}
