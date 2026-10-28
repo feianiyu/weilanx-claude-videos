@@ -2,7 +2,7 @@
  "_说明": "v3 新一期（2026-10-28 管线）：复制本目录到 episodes/<日期_主题>/，只改 lines.json（cards 写画面，通常不需要 scenes.*）。规则见 STANDARD「v3」",
  "layout": "v3",
  "series": {
-  "title": "系列标题可以写完整",
+  "title": "老杨看公司｜本期题目",
   "sub": "一句副标题"
  },
  "cover": {
