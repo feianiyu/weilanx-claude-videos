@@ -79,7 +79,7 @@ ep_js = open("scenes.js", encoding="utf-8").read() if os.path.exists("scenes.js"
 CARDS = D.get("cards", [])
 ep_css = open("scenes.css", encoding="utf-8").read() if os.path.exists("scenes.css") else ""
 last_sec = L[keys[-1]]["sec"]
-tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp).replace("//@TEXTFX", fxt).replace("//@FX", fx).replace("//@SCENES_JS", ep_js).replace("/*@EP_CSS*/", ep_css)
+tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp).replace("//@TEXTFX", fxt).replace("//@FX", fx).replace("//@SCENES_JS", ep_js).replace("//@PATTERNS", open(f"{CORE}/patterns.js", encoding="utf-8").read() if LAYOUT == "v3" else "").replace("/*@EP_CSS*/", ep_css)
        .replace("__CUBE56__", f'<svg width="56" height="56" viewBox="-56 -56 112 112">{CUBE}</svg>').replace("__CUBEPATH__", CUBE)
        .replace("__ENDSEC__", last_sec).replace("__ENDNEXT__", ENDNEXT_HTML).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
 SFXLIST = D.get("sfx", [])

@@ -1,5 +1,5 @@
 """页面内检查（qc.py 和 regress.py 共用）：中间区越界、字幕位置/溢出"""
-CHECK = """(()=>{const out=[];const v2=document.getElementById('v').classList.contains('v2'),v3=document.getElementById('v').classList.contains('v3'),B0=v3?1290:1396;const L0=v2?104:104,R0=v2?976:976,T0=v2||v3?530:590,SL=v3?110:v2?120:150,SR=v3?970:v2?960:930;
+CHECK = """(()=>{const out=[];const v2=document.getElementById('v').classList.contains('v2'),v3=document.getElementById('v').classList.contains('v3'),B0=v3?1290:1396;const L0=v3?96:104,R0=v3?984:976,T0=v3?455:v2?530:590,SL=v3?100:v2?120:150,SR=v3?980:v2?960:930;
 const box=e=>{const own=[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());if(own){const r=document.createRange();r.selectNodeContents(e);return r.getBoundingClientRect();}
  if(e.children.length)return null;return e.getBoundingClientRect();};
 document.querySelectorAll('#stage .scene, #stage .card').forEach(c=>{if(getComputedStyle(c).visibility==='hidden'||+c.style.opacity<0.5)return;

@@ -73,12 +73,13 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 #ui input{flex:1}
 .cap-mode #ui{display:none}
 /* ---------- v3 标准卡片（lines.json cards，2026-10-28）---------- */
-.card{position:absolute;inset:0;opacity:0;visibility:hidden}
+.card{position:absolute;inset:0;opacity:0;visibility:hidden;transform-origin:540px 680px}
 .card .trio{position:absolute;font-size:170px}
 .card .tcap{position:absolute;font-size:34px;font-weight:800;color:#EDE6D8;white-space:nowrap;text-shadow:0 2px 10px rgba(0,0,0,.85)}
 .card .chips{position:absolute;left:120px;top:880px;width:840px;display:flex;flex-wrap:wrap;gap:22px}
 .card .chips .chip{position:relative}
 .card .quote{font-size:72px;letter-spacing:2px}
+.big.dimn{background:none;-webkit-text-fill-color:#EDE6D8;color:#EDE6D8}
 /*@EP_CSS*/
 </style></head>
 <body>
@@ -148,6 +149,7 @@ const esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const gem=x=>esc(x).replace(/\*([^*]+)\*/g,'<em>$1</em>');
 const fmtN=(v,dec)=>dec?v.toFixed(dec):String(Math.round(v));
 function mk(cls,style,html){const e=document.createElement('div');e.className=cls;e.style.cssText=style;e.innerHTML=html;return e;}
+//@PATTERNS
 CARDS.forEach(c=>{const el=mk('card','','');$('stage').appendChild(el);c.el=el;c.parts=[];const t0=c.t,first=t0<0.2;
  const P=(e,at,x)=>{el.appendChild(e);c.parts.push(Object.assign({e,at},x||{}));return e;};
  const AT=(k,d)=>k?T(k)-0.15:d;
@@ -165,17 +167,21 @@ CARDS.forEach(c=>{const el=mk('card','','');$('stage').appendChild(el);c.el=el;c
   P(mk('quote',`top:760px;font-size:${fs}px`,gem(c.lines[0])),t0);P(mk('quote',`top:${760+Math.round(fs*1.35)}px;font-size:${fs}px`,`<em>${esc(c.lines[1].replace(/\*/g,''))}</em>`),AT(c.at2,t0+0.6));}
  else if(c.type==='chips'){if(c.title)P(mk('cap','top:780px;color:#C9C2B6',gem(c.title)),t0);const box=mk('chips','','');el.appendChild(box);
   c.items.forEach((it,i)=>{const e=mk('chip','',esc(it.t));box.appendChild(e);c.parts.push({e,at:AT(it.at,t0+0.2+i*0.3),on:true});});}
+ else if(PAT[c.type])PAT[c.type](c,{P,AT,el,t0,first});
  else console.error('unknown card type',c.type);});
 function cards(t,rest){CARDS.forEach((c,i)=>{const n=CARDS[i+1],t1=n?n.t:1e9;
  const pin=c.t<0.2?1:eo(cl((t-c.t)/0.4)),pout=cl((t-(t1-0.25))/0.3);
  const v=(t<c.t-0.01?0:Math.min(pin,1-pout))*(rest?0.35:1);c.el.style.opacity=v.toFixed(3);c.el.style.visibility=v>0?'visible':'hidden';
- c.el.style.transform=`translateY(${((1-pin)*24-pout*30).toFixed(1)}px)`;if(v<=0)return;
+ const push=1+0.04*cl((t-c.t)/Math.max(2,Math.min(t1,D.dur)-c.t));   // v4：每张卡贯穿一次 1.00→1.04 慢推（运镜预算里的「慢推贯穿」）
+ c.el.style.transform=`translateY(${((1-pin)*24-pout*30).toFixed(1)}px) scale(${push.toFixed(4)})`;if(v<=0)return;
+ if(c.upd)c.upd(t);
  c.parts.forEach(p=>{const q=p.at<=c.t+0.01&&c.t<0.2?1:eo(cl((t-p.at)/0.35));
-  if(p.dim)p.e.style.opacity=(0.32+0.68*q).toFixed(3);else{p.e.style.opacity=q.toFixed(3);p.e.style.transform=`translateY(${((1-q)*18).toFixed(1)}px)`;}
+  if(p.raw){}else if(p.dim)p.e.style.opacity=(0.32+0.68*q).toFixed(3);else{p.e.style.opacity=q.toFixed(3);p.e.style.transform=`translateY(${((1-q)*18).toFixed(1)}px)`;}
   if(p.num!==undefined){const k=p.first||p.dim?1:eo(cl((t-p.at)/1.0));   // 暗着的数（三数并列）直接是终值，点亮时只变亮
   p.e.querySelector('span').textContent=fmtN(p.num*k,p.dec);}
   if(p.fill!==undefined)p.e.querySelector('i').style.width=(100*p.fill*eo(cl((t-p.at-0.1)/1.0))).toFixed(2)+'%';
-  if(p.on)p.e.classList.toggle('on',t>=p.at);});});}
+  if(p.on)p.e.classList.toggle('on',t>=p.at);
+  if(p.upd)p.upd(t);});});}
 const bg=$('bg');
 // 大标题：D.heads=[{t,html,fs}]；字号放大 1.18 倍（上限 100）；旧的上移淡出 0.25s，新的模糊浮现 0.35s
 const HEADS=D.heads||[];const hlA=$('hlA'),hlB=$('hlB');let hdIdx=-2;
