@@ -28,12 +28,13 @@ async def snap(pg):
     for ts in sys.argv[3:]:
         await pg.evaluate(f"render({float(ts)})"); await pg.screenshot(path=f"build/snap_{float(ts):06.2f}.png")
 
+HQ = json.load(open("lines.json")).get("layout") == "v3"
 async def part(pg):
     a, b, out = int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
-    ff = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "image2pipe", "-framerate", str(FPS), "-c:v", "mjpeg", "-i", "-",
-                           "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
-    for f in range(a, b):
-        await pg.evaluate(f"render({f / FPS})"); ff.stdin.write(await pg.screenshot(type="jpeg", quality=92))
+    ff = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "image2pipe", "-framerate", str(FPS), "-c:v", "png" if HQ else "mjpeg", "-i", "-",
+                           "-c:v", "libx264", "-preset", "slow" if HQ else "medium", "-crf", "14" if HQ else "18", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
+    for f in range(a, b):   # v3 高精度：逐帧 PNG（无损）→ x264 crf14 slow；v2 期数照旧 JPEG q92 → crf18
+        await pg.evaluate(f"render({f / FPS})"); ff.stdin.write(await pg.screenshot(type="png") if HQ else await pg.screenshot(type="jpeg", quality=92))
         if (f - a) % 300 == 0: print(f"  [{a}-{b}] frame {f}", flush=True)
     ff.stdin.close(); ff.wait()
 

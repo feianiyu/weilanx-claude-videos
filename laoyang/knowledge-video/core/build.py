@@ -31,7 +31,7 @@ for k in keys:
     if prev:
         if L[prev]["sec"] != L[k]["sec"]:
             lo = t + 0.12; t = snap(t + SECGAP, lo)
-            if k == REST: t = snap(t + BEAT["period"], t + BEAT["period"] - 0.01)
+            if k == REST: t = snap(t + BEAT["period"], t + BEAT["period"] - 0.01) if BEAT else t + 0.6   # v3 无配乐：收一拍 = 停 0.6s
         else: t += GAP
     elif BEAT: t = snap(t, t)
     tl[k] = (round(t, 3), round(t + L[k]["dur"], 3)); t += L[k]["dur"]; prev = k
@@ -74,7 +74,9 @@ ENDNEXT_HTML = (_en.split("：", 1)[0] + "：<span style=\"color:var(--o)\">" + 
 fx = open(f"{CORE}/fx.js", encoding="utf-8").read()
 fxp = open(f"{CORE}/fx_particles.js", encoding="utf-8").read()
 fxt = open(f"{CORE}/fx_text.js", encoding="utf-8").read()
-ep_html = open("scenes.html", encoding="utf-8").read(); ep_js = open("scenes.js", encoding="utf-8").read()
+ep_html = open("scenes.html", encoding="utf-8").read() if os.path.exists("scenes.html") else ""
+ep_js = open("scenes.js", encoding="utf-8").read() if os.path.exists("scenes.js") else ""   # v3 用 cards 时可以不写 scenes.*
+CARDS = D.get("cards", [])
 ep_css = open("scenes.css", encoding="utf-8").read() if os.path.exists("scenes.css") else ""
 last_sec = L[keys[-1]]["sec"]
 tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp).replace("//@TEXTFX", fxt).replace("//@FX", fx).replace("//@SCENES_JS", ep_js).replace("/*@EP_CSS*/", ep_css)
@@ -82,7 +84,8 @@ tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp
        .replace("__ENDSEC__", last_sec).replace("__ENDNEXT__", ENDNEXT_HTML).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
 SFXLIST = D.get("sfx", [])
 # 锚点：scenes.js 里任何写成 'v07|词|s' 的字符串都算（包括写在数组里的），加上 scenes.html 的 data-at 和音效表
-specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST} | {h[0] for h in D.get("heads", []) if h[0].startswith("v")} | {h[0] for h in D.get("sources", []) if h[0].startswith("v")}
+specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST} | {h[0] for h in D.get("heads", []) if h[0].startswith("v")} | {h[0] for h in D.get("sources", []) if h[0].startswith("v")} \
+        | set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", json.dumps(CARDS, ensure_ascii=False)))
 A = {s: anchor(s) for s in sorted(specs)}
 
 # sections (cards)
@@ -186,7 +189,9 @@ vo = np.zeros(N, np.float32)
 for k in keys:
     a = load(f"vo/{k}.mp3", L[k]["dur"]); i = int(tl[k][0] * SR); vo[i:i + len(a)] += a[:N - i]
 
-if BGM_OFF >= 0:
+if not BGM:   # v3（2026-10-28）：取消背景音乐，只有人声 + 音效
+    b = np.zeros(N + 1, np.float32)
+elif BGM_OFF >= 0:
     b = load(BGM, DUR + BGM_OFF + 5)[int(BGM_OFF * SR):]
 else:   # 片子比曲子的高潮位置还长：曲子从头起播，前面留空（原来负数切片会只剩曲尾几秒）
     b = load(BGM, DUR + 5); b = np.concatenate([np.zeros(int(-BGM_OFF * SR), np.float32), b])
@@ -303,28 +308,43 @@ def head_html(txt):
     esc = lambda x: re.sub(r"\*([^*]+)\*", r"<em>\1</em>", x.replace("&", "&amp;").replace("<", "&lt;"))
     return "<br>".join(esc(x) for x in lines_), fs
 HEADS = []
+# v3 金句规则（2026-10-28）：顶部大标题和中间区核心观点一律两行、不带任何标点（数字里的小数点除外）
+NOPUNCT = re.compile(r"[，。、？！：；“”‘’「」『』《》〈〉（）【】—…·,?!:;\"'()\[\]~～/|]|(?<!\d)\.|\.(?!\d)")
+def gold_check(txt, where):
+    ln = txt.split("|")
+    if len(ln) != 2: raise SystemExit(f"金句必须正好两行（用 | 分行）：{where} {txt}")
+    bad = [x for x in ln if NOPUNCT.search(x.replace("*", ""))]
+    if bad: raise SystemExit(f"金句不许有标点：{where} {txt}")
+if LAYOUT == "v3":
+    for key, txt in D.get("heads", []): gold_check(txt, key)
+    for c in CARDS:
+        if c.get("type") == "quote": gold_check("|".join(c["lines"]), c.get("at"))
 for key, txt in D.get("heads", []):
     t_ = 0.0 if key == secs[0]["id"] else (next(s["start"] for s in secs if s["id"] == key) if not key.startswith("v") else A[key] - 0.15)
     h_, fs_ = head_html(txt); HEADS.append({"t": round(t_, 3), "html": h_, "fs": fs_, "src": txt})
 HEADS.sort(key=lambda x: x["t"])
 # v3 来源行：[[章节id 或 锚点, "来源：…"]]，空字符串 = 隐去
+def at_t(key): return round(0.0 if key == secs[0]["id"] else (next(x["start"] for x in secs if x["id"] == key) if not key.startswith("v") else A[key] - 0.15), 3)
+for c in CARDS: c["t"] = at_t(c["at"])
+CARDS.sort(key=lambda c: c["t"])
+SRCS0 = [[c["at"], c.get("src", "")] for c in CARDS]   # 卡片自带来源：换卡即换来源行（没写 = 隐去）
 SRCS = sorted([{"t": round(0.0 if key == secs[0]["id"] else (next(x["start"] for x in secs if x["id"] == key) if not key.startswith("v") else A[key] - 0.15), 3), "txt": txt}
-               for key, txt in D.get("sources", [])], key=lambda x: x["t"])
+               for key, txt in (D.get("sources", []) or SRCS0)], key=lambda x: x["t"])
 for h in HEADS: print("HEAD", h["t"], h["fs"], h["src"])
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
-        "progress": D.get("progress", []), "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, "srcs": SRCS, "layout": LAYOUT, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})}
+        "progress": D.get("progress", []), "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, "srcs": SRCS, "layout": LAYOUT, "cards": CARDS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})}
 meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
 
-chars = "".join(sorted(set(re.sub(r"<[^>]+>", "", tpl) + ep_js + "".join(L[k]["sub"] for k in keys) + "0123456789.%：（）·＋…≠“”《》→—✕▶❚播放暂停" + D["series"]["title"] + D["series"]["sub"] + "".join(x[1] for x in D.get("sources", [])))))
+chars = "".join(sorted(set(re.sub(r"<[^>]+>", "", tpl) + ep_js + "".join(L[k]["sub"] for k in keys) + "0123456789.%：（）·＋…≠“”《》→—✕▶❚播放暂停" + D["series"]["title"] + D["series"]["sub"] + "".join(x[1] for x in D.get("sources", [])) + json.dumps(CARDS, ensure_ascii=False))))
 open("build/chars.txt", "w").write(chars)
 subprocess.run(["pyftsubset", f"{CORE}/assets/NotoSansSC.ttf", "--text-file=build/chars.txt",
                 "--output-file=build/font.ttf", "--layout-features=*"], check=True)
 
 # 主讲人头像（v2.3）：core/assets/avatar.png（个人肖像，不进仓库）；回归测试和 "avatar": false 时不加
 AVP = f"{CORE}/assets/avatar.png"
-data["avatar"] = bool(not REGRESS and D.get("avatar", True) and os.path.exists(AVP))
+data["avatar"] = bool(not REGRESS and D.get("avatar", False) and os.path.exists(AVP))   # 2026-10-28：默认取消头像，lines.json "avatar": true 才加
 tpl = tpl.replace("__AVATAR__", "data:image/png;base64," + base64.b64encode(open(AVP, "rb").read()).decode() if data["avatar"] else "data:,")
 dj = json.dumps(data, ensure_ascii=False)
 for m in set(re.findall(r"__IMG:([\w.]+)__", tpl)):

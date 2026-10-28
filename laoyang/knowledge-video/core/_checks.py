@@ -2,7 +2,7 @@
 CHECK = """(()=>{const out=[];const v2=document.getElementById('v').classList.contains('v2'),v3=document.getElementById('v').classList.contains('v3'),B0=v3?1400:1396;const L0=v2?104:104,R0=v2?976:976,T0=v2||v3?530:590,SL=v3?110:v2?120:150,SR=v3?970:v2?960:930;
 const box=e=>{const own=[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());if(own){const r=document.createRange();r.selectNodeContents(e);return r.getBoundingClientRect();}
  if(e.children.length)return null;return e.getBoundingClientRect();};
-document.querySelectorAll('#stage .scene').forEach(c=>{if(getComputedStyle(c).visibility==='hidden'||+c.style.opacity<0.5)return;
+document.querySelectorAll('#stage .scene, #stage .card').forEach(c=>{if(getComputedStyle(c).visibility==='hidden'||+c.style.opacity<0.5)return;
  c.querySelectorAll('*').forEach(e=>{if(e.closest('svg')&&e.tagName!=='svg')return;if(e.id==='endT')return;
   let op=1;for(let x=e;x&&x!==c;x=x.parentElement)op*=+getComputedStyle(x).opacity;if(op<0.3)return;
   const r=box(e);if(!r||!r.width||!r.height)return;const nm=(e.textContent||e.tagName).trim().slice(0,12);const R=[r.left,r.top,r.right,r.bottom].map(Math.round);
