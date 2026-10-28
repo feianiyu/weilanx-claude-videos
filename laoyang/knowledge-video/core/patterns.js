@@ -12,7 +12,7 @@ function sv(par,tag,at,html){const e=document.createElementNS(NS,tag);for(const 
 function icon(par,name,cx,cy,size,col,sw){const p=ICON[name]||ICON['question-mark'];return sv(par,'g',{transform:`translate(${cx-size/2},${cy-size/2}) scale(${size/24})`,fill:'none',stroke:col,'stroke-width':sw||1.5,'stroke-linecap':'round','stroke-linejoin':'round'},p.map(d=>`<path d="${d}"/>`).join(''));}
 function line(par,d,col,w,dash){return sv(par,'path',{d,stroke:col,'stroke-width':w,fill:'none','stroke-linecap':'round',pathLength:1,'stroke-dasharray':dash?'0.02 0.03':'1','stroke-dashoffset':dash?0:1});}
 const drawP=(e,p)=>e.setAttribute('stroke-dashoffset',(1-p).toFixed(4));
-const glow=(k)=>`drop-shadow(0 6px 16px rgba(0,0,0,.6)) drop-shadow(0 0 ${(18+14*k).toFixed(1)}px rgba(255,190,60,${(0.30+0.25*k).toFixed(2)}))`;
+const glow=(k)=>`drop-shadow(0 6px 16px rgba(0,0,0,.7)) drop-shadow(0 0 ${(18+14*k).toFixed(1)}px rgba(255,190,60,${(0.30+0.25*k).toFixed(2)}))`;
 const breath=t=>0.5+0.5*Math.sin(t*2*Math.PI);                        // 主角光 1 秒一呼吸
 const pulse=(t,t0)=>{const u=t-t0;return u<0||u>0.5?1:1+0.08*Math.sin(Math.PI*u/0.5);};   // 落点脉冲 1→1.08→1
 const sIn=(t,t0,d)=>eo(cl((t-t0)/(d||0.35)));
@@ -42,7 +42,8 @@ PAT.grid=(c,{P,AT,el,t0,first})=>{
  raw(c,L,t=>{const k=eo(cl((t-ta)/0.6));ds.forEach((d,i)=>{const a=first?1:sIn(t,t0+i*0.006,0.3);const hit=pick.has(i);
    d.setAttribute('opacity',(a*(hit?1:1-0.7*k)).toFixed(3));d.setAttribute('fill',hit&&k>0?c.goldUrl||L.gid:WH);d.setAttribute('r',(13+(hit?10*k:0)).toFixed(1));
    d.style.filter=hit&&k>0?`drop-shadow(0 0 ${(10+8*breath(t)).toFixed(1)}px rgba(255,190,60,.8))`:'';});});
- if(c.cap)P(mk('cap',`top:${y0+rows*sp+10}px;font-size:44px`,gem(c.cap)),AT(c.capAt,ta+0.6));};
+ if(c.cap)P(mk('cap',`top:${y0+rows*sp+10}px;font-size:44px`,gem(c.cap)),AT(c.capAt,ta+0.6));
+ if(c.note)P(mk('cap',`top:${y0+rows*sp+80}px;font-size:34px;color:#C9C2B6`,gem(c.note)),AT(c.noteAt,ta+1.2));};
 
 // 3. vs 数字对比：两根竖柱从基线长出，赢的一方金色发光；最后给结论标签
 PAT.vs=(c,{P,AT,el,t0,first})=>{
@@ -62,7 +63,7 @@ PAT.before=(c,{P,AT,el,t0})=>{
  icon(L,b.icon||'clock',230,800,120,GRY,1.4);
  P(mk('cap','left:150px;top:670px;font-size:34px;color:#A9A194',esc(c.bl||'过去')),t0);
  P(mk('cap','left:330px;top:740px;font-size:60px;color:#D8D2C6',gem(b.t)),t0+0.15);
- if(b.sub)P(mk('cap','left:330px;top:830px;font-size:36px;color:#A9A194',gem(b.sub)),t0+0.3);
+ if(b.sub)P(mk('cap','left:330px;top:830px;font-size:36px;color:#A9A194',gem(b.sub)),AT(b.subAt,t0+0.3));
  const ar=line(L,'M540 950 V1030',GOLDC,5),ah=line(L,'M515 1008 L540 1033 L565 1008',GOLDC,5);
  raw(c,ar,t=>{drawP(ar,sIn(t,ta-0.4,0.4));drawP(ah,sIn(t,ta-0.05,0.2));});
  const f2=sv(L,'rect',{x:120,y:1050,width:840,height:300,rx:18,fill:'rgba(30,20,6,.55)',stroke:GOLDC,'stroke-width':3,opacity:0});
@@ -121,3 +122,15 @@ PAT.analogy=(c,{P,AT,el,t0})=>{
  const arc=line(L,'M300 1100 Q540 1230 780 1100',GOLDC,4);
  raw(c,eq,t=>{eq.setAttribute('opacity',sIn(t,tb+0.3,0.3).toFixed(3));drawP(arc,sIn(t,ts,0.6));});
  const sh=P(mk('lbl','left:120px;width:840px;text-align:center;top:1210px;font-size:64px',gem(c.share)),ts+0.4);raw(c,sh,t=>{if(t>ts+0.8)sh.style.filter=glow(breath(t));});};
+
+// 9. set 高光时刻（每章 ≤1 个，只给章论点 / 收尾 payoff）：一道金光横扫 → 第一行白字落下 → 金线从中间展开 → 第二行金字带光、脉冲
+PAT.set=(c,{P,AT,el,t0})=>{
+ const t2=AT(c.at2,t0+0.9),L=layer(el),fs=Math.min(96,Math.floor(760/Math.max(...c.lines.map(x=>x.replace(/\*/g,'').length))));
+ const sw=sv(L,'rect',{x:-300,y:700,width:260,height:420,fill:'url(#sw'+layer.n+')',opacity:0});
+ sv(L,'defs',{},`<linearGradient id="sw${layer.n}" x1="0" x2="1"><stop offset="0" stop-color="#FFD45C" stop-opacity="0"/><stop offset=".5" stop-color="#FFE9B0" stop-opacity=".55"/><stop offset="1" stop-color="#FFD45C" stop-opacity="0"/></linearGradient>`);
+ const gl=line(L,`M540 ${830+fs*0.7} H540`,GOLDC,4);
+ raw(c,sw,t=>{const u=cl((t-t0)/0.7);sw.setAttribute('x',(-300+1500*u).toFixed(1));sw.setAttribute('opacity',(u>0&&u<1?Math.sin(Math.PI*u):0).toFixed(3));
+  const k=eo(cl((t-t2+0.35)/0.5)),w=360*k;gl.setAttribute('d',`M${540-w} ${830+fs*0.7} H${540+w}`);gl.setAttribute('stroke-dashoffset',0);gl.style.filter=`drop-shadow(0 0 10px rgba(255,190,60,.8))`;});
+ P(mk('quote',`left:120px;width:840px;text-align:center;top:${800-fs*0.75}px;font-size:${fs}px`,gem(c.lines[0])),t0+0.35);
+ const b=P(mk('quote',`left:120px;width:840px;text-align:center;top:${860+fs*0.3}px;font-size:${fs}px`,`<em>${esc(c.lines[1].replace(/\*/g,''))}</em>`),t2);
+ raw(c,b,t=>{b.style.scale=pulse(t,t2+0.35).toFixed(3);const em=b.querySelector('em');if(em){em.style.background='linear-gradient(180deg,#FFF8DC,#FFDB6E 55%,#F7BC45)';em.style.webkitBackgroundClip='text';em.style.backgroundClip='text';em.style.filter=t>t2?glow(breath(t)):'drop-shadow(0 4px 12px rgba(0,0,0,.8))';}});};

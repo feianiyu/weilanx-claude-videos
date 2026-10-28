@@ -245,3 +245,35 @@ templates/   复盘.md
 
 ### 不再有
 中间底板、章节进度条、底部署名、背景点阵、章节转场烟雾、片尾粒子 logo、背景音乐、头像。
+
+## v4 讲解模式与流程（2026-10-28 起新视频默认；引擎不换，只加方法和检查）
+来源：GitHub 开源讲解视频模板调研（explainer-studio〔MIT〕的讲解模式与节奏扫描、anything2explainer 的构图 / 光 / 运镜方法、dataentropy 的质量闸门），按竖屏金色风格重写。代码 `core/patterns.js`，图标 Tabler（MIT，`core/LICENSES/`）。
+
+### 流程（比 v3 多一步「分镜表」）
+文案确认 → 配音 → 写 lines.json `cards`（按下表选模式）→ `build` → **`python3 core/storyboard.py <期>` 出分镜表 `out/分镜表.md` + 分镜联系表 `out/分镜.png`，用户确认后**才出片 → `qc` / `blankcheck` / `motion_check` → `render final` → `cover`。
+
+### 先把句子改写成「看得见的动作」，再选模式
+| 句子在说… | 模式 `type` | 主要字段 |
+|---|---|---|
+| 一个关键数 | `big` 大数字揭示 | `num dec unit cap vs:{label,num,unit,at} note` |
+| 「100 家里只有 2 家」「四个里一个」 | `grid` 占比格 / 漏斗 | `total hit hitAt cap capAt note noteAt` |
+| 两个数比大小 | `vs` 数字对比 | `items:[{label,num,unit,win,at}] verdict verdictAt` |
+| 过去 X，现在 Y（或 卖方 / 买家） | `before` 过去→现在 | `bl before:{icon,t,sub,subAt} al after:{icon,t,sub} afterAt` |
+| A 导致 B 导致 C | `chain` 因果链 | `items:[{icon,t,at}]`（3–4 个，最后一个是结果） |
+| 「很多人以为……其实……」 | `myth` 误区→真相 | `ml myth strikeAt fl fact factAt` |
+| 第一、第二、第三 | `steps` 步骤清单 | `title items:[{t,at}]` |
+| X 就像 Y | `analogy` 类比 | `a:{icon,t} b:{icon,t,at} share shareAt` |
+| 章论点 / 收尾 payoff | `set` 高光时刻 | `lines:[白字行, 金字行] at2`（两行、无标点；**每章 ≤1 个**） |
+`icon` 用 Tabler 名（`core/patterns.js` 顶部 ICON 表里的 70 个经营类图标）。v3 的六种卡片仍可用，但分镜表会提示「旧卡片，建议换 v4 模式」。
+
+### 构图与光
+- 每张卡一个主角：大字 ≥200px，或图形 ≥ 内容区高度 1/3；尺寸只有三档：主角 / 配角 56–72px / 标签 34–40px。
+- 金色和发光只给主角或「当前重点」，一帧只有一处发光；主角光 1 秒一呼吸，落点 1→1.08→1 脉冲。
+- 金色渐变字不许带 text-shadow（会画在字上面把金色压灰），阴影一律用 filter drop-shadow。
+
+### 节奏（`storyboard.py` 静态查 + `motion_check.py` 逐帧查）
+- 节拍挂在配音的词上；同一张卡两次可见变化间隔 ≤4 秒（高光时刻落位后可停到 5 秒）。
+- 每张卡最后一拍落位后停 ≥1 秒再换卡；短于 2.5 秒的句子不单独成卡，并进相邻卡。
+- 每张卡贯穿一次 1.00→1.04 慢推（外壳自动）；画面静止连续 >3 秒算缺陷。
+- 画面领先配音不超过约 1 秒；示意画面标「示意」，数字标来源。
+

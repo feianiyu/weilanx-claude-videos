@@ -318,7 +318,7 @@ def gold_check(txt, where):
 if LAYOUT == "v3":
     for key, txt in D.get("heads", []): gold_check(txt, key)
     for c in CARDS:
-        if c.get("type") == "quote": gold_check("|".join(c["lines"]), c.get("at"))
+        if c.get("type") in ("quote", "set"): gold_check("|".join(c["lines"]), c.get("at"))
 for key, txt in D.get("heads", []):
     t_ = 0.0 if key == secs[0]["id"] else (next(s["start"] for s in secs if s["id"] == key) if not key.startswith("v") else A[key] - 0.15)
     h_, fs_ = head_html(txt); HEADS.append({"t": round(t_, 3), "html": h_, "fs": fs_, "src": txt})
@@ -333,7 +333,7 @@ SRCS = sorted([{"t": round(0.0 if key == secs[0]["id"] else (next(x["start"] for
 for h in HEADS: print("HEAD", h["t"], h["fs"], h["src"])
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
         "progress": D.get("progress", []), "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, "srcs": SRCS, "layout": LAYOUT, "cards": CARDS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})}
-meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
+meta = {"cards": [{k: v for k, v in c.items() if k != "el"} for c in CARDS], "anchors": A, "lines": {k: L[k]["sub"] for k in keys}, "audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
 
