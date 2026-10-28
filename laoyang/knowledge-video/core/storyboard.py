@@ -6,7 +6,7 @@ import sys, os, json, subprocess
 CORE = os.path.dirname(os.path.abspath(__file__)); EP = os.path.abspath(sys.argv[1]); os.chdir(EP)
 M = json.load(open("build/meta.json")); A = M["anchors"]; C = M["cards"]; DUR = M["dur"]; TL = M["timeline"]; SECS = M["secs"]
 NAME = {"big": "大数字揭示", "grid": "占比格", "vs": "数字对比", "before": "过去→现在", "chain": "因果链", "myth": "误区→真相", "steps": "步骤清单",
-        "analogy": "类比", "set": "高光时刻", "quote": "引句（旧）", "stat": "数字卡（旧）", "trio": "三数（旧）", "compare": "横条对比（旧）", "list": "清单（旧）", "chips": "标签（旧）"}
+        "analogy": "类比", "set": "高光时刻", "ask": "结尾提问", "quote": "引句（旧）", "stat": "数字卡（旧）", "trio": "三数（旧）", "compare": "横条对比（旧）", "list": "清单（旧）", "chips": "标签（旧）"}
 def hero(c):
     t = c["type"]
     if t in ("big", "stat"): return f'{c["num"]}{c.get("unit", "")}'
@@ -17,24 +17,25 @@ def hero(c):
     if t == "myth": return c["fact"].replace("*", "")
     if t in ("steps", "list"): return c.get("title") or f'{len(c["items"])} 项'
     if t == "analogy": return c["share"]
-    if t in ("set", "quote"): return c["lines"][1]
+    if t in ("set", "quote", "ask"): return c["lines"][1]
     return "—"
 def beats(o):   # 卡里所有挂了锚点的字段（at / xxAt），递归
     out = []
     if isinstance(o, dict):
         for k, v in o.items():
-            if isinstance(v, str) and (k == "at" or k.endswith("At")) and v in A: out.append(A[v] - 0.15)
+            if isinstance(v, str) and (k in ("at", "at2") or k.endswith("At")) and v in A: out.append(A[v] - 0.15)
             else: out += beats(v)
     elif isinstance(o, list):
-        for v in o: out += beats(v)
+        for v in o: out += [A[v] - 0.15] if isinstance(v, str) and v in A else beats(v)
     return out
-rows, warn = [], []
+rows, warn, lasts = [], [], []
 sec_of = lambda t: next((s["id"] for s in SECS if s["start"] - 0.05 <= t < s["end"] - 0.05), SECS[-1]["id"])
 sets = {}
 for i, c in enumerate(C):
     t0 = c["t"]; t1 = C[i + 1]["t"] if i + 1 < len(C) else DUR
     bs = sorted(set(round(b, 2) for b in beats(c) if t0 - 0.01 <= b < t1)) or [t0]
     last = max(bs + [t0]); hold = t1 - (last + 0.5)
+    lasts.append(last)
     lines = [k for k, (a, b) in TL.items() if a < t1 - 0.05 and b > t0 + 0.05]
     gaps = [b - a for a, b in zip([t0] + bs, bs + [t1 - 1.0])]
     no = f"K{i + 1:02d}"; sec = sec_of(t0)
@@ -55,8 +56,9 @@ md += ["", "## 句子原文", ""] + [f"- {k}：{t}" for k, t in M["lines"].items
 md += ["", "## 检查结果", ""] + ([f"- {x}" for x in warn] or ["- 全部通过"])
 os.makedirs("out", exist_ok=True); open("out/分镜表.md", "w", encoding="utf-8").write("\n".join(md) + "\n")
 print("\n".join(md[:len(rows) + 6])); print("检查：", warn or "全部通过")
-# 分镜联系表：每张卡取「下一张卡开始前 0.55s」那一帧（离场前、落位后）（落位后的样子）
-ts = [round((C[i + 1]["t"] if i + 1 < len(C) else DUR - 0.5) - 0.55, 2) for i in range(len(C))]
+# 分镜联系表：每张卡取最后一个节拍后 1.3s 那一帧（不晚于下一张卡开始前 0.55s），看落位后的样子
+ts = [round(min((C[i + 1]["t"] if i + 1 < len(C) else DUR - 0.5) - 0.55, lasts[i] + 1.3), 2) for i in range(len(C))]   # 落位后 1.3s，且在离场前
+json.dump(ts, open("build/sb_ts.json", "w"))
 subprocess.run([sys.executable, f"{CORE}/qc.py", EP] + [str(t) for t in ts], capture_output=True)
 from PIL import Image, ImageDraw, ImageFont
 F = ImageFont.truetype(f"{CORE}/assets/NotoSansSC.ttf", 26); W, H = 360, 640; n = len(ts); cols = min(5, n); rws = (n + cols - 1) // cols

@@ -1,0 +1,283 @@
+{
+ "_说明": "《老杨看公司》第 1 周 06｜v4 管线｜案例为示意",
+ "layout": "v3",
+ "series": {
+  "title": "老杨看公司｜想卖公司，先答三个问题",
+  "sub": ""
+ },
+ "cover": {
+  "eyebrow": "—— 老杨看公司 ——",
+  "title": "想卖公司<br>先答三个问题",
+  "sub": "谁需要你，你卖什么，撑不撑得住"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494，core/grade_bg.py 调色（本周 7 条统一底图）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.4,
+ "restBefore": "v06",
+ "heads": [
+  [
+   "c0",
+   "想卖公司|先答三个问题"
+  ],
+  [
+   "v03|谁最需要|s",
+   "问题一|谁最需要你"
+  ],
+  [
+   "v04|你卖的|s",
+   "问题二|你卖的是什么"
+  ],
+  [
+   "v05|你能不能撑|s",
+   "问题三|能撑到买家出现吗"
+  ],
+  [
+   "c2",
+   "列出十家|最需要你的买家"
+  ],
+  [
+   "c3",
+   "你的买家|在哪一类"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "ask",
+   "lines": [
+    "现在",
+    "还能卖掉吗"
+   ],
+   "at2": "v01|还能卖掉|s"
+  },
+  {
+   "at": "v02|先回答|s",
+   "type": "steps",
+   "title": "找买家之前",
+   "items": [
+    {
+     "t": "谁最需要你"
+    },
+    {
+     "t": "你卖的是什么"
+    },
+    {
+     "t": "能撑到买家出现吗"
+    }
+   ]
+  },
+  {
+   "at": "v03|同行|s",
+   "type": "steps",
+   "title": "四类买家",
+   "items": [
+    {
+     "t": "同行 要市场和区域",
+     "at": "v03|同行|s"
+    },
+    {
+     "t": "上下游 要打通产业链",
+     "at": "v03|上下游|s"
+    },
+    {
+     "t": "跨界者 要资质和客户",
+     "at": "v03|想进|s"
+    },
+    {
+     "t": "产业资本 要现金流",
+     "at": "v03|产业资本|s"
+    }
+   ]
+  },
+  {
+   "at": "v04|你卖的|s",
+   "type": "steps",
+   "title": "找买家之前",
+   "items": [
+    {
+     "t": "谁最需要你",
+     "at": "v03|谁最需要|s"
+    },
+    {
+     "t": "你卖的是什么",
+     "at": "v04|你卖的|s",
+     "note": "资质 客户 团队 还是一块市场",
+     "noteAt": "v04|团队|s"
+    },
+    {
+     "t": "能撑到买家出现吗",
+     "at": "v05|你能不能撑|s",
+     "note": "急着卖 就没有议价余地",
+     "noteAt": "v05|急着卖|s"
+    }
+   ]
+  },
+  {
+   "at": "c2",
+   "type": "big",
+   "num": 10,
+   "unit": "家",
+   "cap": "每家写一句 他为什么需要你",
+   "capAt": "v06|每家|s",
+   "note": "写不出来 就先别去谈",
+   "noteAt": "v06|写不出来|s"
+  },
+  {
+   "at": "c3",
+   "type": "ask",
+   "lines": [
+    "最需要你的",
+    "是哪一类买家"
+   ],
+   "at2": "v07|哪一类|s"
+  }
+ ],
+ "sfx": [
+  [
+   "v02|三个问题|s",
+   "swish",
+   0
+  ],
+  [
+   "v03|同行|s",
+   "sub",
+   0
+  ],
+  [
+   "v05|撑到|s",
+   "thud",
+   0
+  ],
+  [
+   "v06|十家|s",
+   "sparkle",
+   0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "想卖公司的老板，常常一上来就问：现在还能卖掉吗？",
+   "dur": 3.96
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "找买家之前，先回答三个问题。",
+   "dur": 2.74
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "谁最需要你。同行要市场和区域，上下游要打通产业链，想进这个行业的人要你的资质和客户，产业资本和国资要稳定的现金流。",
+   "dur": 10.25
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "你卖的是什么。是资质，是客户，是团队，还是一块地方的市场。",
+   "dur": 5.33
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "你能不能撑到买家出现。卖公司常常要谈很久，急着卖的人没有议价的余地。",
+   "dur": 5.93
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "把最需要你的十家写下来，每家写一句：他为什么需要你。写不出来，就先别去谈。",
+   "dur": 7.06
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "你的公司，最需要它的会是哪一类买家？",
+   "dur": 3.34
+  }
+ },
+ "endNext": ""
+}

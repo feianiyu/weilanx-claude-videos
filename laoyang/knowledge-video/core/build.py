@@ -318,7 +318,7 @@ def gold_check(txt, where):
 if LAYOUT == "v3":
     for key, txt in D.get("heads", []): gold_check(txt, key)
     for c in CARDS:
-        if c.get("type") in ("quote", "set"): gold_check("|".join(c["lines"]), c.get("at"))
+        if c.get("type") in ("quote", "set", "ask"): gold_check("|".join(c["lines"]), c.get("at"))
 for key, txt in D.get("heads", []):
     t_ = 0.0 if key == secs[0]["id"] else (next(s["start"] for s in secs if s["id"] == key) if not key.startswith("v") else A[key] - 0.15)
     h_, fs_ = head_html(txt); HEADS.append({"t": round(t_, 3), "html": h_, "fs": fs_, "src": txt})

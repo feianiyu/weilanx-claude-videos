@@ -1,0 +1,292 @@
+{
+ "_说明": "《老杨看公司》第 1 周 07｜v4 管线｜案例为示意",
+ "layout": "v3",
+ "series": {
+  "title": "老杨看公司｜见买家，先说清这三句话",
+  "sub": ""
+ },
+ "cover": {
+  "eyebrow": "—— 老杨看公司 ——",
+  "title": "见买家<br>先说这三句话",
+  "sub": "稀缺在哪，风险在哪，谁来干"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494，core/grade_bg.py 调色（本周 7 条统一底图）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.4,
+ "restBefore": "v03",
+ "heads": [
+  [
+   "c0",
+   "见买家|先说这三句话"
+  ],
+  [
+   "v04|你稀缺|s",
+   "第一句|你稀缺在哪"
+  ],
+  [
+   "v05|你的风险|s",
+   "第二句|风险主动讲"
+  ],
+  [
+   "v06|交割|s",
+   "第三句|交割后谁来干"
+  ],
+  [
+   "c2",
+   "最难开口的|是哪一句"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "before",
+   "bl": "老板开口说",
+   "before": {
+    "icon": "chart-bar",
+    "t": "去年营收多少",
+    "sub": "利润多少",
+    "subAt": "v01|利润|s",
+    "at": "v01|营收|s"
+   },
+   "al": "买家在想",
+   "after": {
+    "icon": "search",
+    "t": "资质 大客户 团队",
+    "sub": "能用几年 稳不稳 走不走",
+    "subAt": "v02|大客户|s"
+   },
+   "afterAt": "v02|买家|s"
+  },
+  {
+   "at": "c1",
+   "type": "steps",
+   "title": "见面说清三句话",
+   "items": [
+    {
+     "t": "你稀缺在哪",
+     "at": "v04|你稀缺|s",
+     "note": [
+      [
+       "资质",
+       "v04|资质|s"
+      ],
+      [
+       "牌照",
+       "v04|牌照|s"
+      ],
+      [
+       "地位",
+       "v04|地位|s"
+      ],
+      [
+       "大客户",
+       "v04|大客户|s"
+      ]
+     ]
+    },
+    {
+     "t": "你的风险在哪",
+     "at": "v05|你的风险|s",
+     "note": [
+      [
+       "债务",
+       "v05|债务|s"
+      ],
+      [
+       "担保",
+       "v05|担保|s"
+      ],
+      [
+       "历史账",
+       "v05|历史遗留|s"
+      ],
+      [
+       "主动讲",
+       "v05|主动讲|s"
+      ],
+      [
+       "怕事后发现",
+       "v05|事后|s"
+      ]
+     ]
+    },
+    {
+     "t": "交割以后谁来干",
+     "at": "v06|交割|s",
+     "note": [
+      [
+       "创始人留不留",
+       "v06|创始人|s"
+      ],
+      [
+       "团队稳不稳",
+       "v06|团队稳不稳|s"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "at": "c2",
+   "type": "set",
+   "lines": [
+    "三句话里",
+    "你最难开口的是哪一句"
+   ],
+   "at2": "v07|最难|s"
+  }
+ ],
+ "sfx": [
+  [
+   "v02|买家|s",
+   "swish",
+   0
+  ],
+  [
+   "v04|稀缺|s",
+   "sub",
+   0
+  ],
+  [
+   "v05|风险|s",
+   "sub",
+   0
+  ],
+  [
+   "v06|交割|s",
+   "sub",
+   0
+  ],
+  [
+   "v07|最难|s",
+   "sparkle",
+   0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "很多老板见买家，开口先报去年营收多少、利润多少。",
+   "dur": 4.25
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "买家心里想的是另外几件事：资质还能用几年，大客户稳不稳，核心团队走不走。",
+   "dur": 6.72
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "所以见面要说清三句话。",
+   "dur": 2.42
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "你稀缺在哪。资质、牌照、在一个地区的地位、大客户，这些是对方花钱也一时买不到的。",
+   "dur": 7.32
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "你的风险在哪。债务、担保、历史遗留的问题，主动讲。买家最怕的，是事后才发现的问题。",
+   "dur": 7.66
+  },
+  "v06": {
+   "sec": "c1",
+   "sub": "交割以后谁来干。创始人留不留，团队稳不稳，直接影响对方敢出多少价。",
+   "dur": 6.1
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "这三句话里，你最难开口的是哪一句？",
+   "dur": 3.05
+  }
+ },
+ "endNext": ""
+}

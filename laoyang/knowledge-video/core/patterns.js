@@ -62,8 +62,8 @@ PAT.before=(c,{P,AT,el,t0})=>{
  const f1=sv(L,'rect',{x:120,y:650,width:840,height:280,rx:18,fill:'rgba(8,8,8,.45)',stroke:'#5A554D','stroke-width':2});
  icon(L,b.icon||'clock',230,800,120,GRY,1.4);
  P(mk('cap','left:150px;top:670px;font-size:34px;color:#A9A194',esc(c.bl||'过去')),t0);
- P(mk('cap','left:330px;top:740px;font-size:60px;color:#D8D2C6',gem(b.t)),t0+0.15);
- if(b.sub)P(mk('cap','left:330px;top:830px;font-size:36px;color:#A9A194',gem(b.sub)),AT(b.subAt,t0+0.3));
+ const tb=AT(b.at,t0+0.15);P(mk('cap','left:330px;top:740px;font-size:60px;color:#D8D2C6',gem(b.t)),tb);
+ if(b.sub)P(mk('cap','left:330px;top:830px;font-size:36px;color:#A9A194',gem(b.sub)),AT(b.subAt,tb+0.15));
  const ar=line(L,'M540 950 V1030',GOLDC,5),ah=line(L,'M515 1008 L540 1033 L565 1008',GOLDC,5);
  raw(c,ar,t=>{drawP(ar,sIn(t,ta-0.4,0.4));drawP(ah,sIn(t,ta-0.05,0.2));});
  const f2=sv(L,'rect',{x:120,y:1050,width:840,height:300,rx:18,fill:'rgba(30,20,6,.55)',stroke:GOLDC,'stroke-width':3,opacity:0});
@@ -71,16 +71,16 @@ PAT.before=(c,{P,AT,el,t0})=>{
  raw(c,f2,t=>{const k=sIn(t,ta,0.4);f2.setAttribute('opacity',k.toFixed(3));ig.setAttribute('opacity',k.toFixed(3));f2.style.filter=k>0.99?`drop-shadow(0 0 ${(14+12*breath(t)).toFixed(1)}px rgba(255,190,60,.45))`:'';f1.setAttribute('opacity',(1-0.4*k).toFixed(3));});
  P(mk('cap','left:150px;top:1070px;font-size:34px;color:#FFD45C',esc(c.al||'现在')),ta);
  P(mk('lbl','left:330px;top:1130px;font-size:72px',gem(a.t)),ta+0.1);
- if(a.sub)P(mk('cap','left:330px;top:1240px;font-size:38px',gem(a.sub)),ta+0.35);};
+ if(a.sub)P(mk('cap','left:330px;top:1240px;font-size:38px',gem(a.sub)),AT(a.subAt,ta+0.35));};
 
 // 5. chain 因果链（竖排）：节点逐个亮起，箭头描出来，光点沿最新一段箭头流动；最后一个节点是结果，金色发光
 PAT.chain=(c,{P,AT,el,t0,first})=>{
- const it=c.items,n=it.length,y0=720,y1=1290,dy=(y1-y0)/(n-1),L=layer(el),cx=210;
+ const it=c.items,n=it.length,y0=n>4?690:720,y1=n>4?1300:1290,dy=(y1-y0)/(n-1),L=layer(el),cx=210,R=n>4?50:64;
  const ats=it.map((x,i)=>i===0?AT(x.at,t0):AT(x.at,t0+0.6+i*0.9));
- const ars=[];for(let i=1;i<n;i++){const ya=y0+(i-1)*dy+72,yb=y0+i*dy-74;ars.push({p:line(L,`M${cx} ${ya} V${yb}`,'#D8D2C6',5),h:line(L,`M${cx-18} ${yb-18} L${cx} ${yb} L${cx+18} ${yb-18}`,'#D8D2C6',5),ya,yb,d:sv(L,'circle',{cx,cy:ya,r:8,fill:GOLDC,opacity:0})});}
+ const ars=[];for(let i=1;i<n;i++){const ya=y0+(i-1)*dy+R+8,yb=y0+i*dy-R-10;ars.push({p:line(L,`M${cx} ${ya} V${yb}`,'#D8D2C6',5),h:line(L,`M${cx-18} ${yb-18} L${cx} ${yb} L${cx+18} ${yb-18}`,'#D8D2C6',5),ya,yb,d:sv(L,'circle',{cx,cy:ya,r:8,fill:GOLDC,opacity:0})});}
  const nodes=it.map((x,i)=>{const cy=y0+i*dy,last=i===n-1;const g=sv(L,'g',{opacity:0});
-  const ci=sv(g,'circle',{cx,cy,r:64,fill:last?'rgba(40,26,6,.7)':'rgba(8,8,8,.6)',stroke:last?GOLDC:'#BFB8AC','stroke-width':last?4:2.5});icon(g,x.icon||'arrow-right',cx,cy,70,last?GOLDC:WH,1.6);
-  P(mk(last?'lbl':'cap',`left:310px;top:${cy-(last?44:36)}px;font-size:${last?68:54}px`,gem(x.t)),ats[i]);
+  const ci=sv(g,'circle',{cx,cy,r:R,fill:last?'rgba(40,26,6,.7)':'rgba(8,8,8,.6)',stroke:last?GOLDC:'#BFB8AC','stroke-width':last?4:2.5});icon(g,x.icon||'arrow-right',cx,cy,R*1.1,last?GOLDC:WH,1.6);
+  P(mk(last?'lbl':'cap',`left:310px;top:${cy-(last?44:36)*(n>4?0.85:1)}px;font-size:${(last?68:54)*(n>4?0.85:1)}px`,gem(x.t)),ats[i]);
   return {g,ci,last};});
  raw(c,L,t=>{nodes.forEach((nd,i)=>{const k=first&&i===0?1:sIn(t,ats[i],0.35);nd.g.setAttribute('opacity',k.toFixed(3));nd.g.style.filter=nd.last&&k>0.99?`drop-shadow(0 0 ${(14+14*breath(t)).toFixed(1)}px rgba(255,190,60,.6))`:'';});
   ars.forEach((ar,j)=>{const ta=ats[j+1]-0.45,k=sIn(t,ta,0.4);drawP(ar.p,k);drawP(ar.h,sIn(t,ta+0.3,0.15));
@@ -107,6 +107,9 @@ PAT.steps=(c,{P,AT,el,t0})=>{
   const no=sv(L,'text',{x:170,y:cy+15,'text-anchor':'middle','font-size':42,'font-weight':900,fill:WH,'font-family':'NSC'},String(i+1));
   const ck=icon(L,'check',170,cy,50,'#1a1206',3);ck.setAttribute('opacity',0);
   const row=mk('row',`left:240px;top:${cy-36}px;font-size:58px;transform-origin:0 50%`,gem(x.t));el.appendChild(row);
+  if(Array.isArray(x.note)){const ws=x.note.map(([w,k])=>[w,AT(k,ats[i]+0.6)]);const e=P(mk('cap',`left:244px;top:${cy+38}px;font-size:32px;color:#C9C2B6`,ws.map(([w])=>`<span>${esc(w)}</span>`).join('　')),ws[0][1]);   // 说明逐词出：[[词, 锚点], …]
+   raw(c,e,t=>{[...e.querySelectorAll('span')].forEach((sp,j)=>{const k=sIn(t,ws[j][1],0.25);sp.style.opacity=k.toFixed(3);sp.style.color=t<ws[j][1]+0.8?'#FFD45C':'#C9C2B6';});});}
+  else if(x.note)P(mk('cap',`left:244px;top:${cy+38}px;font-size:32px;color:#C9C2B6`,gem(x.note)),AT(x.noteAt,ats[i]+0.6));
   raw(c,row,t=>{const on=t>=ats[i],nx=i+1<it.length?t>=ats[i+1]:false,cur=on&&!nx;const k=sIn(t,ats[i],0.3);
    row.style.opacity=(0.35+0.65*k).toFixed(3);row.style.color=cur?'#FFD45C':on?'#EDE6D8':'#A9A194';row.style.scale=cur?(1+0.06*k).toFixed(3):'1';
    row.style.filter=cur?`drop-shadow(0 0 ${(12+10*breath(t)).toFixed(1)}px rgba(255,190,60,.5))`:'';
@@ -134,3 +137,14 @@ PAT.set=(c,{P,AT,el,t0})=>{
  P(mk('quote',`left:120px;width:840px;text-align:center;top:${800-fs*0.75}px;font-size:${fs}px`,gem(c.lines[0])),t0+0.35);
  const b=P(mk('quote',`left:120px;width:840px;text-align:center;top:${860+fs*0.3}px;font-size:${fs}px`,`<em>${esc(c.lines[1].replace(/\*/g,''))}</em>`),t2);
  raw(c,b,t=>{b.style.scale=pulse(t,t2+0.35).toFixed(3);const em=b.querySelector('em');if(em){em.style.background='linear-gradient(180deg,#FFF8DC,#FFDB6E 55%,#F7BC45)';em.style.webkitBackgroundClip='text';em.style.backgroundClip='text';em.style.filter=t>t2?glow(breath(t)):'drop-shadow(0 4px 12px rgba(0,0,0,.8))';}});};
+
+// 10. ask 结尾提问：金色问号 + 两行问题（两行、无标点）+ 可选 n 条待填横线（「哪三个客户」）
+PAT.ask=(c,{P,AT,el,t0})=>{
+ const t2=AT(c.at2,t0+0.8),L=layer(el);const q=icon(L,'question-mark',200,760,170,GOLDC,2.2);q.setAttribute('opacity',0);
+ raw(c,q,t=>{q.setAttribute('opacity',sIn(t,t0,0.35).toFixed(3));q.style.filter=`drop-shadow(0 0 ${(14+12*breath(t)).toFixed(1)}px rgba(255,190,60,.7))`;});
+ P(mk('cap','left:330px;top:680px;font-size:60px;color:#fff',gem(c.lines[0])),t0+0.2);
+ P(mk('lbl','left:330px;top:770px;font-size:72px',gem(c.lines[1])),t2);
+ const n=c.slots||0,sa=(c.slotAt||[]).map(k=>AT(k,0));
+ for(let i=0;i<n;i++){const y=980+i*120,a=sa[i]||t2+0.5+i*0.5;const ci=sv(L,'circle',{cx:170,cy:y,r:34,fill:'rgba(8,8,8,.55)',stroke:GOLDC,'stroke-width':2.5,opacity:0});
+  const no=sv(L,'text',{x:170,y:y+13,'text-anchor':'middle','font-size':36,'font-weight':900,fill:GOLDC,'font-family':'NSC',opacity:0},String(i+1));const ln=line(L,`M240 ${y+22} H860`,'#D8D2C6',3);
+  raw(c,ci,t=>{const k=sIn(t,a,0.3);ci.setAttribute('opacity',k.toFixed(3));no.setAttribute('opacity',k.toFixed(3));drawP(ln,sIn(t,a+0.1,0.5));});}};

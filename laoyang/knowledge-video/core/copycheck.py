@@ -27,6 +27,7 @@ WARN = [
 texts = [(k, v["sub"]) for k, v in D["lines"].items()] + [(f"金句{i+1}", h[1].replace("|", "／")) for i, h in enumerate(D.get("heads", []))]
 def card_txt(c):
     out = []
+    if isinstance(c, list): return [x.replace("*", "") for x in c if isinstance(x, str) and "|" not in x]   # 逐词说明 [词, 锚点]
     for k, v in c.items():
         if k in ("t", "type", "icon", "src") or k == "at" or k.endswith("At"): continue
         if isinstance(v, str): out.append(v.replace("*", ""))
