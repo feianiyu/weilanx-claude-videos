@@ -46,5 +46,42 @@ subs = [v["sub"] for v in D["lines"].values()]
 short = [i for i in range(len(subs) - 2) if all(len(re.sub(r"[，。？！：；“”]", "", subs[j])) <= 9 for j in range(i, i + 3))]
 if short: warn += 1; print(f"! 结构   连续三句超短句造势：v{short[0]+1:02d} 起")
 if not any(re.search(r"\d|[一二三四五六七八九十百千万亿]+(家|个|年|天|元|亿|万|%)", s) for s in subs): warn += 1; print("! 结构   通篇没有一个具体数字，检查材料是否够实")
+# 流畅与开头：观众在哪一秒划走、开头 10 秒交代了什么（思路参考 dontbesilent2025/dbskill 的 script-flow、title-cover-intro，CC BY-NC 4.0；规则为本仓库自写，未复制原文）
+clean = lambda s: re.sub(r"[，。？！：；、“”‘’（）《》\s]", "", s)
+def flag(level, k, msg):
+    global hard, warn
+    if level == "✗": hard += 1
+    else: warn += 1
+    print(f"{level} {k:6} {msg}")
+keys = list(D["lines"])
+for i, (k, s) in enumerate(zip(keys, subs)):
+    for m in re.finditer(r"针对|鉴于|基于|予以|进行了?|旨在|从而|此外|以及|对于.{1,8}而言|有效地", s): flag("!", k, f"书面语，念出来像公文：…{m.group(0)}…")
+    for x in re.split(r"[。？！]", s):
+        if len(clean(x)) > 40: flag("!", k, f"一句 {len(clean(x))} 字，一口气念不完，拆成两句：{x[:16]}…")
+        for y in re.split(r"[，；：、]", x):
+            if len(clean(y)) > 18: flag("!", k, f"中间没有停顿的一段 {len(clean(y))} 字，念着会憋气：{y[:16]}…")
+    if i + 1 < len(subs) - 1 and "？" in s and "？" in subs[i + 1]: flag("!", k, "连着两句自问，观众会烦")
+    if i + 2 < len(subs) and all(len(clean(subs[j])) > 30 for j in range(i, i + 3)): flag("!", k, "连续三句都很长，节奏发闷，中间插一句短的")
+    if i + 1 < len(subs):
+        a, b = ({clean(t)[j:j + 2] for j in range(len(clean(t)) - 1)} for t in (s, subs[i + 1]))
+        if a and b and len(a & b) / len(a | b) > 0.45: flag("!", k, f"和下一句意思重复，删一句或合并")
+# 开头 10 秒：按配音时间轴取（没配音时按 5.5 字/秒估）
+try: TL = json.load(open(os.path.join(EP, "build/meta.json")))["timeline"]; head = [D["lines"][k]["sub"] for k in keys if TL[k][0] < 10]
+except (OSError, KeyError): head, n = [], 0; [head.append(s) for s in subs if (n := n + len(clean(s))) - len(clean(s)) < 55]
+op = "".join(head)
+if not re.search(r"\d|[一二三四五六七八九十两百千万]+(个|家|年|天|月|万|亿|成|倍|笔|单)|并购", op): flag("!", "开头", "前 10 秒没有让人信你的数字、年限或身份（例如做了 25 年并购）")
+if re.search(r"今天(我们)?(来)?(聊|讲|说)|大家好|欢迎|(有|讲|说|告诉你)一件事|一个秘密|一定要看完", op): flag("✗", "开头", "前 10 秒用了寒暄、预告或空悬念，直接讲事情")
+if re.match(r"(这|那|他|她|它)(个|种|些|件)?", subs[0]): flag("!", "开头", "第一句用代词开头，没看标题的人不知道在说谁")
+# 封面每行最多 6 字（7 字要有理由，8 字以上重写）；发布标题（视频号 / 抖音文案）连标点不超过 30 字
+for j, ln in enumerate(D.get("cover", {}).get("title", "").split("<br>")):
+    n = len(clean(ln))
+    if n >= 8: flag("✗", "封面", f"第 {j+1} 行 {n} 字，每行最多 6 字：{ln}")
+    elif n == 7: flag("!", "封面", f"第 {j+1} 行 7 字，先试更短的说法：{ln}")
+pub = os.path.join(EP, "out/发布文案.md")
+if os.path.exists(pub):
+    tt = re.findall(r"^- (.+?)(?:（推荐）)?$", open(pub, encoding="utf-8").read().split("## 标题")[1].split("##")[0], re.M)
+    for t in tt:
+        if len(t) > 30: flag("✗", "标题", f"{len(t)} 字符，视频号 / 抖音文案连标点不超过 30：{t}")
+    if clean(D.get("cover", {}).get("title", "").replace("<br>", "")) in [clean(t) for t in tt]: flag("!", "标题", "发布标题和封面字一模一样，两处各给一点不同信息")
 print(f"\n硬伤 {hard} 处，提示 {warn} 处" + ("  → 硬伤清零前不配音" if hard else ""))
 sys.exit(1 if hard else 0)
