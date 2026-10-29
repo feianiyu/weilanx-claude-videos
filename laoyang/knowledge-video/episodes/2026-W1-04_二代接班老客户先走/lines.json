@@ -1,0 +1,314 @@
+{
+ "_说明": "《老杨看公司》第 1 周 04｜v4 管线｜案例为示意",
+ "layout": "v3",
+ "series": {
+  "title": "老杨看公司｜二代接班，老客户先走了",
+  "sub": ""
+ },
+ "cover": {
+  "eyebrow": "—— 老杨看公司 ——",
+  "title": "接班第一年<br>老客户先走了",
+  "sub": "股权过户了，信任没过来"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494，core/grade_bg.py 调色（本周 7 条统一底图）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.4,
+ "restBefore": "v06",
+ "heads": [
+  [
+   "c0",
+   "接班第一年|老客户先走了"
+  ],
+  [
+   "c1",
+   "订单砍半|账期压短"
+  ],
+  [
+   "c2",
+   "股权过户了|信任没过来"
+  ],
+  [
+   "c3",
+   "接班之前|先过一遍客户"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "before",
+   "bl": "设想一家工厂",
+   "before": {
+    "icon": "building-factory",
+    "t": "老板交棒给儿子",
+    "sub": "刚回国 接任总经理",
+    "subAt": "v01|刚回国|s"
+   },
+   "al": "儿子上任先推制度",
+   "after": {
+    "icon": "file-text",
+    "t": "采购三级审批",
+    "sub": "付款统一月结",
+    "subAt": "v02|付款|s"
+   },
+   "afterAt": "v02|采购|s",
+   "src": "案例为示意"
+  },
+  {
+   "at": "c1",
+   "type": "chain",
+   "items": [
+    {
+     "icon": "trending-down",
+     "t": "大客户订单砍一半",
+     "at": "v03|砍了一半|s"
+    },
+    {
+     "icon": "phone",
+     "t": "以前一个电话 当天插单",
+     "at": "v03|以前一个电话|s"
+    },
+    {
+     "icon": "clock",
+     "t": "现在走流程要两周",
+     "at": "v03|现在走流程|s"
+    },
+    {
+     "icon": "calendar",
+     "t": "另一家压短账期",
+     "at": "v04|账期|s"
+    },
+    {
+     "icon": "user",
+     "t": "我们信的是你父亲",
+     "at": "v04|父亲|s"
+    }
+   ],
+   "src": "案例为示意"
+  },
+  {
+   "at": "v05|销售副总|s",
+   "type": "before",
+   "bl": "跟了老板十几年",
+   "before": {
+    "icon": "user-check",
+    "t": "销售副总"
+   },
+   "al": "现在",
+   "after": {
+    "icon": "door-exit",
+    "t": "也走了",
+    "sub": "带走几个区域的客户",
+    "subAt": "v05|几个区域|s"
+   },
+   "afterAt": "v05|也走了|s",
+   "src": "案例为示意"
+  },
+  {
+   "at": "c2",
+   "type": "steps",
+   "title": "认的是老板这个人",
+   "items": [
+    {
+     "t": "老客户",
+     "at": "v06|老客户|s"
+    },
+    {
+     "t": "老供应商",
+     "at": "v06|老供应商|s"
+    },
+    {
+     "t": "老部下",
+     "at": "v06|老部下|s"
+    }
+   ]
+  },
+  {
+   "at": "v06|股权过户|s",
+   "type": "set",
+   "lines": [
+    "股权过户了",
+    "信任没有跟着过来"
+   ],
+   "at2": "v06|这份信任|s"
+  },
+  {
+   "at": "c3",
+   "type": "before",
+   "bl": "认公司的客户",
+   "before": {
+    "icon": "building",
+    "t": "换了人也能接着做",
+    "at": "v07|认的是公司|s"
+   },
+   "al": "认老板的客户",
+   "after": {
+    "icon": "user",
+    "t": "要老板亲自交接"
+   },
+   "afterAt": "v07|还是老板|s"
+  },
+  {
+   "at": "v08|最大的|s",
+   "type": "ask",
+   "lines": [
+    "最大的三个客户",
+    "认的是谁"
+   ],
+   "at2": "v08|认的是谁|s",
+   "slots": 3
+  }
+ ],
+ "sfx": [
+  [
+   "v02|儿子|s",
+   "swish",
+   0
+  ],
+  [
+   "v03|砍了一半|s",
+   "thud",
+   0
+  ],
+  [
+   "v05|走了|s",
+   "sub",
+   0
+  ],
+  [
+   "v06|股权|s",
+   "sparkle",
+   0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "设想一家做零部件的工厂，老板把总经理交给了刚回国的儿子。",
+   "dur": 4.7
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "儿子上任先推制度：采购三级审批，付款统一月结。",
+   "dur": 4.27
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "几个月后，合作十几年的大客户订单砍了一半。对方说，以前一个电话，急单当天就能插进去，现在走流程要两周。",
+   "dur": 9.48
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "又一家客户把账期压短，原话是：我们信的是你父亲这个人。",
+   "dur": 4.7
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "跟了老板十几年的销售副总也走了，带走了几个区域的客户。",
+   "dur": 4.56
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "制度本身没错。老客户、老供应商、老部下认的是老板这个人，股权过户了，这份信任没有跟着过来。",
+   "dur": 7.94
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "接班之前，先把核心客户一个个过一遍：他认的是公司，还是老板本人。",
+   "dur": 5.62
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "你们公司最大的三个客户，认的是谁？",
+   "dur": 3.17
+  }
+ },
+ "endNext": ""
+}

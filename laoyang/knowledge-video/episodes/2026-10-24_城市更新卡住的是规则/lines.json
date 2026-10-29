@@ -1,0 +1,408 @@
+{
+ "_说明": "标准版 · 老板读研报 · 系列第二集（接《城市更新：从工程改造走向长期运营》）· 老杨本人声音 ×1.2",
+ "series": {
+  "title": "城市更新，卡住的不是项目，而是规则",
+  "sub": "停在94%的项目"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 老板读研报 ——",
+  "title": "卡住的<br>是规则",
+  "sub": "城市更新，卡住的不是项目"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/34911458/pexels-photo-34911458.jpeg",
+ "bgNote": "Pexels 34911458 黄昏老楼与塔吊（原生竖版 2224×3953）；成片 9:16 中裁 + 饱和 0.55 + 冷青调暖（R×1.10 / B×0.82）+ 按高度分段压暗（顶 0.85 / 中间区 0.55 / 字幕区 0.3）（沿用上期，保持系列感）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.2
+ },
+ "gapSec": 0.15,
+ "secGap": 0.6,
+ "bgmUnder": 7.9,
+ "bgm": {
+  "file": "audio/bgm_mixkit_594.mp3",
+  "url": "https://assets.mixkit.co/music/594/594.mp3",
+  "src": "Mixkit 曲目 id 594（Mixkit Stock Music Free License）；270s，持续爬升，118.01s 全乐队进入"
+ },
+ "beat": {
+  "bpm": 119.9,
+  "period": 0.50042,
+  "t0": 0.415,
+  "src": "core/beatfit.py audio/bgm_mixkit_594.mp3 120 120；118.01s 抬升点 = 第 235 拍"
+ },
+ "restBefore": "v18",
+ "bgmSection": 118.01,
+ "progress": [
+  [
+   "判断",
+   "c1"
+  ],
+  [
+   "没有法",
+   "c2"
+  ],
+  [
+   "老办法",
+   "c3"
+  ],
+  [
+   "边界",
+   "c4"
+  ],
+  [
+   "行动",
+   "c5"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "sweep",
+   0
+  ],
+  "c2": [
+   "smoke",
+   900
+  ],
+  "c3": [
+   "sweep",
+   0
+  ],
+  "c4": [
+   "smoke",
+   950
+  ],
+  "c5": [
+   "sweep",
+   0
+  ]
+ },
+ "heads": [
+  [
+   "c0",
+   "签约签到94%，|项目停了"
+  ],
+  [
+   "v02|剩下|s",
+   "剩下6%，|签不下来"
+  ],
+  [
+   "v04|停一年|s",
+   "停一年，|*利息照样走*"
+  ],
+  [
+   "c1",
+   "不是项目的问题"
+  ],
+  [
+   "c2",
+   "国家层面，|还没有更新法"
+  ],
+  [
+   "v08|民法典|s",
+   "四分之三，|还是95%？"
+  ],
+  [
+   "v10|可门槛|s",
+   "剩下那6%，|*怎么办*"
+  ],
+  [
+   "c3",
+   "老办法，|走不通了"
+  ],
+  [
+   "v12|两条线|s",
+   "拆除不超20%，|拆建比不超2"
+  ],
+  [
+   "c4",
+   "能做成，|前提是规则写死"
+  ],
+  [
+   "c5",
+   "老板今天，|先查两个数"
+  ],
+  [
+   "v18|最后|s",
+   "最后一个问题"
+  ]
+ ],
+ "sfx": [
+  [
+   "v01|九十四|s",
+   "sub",
+   0.1
+  ],
+  [
+   "v01|停了|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v03|九十五|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v04|利息|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v05|规则|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v06|城市更新法|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v07|打架|s",
+   "glitch",
+   0.0
+  ],
+  [
+   "v08|四分之三|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v08|九十五|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v10|可门槛|s",
+   "smoke",
+   0.2
+  ],
+  [
+   "v11|走不通|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v12|百分之二十|s",
+   "smoke",
+   0.1
+  ],
+  [
+   "v12|不超过二|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v13|算不过来|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v15|八成|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v15|法庭|s",
+   "thud",
+   0.05
+  ],
+  [
+   "v16|两个数|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v18|最后|s",
+   "impact",
+   -0.09
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "签约签到94%，项目停了。",
+   "tts": "签约签到百分之九十四，项目停了。",
+   "dur": 3.1
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "剩下6%，有人要更多补偿，有人联系不上，有人就是不想走。",
+   "tts": "剩下百分之六，有人要更多补偿，有人联系不上，有人就是不想走。",
+   "dur": 5.3
+  },
+  "v03": {
+   "sec": "c0",
+   "sub": "条例写的是：旧住宅区，面积和人数都要到95%。",
+   "tts": "条例写的是：旧住宅区，面积和人数都要到百分之九十五。",
+   "dur": 5.42
+  },
+  "v04": {
+   "sec": "c0",
+   "sub": "停一年，利息照样在走。",
+   "dur": 2.42
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "城市更新卡住的，不是项目，是规则。",
+   "dur": 3.74
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "第一，国家层面还没有一部城市更新法。",
+   "dur": 3.43
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "地方条例在补，但会和上位法打架。",
+   "dur": 3.26
+  },
+  "v08": {
+   "sec": "c2",
+   "sub": "民法典规定，改建重建要参与表决业主的四分之三同意；深圳的旧住宅区要95%。",
+   "tts": "民法典规定，改建重建要参与表决业主的四分之三同意；深圳的旧住宅区要百分之九十五。",
+   "dur": 7.3
+  },
+  "v09": {
+   "sec": "c2",
+   "sub": "门槛高，是为了不再强拆。",
+   "dur": 2.76
+  },
+  "v10": {
+   "sec": "c2",
+   "sub": "可门槛后面那6%怎么办，还没有一部全国都能用的法。",
+   "tts": "可门槛后面那百分之六怎么办，还没有一部全国都能用的法。",
+   "dur": 4.78
+  },
+  "v11": {
+   "sec": "c3",
+   "sub": "第二，老办法已经走不通。",
+   "dur": 2.28
+  },
+  "v12": {
+   "sec": "c3",
+   "sub": "2021年住建部的通知画了两条线：拆除面积原则上不超过现状的20%，拆建比原则上不超过2。",
+   "tts": "二零二一年住建部的通知画了两条线：拆除面积原则上不超过现状的百分之二十，拆建比原则上不超过二。",
+   "dur": 8.45,
+   "screens": [
+    "2021年住建部的通知|画了两条线：",
+    "拆除面积原则上|不超过现状的20%，",
+    "拆建比原则上不超过2。"
+   ]
+  },
+  "v13": {
+   "sec": "c3",
+   "sub": "拆掉、加面积、卖新房，这条路在老城区已经算不过来了。",
+   "dur": 5.09
+  },
+  "v14": {
+   "sec": "c4",
+   "sub": "这不是说更新做不成。",
+   "dur": 2.11
+  },
+  "v15": {
+   "sec": "c4",
+   "sub": "香港对部分老楼，把强制售卖的门槛降到八成，交给法庭裁决，规则写死，大家就知道下一步。",
+   "dur": 7.78
+  },
+  "v16": {
+   "sec": "c5",
+   "sub": "做设计和咨询的老板，今天先做一件事：把手上的更新方案拿出来，查两个数，拆除面积占比和拆建比。",
+   "dur": 8.45
+  },
+  "v17": {
+   "sec": "c5",
+   "sub": "超过20%和2的，方案还是靠卖新房在撑，现在就该改。",
+   "tts": "超过百分之二十和二的，方案还是靠卖新房在撑，现在就该改。",
+   "dur": 5.95
+  },
+  "v18": {
+   "sec": "c5",
+   "sub": "最后问一句：这个项目第七年出了问题，你们赔不赔？",
+   "dur": 4.42
+  }
+ },
+ "endNext": ""
+}

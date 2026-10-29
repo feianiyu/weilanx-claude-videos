@@ -1,0 +1,286 @@
+{
+ "_说明": "《老杨看公司》第 1 周 03｜v4 管线｜案例为示意",
+ "layout": "v3",
+ "series": {
+  "title": "老杨看公司｜回款要老板亲自去催",
+  "sub": ""
+ },
+ "cover": {
+  "eyebrow": "—— 老杨看公司 ——",
+  "title": "回款这件事<br>老板要亲自抓",
+  "sub": "每周一打三个电话"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494，core/grade_bg.py 调色（本周 7 条统一底图）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.4,
+ "restBefore": "v03",
+ "heads": [
+  [
+   "c0",
+   "怕伤感情|不好意思催款"
+  ],
+  [
+   "c1",
+   "回款这件事|老板要亲自抓"
+  ],
+  [
+   "c2",
+   "缺钱了|早点开口"
+  ],
+  [
+   "c3",
+   "从这周一|开始打"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "set",
+   "lines": [
+    "不好意思催款",
+    "怕伤了客户感情"
+   ],
+   "at2": "v01|怕伤了|s"
+  },
+  {
+   "at": "v02|想一下|s",
+   "type": "before",
+   "bl": "客户拖你三个月",
+   "before": {
+    "icon": "clock",
+    "t": "你不好意思开口",
+    "at": "v02|不好意思|s"
+   },
+   "al": "你撑不住了",
+   "after": {
+    "icon": "alert-triangle",
+    "t": "供应商的钱还不上"
+   },
+   "afterAt": "v02|撑不住|s"
+  },
+  {
+   "at": "c1",
+   "type": "before",
+   "bl": "过去",
+   "before": {
+    "icon": "users",
+    "t": "交给财务和销售"
+   },
+   "al": "现在",
+   "after": {
+    "icon": "user-check",
+    "t": "老板亲自抓"
+   },
+   "afterAt": "v03|销售|s"
+  },
+  {
+   "at": "v04|每周一|s",
+   "type": "steps",
+   "title": "每周一 老板亲自打",
+   "items": [
+    {
+     "t": "欠款最多的三个客户",
+     "at": "v04|欠款最多|s"
+    },
+    {
+     "t": "问清哪天能付",
+     "at": "v04|哪天能付|s"
+    },
+    {
+     "t": "卡在哪个环节",
+     "at": "v04|卡在|s"
+    }
+   ],
+   "src": "案例为示意"
+  },
+  {
+   "at": "v05|先谈好|s",
+   "type": "before",
+   "bl": "过去",
+   "before": {
+    "icon": "report-money",
+    "t": "先谈价格"
+   },
+   "al": "现在",
+   "after": {
+    "icon": "calendar",
+    "t": "先谈什么时候付",
+    "sub": "分几次付 再谈价格",
+    "subAt": "v05|分几次|s"
+   },
+   "afterAt": "v05|什么时候付|s"
+  },
+  {
+   "at": "c2",
+   "type": "set",
+   "lines": [
+    "真缺钱了",
+    "早点开口"
+   ],
+   "at2": "v06|开口|s"
+  },
+  {
+   "at": "c3",
+   "type": "ask",
+   "lines": [
+    "这周一的电话",
+    "打给哪三个客户"
+   ],
+   "at2": "v07|哪三个|s",
+   "slots": 3,
+   "slotAt": [
+    "v07|三个|s",
+    "v07|客户|s",
+    "v07|打电话|s"
+   ]
+  }
+ ],
+ "sfx": [
+  [
+   "v02|撑不住|s",
+   "thud",
+   0
+  ],
+  [
+   "v04|每周一|s",
+   "swish",
+   0
+  ],
+  [
+   "v05|先谈好|s",
+   "swish",
+   0
+  ],
+  [
+   "v06|早点|s",
+   "sparkle",
+   0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "很多老板不好意思催款，怕伤了客户感情。",
+   "dur": 3.34
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "想一下两头：客户拖你三个月，你不好意思开口；你要是因此撑不住，欠供应商的货款就还不上了。",
+   "dur": 7.06
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "所以回款不能只交给财务和销售。",
+   "dur": 3.02
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "设想一个老板这样做：每周一，亲自给欠款最多的三个客户打电话，问清楚哪天能付、卡在哪个环节。",
+   "dur": 7.49
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "新签的订单，先谈好什么时候付、分几次付，再谈价格。",
+   "dur": 4.58
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "真缺钱了，早点跟供应商和银行开口。拖到发不出工资再说，对方只会担心你要跑。",
+   "dur": 6.55
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "这周一，你会给哪三个客户打电话？",
+   "dur": 2.86
+  }
+ },
+ "endNext": ""
+}

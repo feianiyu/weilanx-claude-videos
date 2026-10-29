@@ -1,0 +1,283 @@
+{
+ "_说明": "《老杨看公司》第 1 周 01｜v4 管线｜案例为示意",
+ "layout": "v3",
+ "series": {
+  "title": "老杨看公司｜账上现金只够撑三个月",
+  "sub": ""
+ },
+ "cover": {
+  "eyebrow": "—— 老杨看公司 ——",
+  "title": "现金只够<br>撑三个月",
+  "sub": "先保工资还是先保供应商"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494，core/grade_bg.py 调色（本周 7 条统一底图）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.4,
+ "restBefore": "v05",
+ "heads": [
+  [
+   "c0",
+   "现金只够|撑三个月"
+  ],
+  [
+   "c1",
+   "钱不够时|先保哪一头"
+  ],
+  [
+   "c2",
+   "每天一张|现金表"
+  ],
+  [
+   "c3",
+   "财务多久|报一次现金"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "big",
+   "num": 3,
+   "unit": "个月",
+   "cap": "账上现金够发的工资",
+   "capAt": "v01|看账上|s",
+   "vs": {
+    "label": "大项目回款",
+    "num": "两笔",
+    "unit": "拖着",
+    "at": "v02|两个大项目|s"
+   },
+   "note": "银行贷款 半年后到期",
+   "noteAt": "v02|银行贷款|s",
+   "src": "案例为示意"
+  },
+  {
+   "at": "c1",
+   "type": "ask",
+   "lines": [
+    "先保工资",
+    "还是先保供应商"
+   ],
+   "at2": "v03|还是|s"
+  },
+  {
+   "at": "v04|保工资|s",
+   "type": "before",
+   "bl": "先保工资",
+   "before": {
+    "icon": "truck",
+    "t": "供应商断货",
+    "sub": "工地停工",
+    "subAt": "v04|工地停工|s"
+   },
+   "al": "先保供应商",
+   "after": {
+    "icon": "users",
+    "t": "工资晚发",
+    "sub": "人心就散了",
+    "subAt": "v04|人心|s"
+   },
+   "afterAt": "v04|保供应商|s",
+   "src": "案例为示意"
+  },
+  {
+   "at": "v05|财务|s",
+   "type": "steps",
+   "title": "每天下班前一张表",
+   "items": [
+    {
+     "t": "账上还有多少钱",
+     "at": "v05|账上还有|s"
+    },
+    {
+     "t": "三十天内要付多少",
+     "at": "v05|要付多少|s"
+    },
+    {
+     "t": "三十天内能进多少",
+     "at": "v05|能进多少|s"
+    }
+   ]
+  },
+  {
+   "at": "v06|发现问题|s",
+   "type": "before",
+   "bl": "季度看一次报表",
+   "before": {
+    "icon": "calendar",
+    "t": "发现时已经晚了",
+    "sub": "现金断掉按天算",
+    "subAt": "v06|按天算|s"
+   },
+   "al": "每天看一次现金",
+   "after": {
+    "icon": "clock",
+    "t": "哪笔先付 哪笔先催",
+    "sub": "每天都能定下来",
+    "subAt": "v07|每天都能|s"
+   },
+   "afterAt": "v07|有了这张表|s"
+  },
+  {
+   "at": "c3",
+   "type": "set",
+   "lines": [
+    "财务多久",
+    "给你报一次现金"
+   ],
+   "at2": "v08|报一次|s"
+  }
+ ],
+ "sfx": [
+  [
+   "v01|余额|s",
+   "sub",
+   0
+  ],
+  [
+   "v03|先保工资|s",
+   "thud",
+   0
+  ],
+  [
+   "v05|每天|s",
+   "swish",
+   0
+  ],
+  [
+   "v08|多久|s",
+   "sparkle",
+   0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "设想一个老板，每天早上睁眼第一件事，是看账上的余额。",
+   "dur": 4.56
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "现金只够发三个月工资，两个大项目的回款拖着没进来，银行贷款半年后到期。",
+   "dur": 6.41
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "这个月钱要是还不到，先保工资，还是先保供应商？",
+   "dur": 3.96
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "保工资，供应商断货，工地停工；保供应商，工资晚发，人心就散了。",
+   "dur": 6.24
+  },
+  "v05": {
+   "sec": "c2",
+   "sub": "这种时候先做一件事：让财务每天下班前报一张表，账上还有多少钱，未来三十天要付多少、能进多少。",
+   "dur": 7.34
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "季度看一次报表的老板，发现问题时往往已经晚了，现金断掉是按天算的。",
+   "dur": 5.78
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "有了这张表，哪笔钱先付、哪笔款先催，每天都能定下来。",
+   "dur": 5.18
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "你的公司，财务多久给你报一次现金？",
+   "dur": 3.17
+  }
+ },
+ "endNext": ""
+}

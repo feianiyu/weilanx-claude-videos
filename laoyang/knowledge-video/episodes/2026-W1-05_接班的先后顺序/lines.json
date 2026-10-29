@@ -1,0 +1,267 @@
+{
+ "_说明": "《老杨看公司》第 1 周 05｜v4 管线｜案例为示意",
+ "layout": "v3",
+ "series": {
+  "title": "老杨看公司｜接班要排好先后顺序",
+  "sub": ""
+ },
+ "cover": {
+  "eyebrow": "—— 老杨看公司 ——",
+  "title": "接班要排顺序<br>先接钱再接人",
+  "sub": "先付款，再合同，后人事"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494，core/grade_bg.py 调色（本周 7 条统一底图）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.4,
+ "restBefore": "v05",
+ "heads": [
+  [
+   "c0",
+   "接班要排顺序|先接钱再接人"
+  ],
+  [
+   "c1",
+   "付款合同人事|一步一步接"
+  ],
+  [
+   "c2",
+   "老部下|改做引荐人"
+  ],
+  [
+   "c3",
+   "顺序倒过来|老客户先撤"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "ask",
+   "lines": [
+    "二代接班",
+    "先动哪一块"
+   ],
+   "at2": "v01|先动|s"
+  },
+  {
+   "at": "c1",
+   "type": "steps",
+   "title": "接班的先后",
+   "items": [
+    {
+     "t": "核心供应商的对账付款",
+     "at": "v02|先接|s",
+     "note": "按时付钱 最快建立信任",
+     "noteAt": "v02|按时|s"
+    },
+    {
+     "t": "老客户的重大合同",
+     "at": "v03|再接|s",
+     "note": "老部下带着去 当面介绍",
+     "noteAt": "v03|带着去|s"
+    },
+    {
+     "t": "组织和人事调整",
+     "at": "v04|组织|s"
+    }
+   ]
+  },
+  {
+   "at": "c2",
+   "type": "chain",
+   "items": [
+    {
+     "icon": "users",
+     "t": "老部下手里有关系",
+     "at": "v05|外人接不上|s"
+    },
+    {
+     "icon": "route",
+     "t": "继续跑关键客户",
+     "at": "v05|继续跑|s"
+    },
+    {
+     "icon": "heart-handshake",
+     "t": "一个一个交给新老板",
+     "at": "v05|一个一个|s"
+    },
+    {
+     "icon": "clipboard-check",
+     "t": "签字收回 流程讲清",
+     "at": "v06|签字|s"
+    }
+   ]
+  },
+  {
+   "at": "c3",
+   "type": "myth",
+   "ml": "顺序倒过来",
+   "myth": "先动人 先改流程",
+   "strikeAt": "v07|先动人|s",
+   "fl": "结果往往是",
+   "fact": "老客户和老供应商*最先撤*",
+   "factAt": "v07|老客户|s"
+  },
+  {
+   "at": "v08|交接|s",
+   "type": "ask",
+   "lines": [
+    "你们公司的交接",
+    "走到哪一步了"
+   ],
+   "at2": "v08|哪一步|s"
+  }
+ ],
+ "sfx": [
+  [
+   "v02|先接|s",
+   "swish",
+   0
+  ],
+  [
+   "v04|最后|s",
+   "thud",
+   0
+  ],
+  [
+   "v05|老部下|s",
+   "swish",
+   0
+  ],
+  [
+   "v07|最先撤|s",
+   "sub",
+   0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "二代接班，先动哪一块，决定了会不会出事。",
+   "dur": 3.65
+  },
+  "v02": {
+   "sec": "c1",
+   "sub": "先接核心供应商的对账和付款。按时把钱付到，是新老板最快建立信任的办法。",
+   "dur": 6.24
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "再接老客户的重大合同。头几单让老部下带着去，当面把客户介绍给新老板。",
+   "dur": 6.1
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "组织和人事调整，放在最后。",
+   "dur": 2.88
+  },
+  "v05": {
+   "sec": "c2",
+   "sub": "跟了十几年的老部下，手里有外人接不上的关系。让他们继续跑关键客户，同时一个一个把关系交到新老板手上。",
+   "dur": 9.22
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "哪些签字要收回，哪些事改走新流程，提前讲清楚。",
+   "dur": 4.7
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "顺序倒过来，先动人、先改流程，老客户和老供应商往往最先撤。",
+   "dur": 5.64
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "你们公司的交接，现在走到哪一步了？",
+   "dur": 2.88
+  }
+ },
+ "endNext": ""
+}

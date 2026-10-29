@@ -1,0 +1,276 @@
+{
+ "_说明": "《老杨看公司》第 1 周 02｜v4 管线｜案例为示意",
+ "layout": "v3",
+ "series": {
+  "title": "老杨看公司｜缩减开支，第一刀砍向哪里",
+  "sub": ""
+ },
+ "cover": {
+  "eyebrow": "—— 老杨看公司 ——",
+  "title": "收缩的第一刀<br>先砍自己",
+  "sub": "员工都看在眼里"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494，core/grade_bg.py 调色（本周 7 条统一底图）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.4,
+ "restBefore": "v06",
+ "heads": [
+  [
+   "c0",
+   "收缩的第一刀|先砍自己"
+  ],
+  [
+   "c1",
+   "两个老板|两种砍法"
+  ],
+  [
+   "c2",
+   "砍的顺序|别倒过来"
+  ],
+  [
+   "c3",
+   "第一刀|你砍向了哪里"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "set",
+   "lines": [
+    "第一刀砍向哪里",
+    "员工都看在眼里"
+   ],
+   "at2": "v01|员工|s"
+  },
+  {
+   "at": "c1",
+   "type": "before",
+   "bl": "老板甲",
+   "before": {
+    "icon": "briefcase",
+    "t": "先砍研发和销售",
+    "at": "v02|一个先砍|s",
+    "sub": "自己的车和工资照旧",
+    "subAt": "v02|自己的车|s"
+   },
+   "al": "老板乙",
+   "after": {
+    "icon": "user-check",
+    "t": "先停自己的工资",
+    "sub": "卖一辆车 再砍不赚钱的业务",
+    "subAt": "v03|再砍|s"
+   },
+   "afterAt": "v03|另一个|s",
+   "src": "案例为示意"
+  },
+  {
+   "at": "v04|第一种|s",
+   "type": "before",
+   "bl": "老板甲的团队",
+   "before": {
+    "icon": "user-x",
+    "t": "在陪老板扛",
+    "at": "v04|陪他扛|s"
+   },
+   "al": "老板乙的团队",
+   "after": {
+    "icon": "users",
+    "t": "愿意一起熬一阵",
+    "sub": "老板也在掏钱",
+    "subAt": "v05|掏钱|s"
+   },
+   "afterAt": "v05|第二种|s",
+   "src": "案例为示意"
+  },
+  {
+   "at": "c2",
+   "type": "steps",
+   "title": "动手之前先排顺序",
+   "items": [
+    {
+     "t": "老板自己的开销",
+     "at": "v06|老板自己|s"
+    },
+    {
+     "t": "非核心业务",
+     "at": "v06|非核心|s"
+    },
+    {
+     "t": "最后才是核心团队",
+     "at": "v06|最后才是|s"
+    }
+   ]
+  },
+  {
+   "at": "v07|顺序|s",
+   "type": "set",
+   "lines": [
+    "顺序一倒过来",
+    "最先走的是最想留的人"
+   ],
+   "at2": "v07|最先走|s"
+  },
+  {
+   "at": "c3",
+   "type": "ask",
+   "lines": [
+    "上一次缩减开支",
+    "先砍的是哪一项"
+   ],
+   "at2": "v08|先砍|s"
+  }
+ ],
+ "sfx": [
+  [
+   "v01|第一刀|s",
+   "sub",
+   0
+  ],
+  [
+   "v03|另一个|s",
+   "swish",
+   0
+  ],
+  [
+   "v06|先把|s",
+   "swish",
+   0
+  ],
+  [
+   "v07|最先走|s",
+   "sparkle",
+   0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "公司缺钱要砍费用，第一刀砍向哪里，员工都看在眼里。",
+   "dur": 4.7
+  },
+  "v02": {
+   "sec": "c1",
+   "sub": "设想两个老板。一个先砍研发和销售，自己的车和工资照旧。",
+   "dur": 5.21
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "另一个先停了自己的工资，卖掉一辆车，再砍不赚钱的业务，最后才动核心团队。",
+   "dur": 6.26
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "第一种，留下的人会觉得，老板是在让大家陪他扛。",
+   "dur": 4.27
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "第二种，大家看得到老板也在掏钱，愿意一起熬一阵。",
+   "dur": 4.08
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "所以动手之前，先把要砍的项排个顺序：老板自己的开销，非核心业务，最后才是核心团队。",
+   "dur": 7.49
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "顺序一倒过来，最先走的往往是你最想留的人。",
+   "dur": 3.17
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "你们公司上一次缩减开支，先砍的是哪一项？",
+   "dur": 3.65
+  }
+ },
+ "endNext": ""
+}

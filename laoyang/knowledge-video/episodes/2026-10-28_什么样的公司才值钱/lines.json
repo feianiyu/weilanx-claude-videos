@@ -1,0 +1,386 @@
+{
+ "_说明": "v4 管线第一期（样片）：讲解模式库 + 分镜表 + 动作检查；无背景音乐 · 老杨本人声音 ×1.3 · 无头像",
+ "layout": "v3",
+ "series": {
+  "title": "从买家的眼睛看，什么样的公司才值钱",
+  "sub": "好公司是让买家敢出价的公司"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 ——",
+  "title": "什么样的公司<br>才值钱",
+  "sub": "从买家的眼睛看"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/16865494/pexels-photo-16865494.jpeg",
+ "bgNote": "Pexels 16865494 积云下的高层住宅（原生竖版 3224×4868）；core/grade_bg.py 调色",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.3
+ },
+ "gapSec": 0.15,
+ "secGap": 0.5,
+ "restBefore": "v06",
+ "heads": [
+  [
+   "c0",
+   "接触100家|只给2家出价"
+  ],
+  [
+   "c1",
+   "买家最怕的|不是买贵是买错"
+  ],
+  [
+   "c2",
+   "买家眼里的|好公司"
+  ],
+  [
+   "c3",
+   "第一条|增长讲得实在"
+  ],
+  [
+   "v08|第二|s",
+   "第二条|有得比"
+  ],
+  [
+   "v09|第三|s",
+   "第三条|钱不压在路上"
+  ],
+  [
+   "c4",
+   "最让人不放心的|会是哪一点"
+  ]
+ ],
+ "cards": [
+  {
+   "at": "c0",
+   "type": "grid",
+   "total": 100,
+   "hit": 2,
+   "hitAt": "v01|两家|s",
+   "cap": "剩下 98 家 谈着谈着就没了",
+   "capAt": "v02|剩下|s",
+   "src": "来源：杰夫·胡克《并购指南：如何发现好公司》（机械工业出版社）",
+   "note": "《并购指南》书里的说法",
+   "noteAt": "v02|这是|s"
+  },
+  {
+   "at": "c1",
+   "type": "myth",
+   "ml": "你以为买家怕的是",
+   "myth": "买贵一点",
+   "strikeAt": "v03|一点|s",
+   "fl": "其实最怕的是",
+   "fact": "*买错*",
+   "factAt": "v03|是买错|s"
+  },
+  {
+   "at": "v04|过度支付|s",
+   "type": "chain",
+   "items": [
+    {
+     "icon": "coins",
+     "t": "过度支付"
+    },
+    {
+     "icon": "hourglass",
+     "t": "拖累买家很多年",
+     "at": "v04|拖累|s"
+    },
+    {
+     "icon": "search",
+     "t": "先找不放心的地方",
+     "at": "v05|先找|s"
+    }
+   ],
+   "src": "来源：杰夫·胡克《并购指南：如何发现好公司》（机械工业出版社）"
+  },
+  {
+   "at": "c2",
+   "type": "set",
+   "lines": [
+    "好公司不是最大的那家",
+    "是最让人放心的那家"
+   ],
+   "at2": "v06|是最让人|s"
+  },
+  {
+   "at": "c3",
+   "type": "before",
+   "bl": "卖方",
+   "before": {
+    "icon": "trending-up",
+    "t": "增速报得越高",
+    "sub": "预测越乐观",
+    "subAt": "v07|乐观的预测|s"
+   },
+   "al": "买家",
+   "after": {
+    "icon": "scale",
+    "t": "折扣打得越狠",
+    "sub": "先做现实性审核"
+   },
+   "afterAt": "v07|增速报得越高|s",
+   "src": "来源：杰夫·胡克《并购指南：如何发现好公司》（机械工业出版社）"
+  },
+  {
+   "at": "v08|第二|s",
+   "type": "analogy",
+   "a": {
+    "icon": "building",
+    "t": "你的公司"
+   },
+   "b": {
+    "icon": "building-store",
+    "t": "同类成交价",
+    "at": "v08|同类公司|s"
+   },
+   "share": "有得比 才好定价",
+   "shareAt": "v08|说不清|s",
+   "src": "来源：杰夫·胡克《并购指南：如何发现好公司》（机械工业出版社）"
+  },
+  {
+   "at": "v09|第三|s",
+   "type": "myth",
+   "ml": "做预测时常以为",
+   "myth": "利润够就行",
+   "strikeAt": "v09|营运资金|s",
+   "fl": "最常见的坑",
+   "fact": "低估*营运资金*",
+   "factAt": "v09|最常见|s",
+   "src": "来源：杰夫·胡克《并购指南：如何发现好公司》（机械工业出版社）"
+  },
+  {
+   "at": "c4",
+   "type": "set",
+   "lines": [
+    "好公司",
+    "是让买家敢出价的公司"
+   ],
+   "at2": "v10|是让买家|s"
+  },
+  {
+   "at": "v11|你的公司|s",
+   "type": "steps",
+   "title": "拿这三条对照一下",
+   "items": [
+    {
+     "t": "增长讲得实在",
+     "at": "v11|你的公司|s"
+    },
+    {
+     "t": "有得比",
+     "at": "v11|有人来谈|s"
+    },
+    {
+     "t": "钱不压在路上",
+     "at": "v11|不放心|s"
+    }
+   ]
+  }
+ ],
+ "sfx": [
+  [
+   "v01|两家|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v03|是买错|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v04|过度支付|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v06|好公司|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v07|第一|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v08|第二|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v09|第三|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v10|是让买家|s",
+   "sparkle",
+   0.0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "一个买家去接触100家公司，最后只会给2家出价。",
+   "dur": 4.25,
+   "tts": "一个买家去接触一百家公司，最后只会给两家出价。"
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "这是《并购指南：如何发现好公司》书里的一个说法：剩下98家，谈着谈着就没了。",
+   "dur": 6.41,
+   "tts": "这是并购指南如何发现好公司书里的一个说法：剩下九十八家，谈着谈着就没了。",
+   "screens": [
+    "这是《并购指南：如何发现好公司》|书里的一个说法：",
+    "剩下98家，|谈着谈着就没了。"
+   ]
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "买家最怕的不是买贵一点，是买错。",
+   "dur": 2.86
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "书里说，过度支付是并购最大的风险，会拖累买家很多年。",
+   "dur": 4.9
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "所以买家看你的公司，先找让他不放心的地方。",
+   "dur": 3.65
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "从买家的眼睛看，好公司不是最大的那家，是最让人放心的那家。",
+   "dur": 4.87
+  },
+  "v07": {
+   "sec": "c3",
+   "sub": "第一，增长讲得实在。买家见多了乐观的预测，增速报得越高，越要打折扣。",
+   "dur": 6.41,
+   "screens": [
+    "第一，增长讲得实在。",
+    "买家见多了乐观的预测，|增速报得越高，越要打折扣。"
+   ]
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "第二，有得比。买家定价，最常用的是看同类公司最近卖了多少钱；说不清自己属于哪一类，就很难定价。",
+   "dur": 8.28,
+   "screens": [
+    "第二，有得比。|买家定价，",
+    "最常用的是看同类公司|最近卖了多少钱；",
+    "说不清自己属于哪一类，|就很难定价。"
+   ]
+  },
+  "v09": {
+   "sec": "c3",
+   "sub": "第三，钱不压在路上。营运资金被低估，是预测里最常见的坑之一。",
+   "dur": 5.5,
+   "screens": [
+    "第三，钱不压在路上。",
+    "营运资金被低估，|是预测里最常见的坑之一。"
+   ]
+  },
+  "v10": {
+   "sec": "c4",
+   "sub": "好公司，是让买家敢出价的公司。",
+   "dur": 3.05
+  },
+  "v11": {
+   "sec": "c4",
+   "sub": "你的公司，如果今天有人来谈，最让他不放心的会是哪一点？",
+   "dur": 5.02,
+   "screens": [
+    "你的公司，如果今天有人来谈，",
+    "最让他不放心的|会是哪一点？"
+   ]
+  }
+ },
+ "endNext": ""
+}

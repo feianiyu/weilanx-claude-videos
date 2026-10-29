@@ -1,0 +1,407 @@
+{
+ "_说明": "标准版 · 老杨读研报 · 老杨本人声音（火山复刻，tempo 1.2）",
+ "series": {
+  "title": "城市更新：从工程改造走向长期运营",
+  "sub": "改造只赚一次，运营才有持续收入"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 老板读研报 ——",
+  "title": "城市更新<br>拼的是运营",
+  "sub": "从工程改造，走向长期运营"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/34911458/pexels-photo-34911458.jpeg",
+ "bgNote": "Pexels 34911458 黄昏老楼与塔吊（原生竖版 2224×3953）；成片 9:16 中裁 + 饱和 0.55 + 冷青调暖（R×1.10 / B×0.82）+ 按高度分段压暗（顶 0.85 / 中间区 0.55 / 字幕区 0.3）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.2
+ },
+ "gapSec": 0.15,
+ "secGap": 0.6,
+ "bgmUnder": 7.9,
+ "bgm": {
+  "file": "audio/bgm_mixkit_594.mp3",
+  "url": "https://assets.mixkit.co/music/594/594.mp3",
+  "src": "Mixkit 曲目 id 594（Mixkit Stock Music Free License）；270s，持续爬升，118.01s 全乐队进入"
+ },
+ "beat": {
+  "bpm": 119.9,
+  "period": 0.50042,
+  "t0": 0.415,
+  "src": "core/beatfit.py audio/bgm_mixkit_594.mp3 120 120；118.01s 抬升点 = 第 235 拍"
+ },
+ "restBefore": "v12",
+ "bgmSection": 118.01,
+ "progress": [
+  [
+   "报告",
+   "c1"
+  ],
+  [
+   "规模",
+   "c2"
+  ],
+  [
+   "机会",
+   "c3"
+  ],
+  [
+   "判断",
+   "c4"
+  ],
+  [
+   "行动",
+   "c5"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "sweep",
+   0
+  ],
+  "c2": [
+   "smoke",
+   900
+  ],
+  "c3": [
+   "sweep",
+   0
+  ],
+  "c5": [
+   "smoke",
+   950
+  ]
+ },
+ "heads": [
+  [
+   "c0",
+   "上海要盘活|75平方公里"
+  ],
+  [
+   "v02|但这批活|s",
+   "会设计、会施工，|*不够了*"
+  ],
+  [
+   "c1",
+   "交付，|不再是终点"
+  ],
+  [
+   "v04|现在|s",
+   "先定清楚：|*谁来运营*"
+  ],
+  [
+   "c2",
+   "规模，|已经定了"
+  ],
+  [
+   "v08|北京|s",
+   "北京第一批|1321个项目"
+  ],
+  [
+   "v09|钱不少|s",
+   "分钱的标准，|*变了*"
+  ],
+  [
+   "c3",
+   "机会不只在|工程建设"
+  ],
+  [
+   "v11|只做一段|s",
+   "只做一段，|只赚一次"
+  ],
+  [
+   "c4",
+   "看项目，|换一把尺子"
+  ],
+  [
+   "c5",
+   "老板今天|先做一件事"
+  ],
+  [
+   "v15|写不出来|s",
+   "写不出来的，|*就是缺的能力*"
+  ],
+  [
+   "v16|要么|s",
+   "自己建、找合作，|或者收购"
+  ]
+ ],
+ "sfx": [
+  [
+   "v01|七十五|s",
+   "sub",
+   0.15
+  ],
+  [
+   "v01|一百五十|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v02|拿到|s",
+   "smoke",
+   0.1
+  ],
+  [
+   "v03|走向|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v04|结束|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v04|持续收入|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v06|十项|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v06|二十三项|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v06|十四项|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v07|四十三|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v08|一千三百二十一|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v09|变了|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v10|资产整合|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v11|一次性|s",
+   "thud",
+   0.1
+  ],
+  [
+   "v11|接起来|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v12|以后|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v15|缺的能力|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v16|收购|s",
+   "thud",
+   0.0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "上海“十五五”要盘活75平方公里低效产业用地，更新150栋商务楼宇。",
+   "tts": "上海十五五要盘活七十五平方公里低效产业用地，更新一百五十栋商务楼宇。",
+   "dur": 6.74,
+   "screens": [
+    "上海“十五五”要盘活|75平方公里低效产业用地，",
+    "更新150栋商务楼宇。"
+   ]
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "但这批活，不是谁会设计、谁会施工，谁就能拿到。",
+   "dur": 4.27
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "10月22日发布的《2026中国城市更新年度报告》说得很明确：城市更新正在从工程改造，走向长期运营。",
+   "tts": "十月二十二日发布的二零二六中国城市更新年度报告说得很明确：城市更新正在从工程改造，走向长期运营。",
+   "dur": 8.59,
+   "screens": [
+    "10月22日发布的|《2026中国城市更新年度报告》说得很明确：",
+    "城市更新正在从工程改造，|走向长期运营。"
+   ]
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "过去项目交付就结束，现在从策划阶段就要定清楚：改完之后谁来运营，靠什么产生持续收入。",
+   "dur": 7.94
+  },
+  "v05": {
+   "sec": "c2",
+   "sub": "规模已经定下来了。",
+   "dur": 1.94
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "《城市更新“十五五”规划》列了10项指标、23项重点任务、14项重大工程。",
+   "tts": "城市更新十五五规划列了十项指标、二十三项重点任务、十四项重大工程。",
+   "dur": 6.29,
+   "screens": [
+    "《城市更新“十五五”规划》|列了10项指标、",
+    "23项重点任务、14项重大工程。"
+   ]
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "到今年9月底，至少43个省市公布了量化任务，任务正在变成一个个具体项目。",
+   "tts": "到今年九月底，至少四十三个省市公布了量化任务，任务正在变成一个个具体项目。",
+   "dur": 6.43
+  },
+  "v08": {
+   "sec": "c2",
+   "sub": "北京2026年第一批就纳入1321个项目，年度计划投资1049.5亿元。",
+   "tts": "北京二零二六年第一批就纳入一千三百二十一个项目，年度计划投资一千零四十九点五亿元。",
+   "dur": 7.1,
+   "screens": [
+    "北京2026年第一批|就纳入1321个项目，",
+    "年度计划投资1049.5亿元。"
+   ]
+  },
+  "v09": {
+   "sec": "c2",
+   "sub": "钱不少，但分钱的标准变了。",
+   "dur": 2.62
+  },
+  "v10": {
+   "sec": "c3",
+   "sub": "报告对企业说得直接：机会已经从工程建设，延伸到资产整合、招商租赁、商业经营和社区服务。",
+   "dur": 8.76
+  },
+  "v11": {
+   "sec": "c3",
+   "sub": "只做一段的，只能拿到一次性的钱；能把改造和运营接起来的，才有后面的持续收入。",
+   "dur": 7.1
+  },
+  "v12": {
+   "sec": "c4",
+   "sub": "以后看一个更新项目，不只看改得好不好，还要看改完能不能一直用下去、经营下去。",
+   "dur": 7.1
+  },
+  "v13": {
+   "sec": "c5",
+   "sub": "设计院和工程公司的老板，今天先做一件事：把手上的更新类项目列出来，每个项目写清三项：",
+   "dur": 7.63
+  },
+  "v14": {
+   "sec": "c5",
+   "sub": "交付后谁运营、运营收入从哪来、你们能多做哪一段。",
+   "dur": 4.75
+  },
+  "v15": {
+   "sec": "c5",
+   "sub": "写不出来的那一段，就是你们缺的能力。",
+   "dur": 2.76
+  },
+  "v16": {
+   "sec": "c5",
+   "sub": "要么自己建，要么找合作，要么收购一家小的专业公司补上。",
+   "dur": 4.63
+  }
+ },
+ "endNext": ""
+}

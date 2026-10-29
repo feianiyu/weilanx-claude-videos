@@ -1,0 +1,389 @@
+{
+ "_说明": "标准版 · 用户定稿脚本（卡1–6）· 老杨本人声音 ×1.2 · 不出现关注语",
+ "series": {
+  "title": "你的公司，现在卖得掉吗？",
+  "sub": "离了你照样转，才值钱"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 ——",
+  "title": "你的公司<br>卖得掉吗？",
+  "sub": "离了你照样转，才值钱"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/8572125/pexels-photo-8572125.jpeg",
+ "bgNote": "Pexels 8572125 西装男子站在办公室窗前（4000×2670）；9:16 裁切（中心 x=62%）+ 饱和 0.6 + 偏暖 + 按高度分段压暗（顶 0.62 / 中间区 0.4 / 字幕区 0.28）",
+ "voice": {
+  "engine": "volc-icl",
+  "resource": "seed-icl-2.0",
+  "tempo": 1.2
+ },
+ "gapSec": 0.15,
+ "secGap": 0.6,
+ "bgmUnder": 7.9,
+ "bgm": {
+  "file": "audio/bgm_mixkit_593.mp3",
+  "url": "https://assets.mixkit.co/music/593/593.mp3",
+  "src": "Mixkit 曲目 id 593（Mixkit Stock Music Free License）；203.97s 全乐队回归"
+ },
+ "beat": {
+  "bpm": 70.0,
+  "period": 0.85714,
+  "t0": 0.825,
+  "src": "同第三期"
+ },
+ "restBefore": "v13",
+ "bgmSection": 203.97,
+ "progress": [
+  [
+   "情境",
+   "c1"
+  ],
+  [
+   "规律",
+   "c2"
+  ],
+  [
+   "判断",
+   "c3"
+  ],
+  [
+   "行动",
+   "c4"
+  ],
+  [
+   "边界",
+   "c5"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "smoke",
+   900
+  ],
+  "c2": [
+   "sweep",
+   0
+  ],
+  "c3": [
+   "smoke",
+   950
+  ],
+  "c4": [
+   "sweep",
+   0
+  ],
+  "c5": [
+   "smoke",
+   990
+  ]
+ },
+ "heads": [
+  [
+   "c0",
+   "你的公司，|现在卖得掉吗？"
+  ],
+  [
+   "c1",
+   "想卖的时候，|往往卖不上价了"
+  ],
+  [
+   "c2",
+   "最值钱的时候，|正是最不想卖时"
+  ],
+  [
+   "c3",
+   "离了你照样转，|才值钱"
+  ],
+  [
+   "c4",
+   "不是要你卖，|是随时能卖"
+  ],
+  [
+   "c5",
+   "过了生存线，|越早越主动"
+  ]
+ ],
+ "sfx": [
+  [
+   "v02|卖得掉吗|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v04|出价不低|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v06|压价一半|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v06|不接电话|s",
+   "glitch",
+   0.0
+  ],
+  [
+   "v08|最值钱|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v09|腰斩|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v10|不值钱|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v11|并购|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v12|离了老板|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v13|反过来|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v13|是你这个人|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v14|不值钱|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v15|随时能卖|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v17|三件事|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v19|生存线|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v20|更值钱|s",
+   "sparkle",
+   0.2
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "做了十几二十年，一直在赚钱。",
+   "dur": 2.76
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "但你有没有想过——如果今天想退出，它卖得掉吗？能卖多少？",
+   "tts": "但你有没有想过，如果今天想退出，它卖得掉吗？能卖多少？",
+   "dur": 4.78
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "华东有个老板，公司做了二十年。",
+   "dur": 2.62
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "前几年行情好，有人上门要收，出价不低。",
+   "dur": 3.94
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "他舍不得，觉得还能再干几年。",
+   "dur": 2.76
+  },
+  "v06": {
+   "sec": "c1",
+   "sub": "这两年现金流紧了，他回头想卖——同一批买家，有的直接压价一半，有的不接电话了。",
+   "tts": "这两年现金流紧了，他回头想卖。同一批买家，有的直接压价一半，有的不接电话了。",
+   "dur": 7.46,
+   "screens": [
+    "这两年现金流紧了，|他回头想卖——",
+    "同一批买家，有的直接压价一半，|有的不接电话了。"
+   ]
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "这不是他运气差，规律就是这样。",
+   "dur": 2.76
+  },
+  "v08": {
+   "sec": "c2",
+   "sub": "公司最值钱的时候，恰恰是它最赚钱、你最舍不得卖的时候。",
+   "dur": 4.94
+  },
+  "v09": {
+   "sec": "c2",
+   "sub": "等你撑不住、急着出手，买家一闻到味道，价格立刻腰斩。",
+   "dur": 4.97
+  },
+  "v10": {
+   "sec": "c2",
+   "sub": "你越急，它越不值钱。",
+   "dur": 2.42
+  },
+  "v11": {
+   "sec": "c3",
+   "sub": "我做了二十多年并购，看过的卖家比大多数人一辈子见的都多。",
+   "dur": 4.61
+  },
+  "v12": {
+   "sec": "c3",
+   "sub": "能卖上价的公司都有一个共同点：离了老板本人，它照样转——账目清楚、客户不只认你一个、团队顶得上。",
+   "tts": "能卖上价的公司都有一个共同点：离了老板本人，它照样赚。账目清楚、客户不只认你一个、团队顶得上。",
+   "dur": 9.07,
+   "screens": [
+    "能卖上价的公司都有一个共同点：|离了老板本人，它照样转——",
+    "账目清楚、客户不只认你一个、|团队顶得上。"
+   ]
+  },
+  "v13": {
+   "sec": "c3",
+   "sub": "反过来，什么都压在老板一个人身上的公司，买家看一眼就懂：这买的不是公司，是你这个人。",
+   "dur": 7.27
+  },
+  "v14": {
+   "sec": "c3",
+   "sub": "那就不值钱。",
+   "dur": 1.61
+  },
+  "v15": {
+   "sec": "c4",
+   "sub": "所以真正的高手，都在不缺钱、根本没想卖的时候，就把公司收拾成“随时能卖”的样子。",
+   "dur": 7.27
+  },
+  "v16": {
+   "sec": "c4",
+   "sub": "不是为了卖，是为了有的选。",
+   "dur": 2.62
+  },
+  "v17": {
+   "sec": "c4",
+   "sub": "明天就能做的三件事：把账理干净；把最大的客户从“只认你”变成“认公司”；把你一个人扛的事，先分一件出去。",
+   "dur": 9.29,
+   "screens": [
+    "明天就能做的三件事：|把账理干净；",
+    "把最大的客户从“只认你”|变成“认公司”；",
+    "把你一个人扛的事，|先分一件出去。"
+   ]
+  },
+  "v18": {
+   "sec": "c5",
+   "sub": "刚起步、还在拼命长的公司，不用急着干这个。",
+   "tts": "刚起步、还在拼命涨的公司，不用急着干这个。",
+   "dur": 4.1
+  },
+  "v19": {
+   "sec": "c5",
+   "sub": "但只要你过了生存线，这件事越早做越主动。",
+   "dur": 3.94
+  },
+  "v20": {
+   "sec": "c5",
+   "sub": "一家你随时能卖掉的公司，平时也更抗折腾、更值钱。",
+   "dur": 4.78
+  }
+ },
+ "endNext": ""
+}
