@@ -10,7 +10,7 @@ description: 「老杨魔方 · 知识分享版」有旁白竖版视频工作流
 ## 流程（不可跳步）
 1. **内容**：核心观点一句话 + 骨架（钩子数字 → 背景事实 → 现场变化 → 作者观察 → 收一拍后「我的判断」→ 二选一提问 →（系列片）下期预告；**不出现「关注老杨魔方」**）；事实逐条核一手来源写 FACTS.md，未核实的不用。等用户确认。
 2. **文案**：逐句 v01…vNN，标出章节、收一拍位置、核心观点句和它的文字出场方式（STANDARD §5.2）。等用户确认，确认后一字不改。画面和配音去人名、公司名。
-3. **制作**：`cp -r starter episodes/<日期_主题>` → 改 lines.json / scenes.html / scenes.js → `fake_vo` 先排版 → `gen_vo` 真配音 → `fetch_assets` → `beatfit` 测拍 → `build` → `qc`（自己看联系表）→ `render final` → `qc --video` → `cover`。命令见 STANDARD §7。
+3. **制作**：`cp -r starter episodes/<日期_主题>` → 改 lines.json / scenes.html / scenes.js → `fake_vo` 先排版 → `gen_vo` 真配音 → `fetch_assets` → `beatfit` 测拍 → `build` → `qc`（自己看联系表）→ `render final` → `qc --video` → `cover`。命令见 STANDARD §7。**默认把真配音和全片渲染交给 Mac 出片机**：云端只排版、出低分辨率静帧给用户确认，然后推 `render/<期目录名>` 分支 + `render-queue/job.json`（见 `laoyang/mac-render/README.md`），等 Mac 推回 `render-report/<期>`，只读其中的 `出片报告.md` 和 `联系表.jpg`。
 4. **交付**：成片、封面、发布文案（标题 ×2、一句话正文、置顶互动提问、标签）、源码 zip（不含底图 / BGM / 音效）。
 5. **收尾（迭代制度）**：写 `episodes/<期>/复盘.md`（模板 templates/复盘.md），把用户每条反馈分成本期 / 通用 / 偏好；通用的改写成可检查的规则落到 STANDARD / EFFECTS / core；改了 core 必跑 `python3 core/regress.py`（有意改画面用 `--update` 并写 CHANGELOG）；升版本号并同步技能和项目文档；开 PR。每做完 3 期做一次阶段复盘（ITERATION §5）。
 
