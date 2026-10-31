@@ -155,6 +155,7 @@
    python3 core/qc.py          episodes/<期> --video
    python3 core/cover.py       episodes/<期>
    ```
+   **默认：真配音和全片渲染交给 Mac 出片机**（`laoyang/mac-render/`，省云端用量、本机网络能直接配音）。云端只做到 `fake_vo → build → qc` 和低分辨率静帧确认，然后推 `render/<期目录名>` 分支（根目录 `render-queue/job.json`，格式见 mac-render/README.md）。Mac 每 5 分钟看一次，出完把 `出片报告.md`、`联系表.jpg`（1280 宽）和真实配音时间戳推回 `render-report/<期>`；Claude 只读这两样，不要全尺寸帧。报告有问题就改代码、在同一分支再推一次。Mac 不可用时才在云端跑上面的完整命令。
 5. **交付**：成片、封面、发布文案（标题 ×2、一句话正文、置顶互动提问、标签）、源码 zip（不含第三方素材）、CREDITS、FACTS。
 6. **收尾**：写 `episodes/<期>/复盘.md`，按 ITERATION.md 处理反馈；改了 core 就跑 `core/regress.py`。
 
