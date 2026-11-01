@@ -314,13 +314,16 @@ def run_knowledge_video(job: Job, selftest=False):
         job.step("渲染 3 帧", lambda: job.sh([py(), os.path.join(core, "render.py"), job.ep, "snap", "1.0", "5.0", "10.0"]) and "")
         return
     job.step("配音", lambda: kv_voice(job))
-    job.step("多音字抽查（本机 whisper）", lambda: kv_whisper(job), fatal=False)
+    fake = job.job.get("voice") == "fake"   # 静音占位：whisper 会对着静音「幻听」，响度也量不出来，这两项跳过
+    if not fake:
+        job.step("多音字抽查（本机 whisper）", lambda: kv_whisper(job), fatal=False)
     job.step("下载底图、配乐、音效", lambda: kv_assets(job))
     job.step("测拍", lambda: kv_beat(job), fatal=False)
     job.step("构建", lambda: job.sh([py(), os.path.join(core, "build.py"), job.ep], timeout=900) and "")
     job.step("逐秒质检", lambda: kv_qc_frames(job))
     job.step("渲染成片", lambda: job.sh([py(), os.path.join(core, "render.py"), job.ep, "final", "--jobs", str(CFG["JOBS"])], timeout=7200) and "")
-    job.step("响度与闪烁检查", lambda: kv_qc_video(job), fatal=False)
+    if not fake:
+        job.step("响度与闪烁检查", lambda: kv_qc_video(job), fatal=False)
     job.step("封面", lambda: job.sh([py(), os.path.join(core, "cover.py"), job.ep]) and "", fatal=False)
     job.step("压发布版", lambda: publish_version(job), fatal=False)
 
