@@ -1,0 +1,379 @@
+{
+ "series": {
+  "title": "重读《万历十五年》",
+  "sub": "所有个体的努力，最终都抵不过系统的宿命"
+ },
+ "cover": {
+  "eyebrow": "—— 老杨魔方 · 经营信号 ——",
+  "title": "重读<br>《万历十五年》",
+  "sub": "个体的努力，抵不过系统的宿命"
+ },
+ "bg": "assets/bg.jpg",
+ "bgUrl": "https://images.pexels.com/photos/31639355/pexels-photo-31639355.jpeg?w=2160&h=3840&fit=crop",
+ "bgNote": "Pexels #31639355《Majestic Roofs of the Forbidden City》（Pexels License）原图 5184×3456，按竖屏居中裁切",
+ "voice": {
+  "engine": "volc",
+  "tempo": 1.15,
+  "name": "老杨本人（火山引擎声音复刻）"
+ },
+ "gapSec": 0.3,
+ "secGap": 0.6,
+ "bgmUnder": 7.9,
+ "bgm": {
+  "file": "audio/bgm_mixkit_driving_ambition_32.mp3",
+  "url": "https://assets.mixkit.co/music/32/32.mp3",
+  "src": "Mixkit《Driving Ambition》by Ahjay Stelino（id 32）· Mixkit Stock Music Free License"
+ },
+ "beat": {
+  "bpm": 100.0,
+  "period": 0.6,
+  "t0": 0.0,
+  "src": "src/beatfit.py assets/bgm_mixkit_driving_ambition_32.mp3 95 99.4 → 100.0 BPM, 首拍 0.125s, 乐句线 38.525+9.6k"
+ },
+ "restBefore": "v16",
+ "bgmSection": 67.325,
+ "progress": [
+  [
+   "开场",
+   "c0"
+  ],
+  [
+   "六个人",
+   "c1"
+  ],
+  [
+   "病根",
+   "c2"
+  ],
+  [
+   "今天",
+   "c3"
+  ],
+  [
+   "判断",
+   "c4"
+  ]
+ ],
+ "transitions": {
+  "c1": [
+   "smoke",
+   900
+  ],
+  "c2": [
+   "sweep",
+   0
+  ],
+  "c3": [
+   "smoke",
+   950
+  ],
+  "c4": [
+   "sweep",
+   0
+  ],
+  "c5": [
+   "sweep",
+   0
+  ]
+ },
+ "heads": [
+  [
+   "c0",
+   "1587年，|史书无事可记"
+  ],
+  [
+   "v02|尽头|s",
+   "表面太平，|里面已空"
+  ],
+  [
+   "c1",
+   "六个顶级的人，|六种败局"
+  ],
+  [
+   "v10|所有人|s",
+   "都没错，|都输了"
+  ],
+  [
+   "c2",
+   "病根只有一个"
+  ],
+  [
+   "v12|人情|s",
+   "人情盖过规则"
+  ],
+  [
+   "c3",
+   "不是突然崩盘，|是慢慢空转"
+  ],
+  [
+   "c4",
+   "我的判断"
+  ],
+  [
+   "v17|躺平|s",
+   "别把系统的病，|全算在自己头上"
+  ],
+  [
+   "c5",
+   "人不行，|还是路不通？"
+  ]
+ ],
+ "sfx": [
+  [
+   "v01|一五八七|s",
+   "sub",
+   0.1
+  ],
+  [
+   "v02|尽头|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v03|六个人|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v04|抄家|s",
+   "smoke",
+   0.1
+  ],
+  [
+   "v05|圆|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v06|没人听|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v07|罢了官|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v08|不上朝|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v09|狱中|s",
+   "smoke",
+   0.1
+  ],
+  [
+   "v10|都输了|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v11|道德|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v14|崩盘|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v15|内耗|s",
+   "smoke",
+   0.1
+  ],
+  [
+   "v16|我|s",
+   "impact",
+   -0.09
+  ],
+  [
+   "v16|上限|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v18|人不行|s",
+   "vs",
+   0.25
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "smoke": {
+   "file": "audio/sfx/2802.mp3",
+   "hit": 0.194,
+   "to": 2.6,
+   "lvl": -14,
+   "src": "Mixkit #2802 Smoke bomb",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2802/2802-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  },
+  "riser": {
+   "file": "audio/sfx/790.mp3",
+   "hit": 2.537,
+   "lvl": -10,
+   "src": "Mixkit #790 Cinematic trailer riser",
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3"
+  }
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "1587年，万历十五年。没有天灾，没有战乱，史书几乎无事可记。",
+   "tts": "一五八七年，万历十五年。没有天灾，没有战乱，史书几乎无事可记。",
+   "dur": 6.7
+  },
+  "v02": {
+   "sec": "c0",
+   "sub": "可就在这一年，表面四海升平，这个王朝其实已经走到了尽头。",
+   "dur": 6.12
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "书里写了六个人，几乎集齐了一个时代的顶配。",
+   "dur": 4.64
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "张居正最敢改，死后被抄家清算。",
+   "dur": 3.34
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "申时行最会圆，一辈子和稀泥，谁也没得罪，也没救下局。",
+   "tts": "申时形最会圆，一辈子活稀泥，谁也没得罪，也没救下局。",
+   "dur": 5.65
+  },
+  "v06": {
+   "sec": "c1",
+   "sub": "海瑞最清廉，被朝廷供着、敬着，就是没人听。",
+   "tts": "海瑞最清廉，被朝廷贡着、敬着，就是没人听。",
+   "dur": 4.57
+  },
+  "v07": {
+   "sec": "c1",
+   "sub": "戚继光最能打，靠山一倒，就被罢了官。",
+   "dur": 3.95
+  },
+  "v08": {
+   "sec": "c1",
+   "sub": "万历皇帝权力最大，最后干脆长年不上朝。",
+   "dur": 4.21
+  },
+  "v09": {
+   "sec": "c1",
+   "sub": "李贽最清醒，最后死在狱中。",
+   "dur": 2.9
+  },
+  "v10": {
+   "sec": "c1",
+   "sub": "所有人都没错，所有人都尽力了，可所有人，都输了。",
+   "dur": 5.22
+  },
+  "v11": {
+   "sec": "c2",
+   "sub": "病根说穿了就一个：拿道德代替制度，到明朝走到了极致。",
+   "dur": 5.69
+  },
+  "v12": {
+   "sec": "c2",
+   "sub": "办事讲人情，不讲流程；用人讲口碑，不讲能力。",
+   "dur": 4.78
+  },
+  "v13": {
+   "sec": "c2",
+   "sub": "好人束手束脚，能人处处受限，平庸的人反而安稳。",
+   "dur": 5.04
+  },
+  "v14": {
+   "sec": "c3",
+   "sub": "很多团队也是这样：不是突然崩盘，是规则慢慢失效。",
+   "dur": 5.26
+  },
+  "v15": {
+   "sec": "c3",
+   "sub": "每个人都很忙，系统却只剩内耗。",
+   "dur": 3.34
+  },
+  "v16": {
+   "sec": "c4",
+   "sub": "我的判断：个人的努力决定下限，所在的系统决定上限。",
+   "dur": 5.47
+  },
+  "v17": {
+   "sec": "c4",
+   "sub": "读懂它不是为了躺平，是别再把系统的问题，全怪到自己头上。",
+   "dur": 6.12
+  },
+  "v18": {
+   "sec": "c5",
+   "sub": "你身边的困局，更像是人不行，还是路不通？",
+   "dur": 4.39
+  }
+ }
+}
