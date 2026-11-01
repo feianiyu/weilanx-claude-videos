@@ -167,3 +167,6 @@ SCENES.c5={
 
 // 点阵章节压低外壳底纹，免得两层点阵打架
 HOOKS.texA=(t,V)=>1-0.7*Math.max(V[0],V[1],V[2]);
+// 实拍底图（故宫屋顶）原图偏亮偏花：压暗、去饱和、轻微虚化，让中间区的点阵和光点站得住
+(()=>{const b=document.getElementById('bg');if(b)b.style.filter='brightness(.34) saturate(.45) contrast(1.08) blur(3px)';
+const s=document.getElementById('shade');if(s)s.style.background='linear-gradient(180deg,rgba(8,7,6,.80) 0px,rgba(8,7,6,.60) 380px,rgba(8,7,6,.45) 800px,rgba(8,7,6,.40) 1250px,rgba(8,7,6,.55) 1600px,rgba(8,7,6,.75) 1920px)';})();
