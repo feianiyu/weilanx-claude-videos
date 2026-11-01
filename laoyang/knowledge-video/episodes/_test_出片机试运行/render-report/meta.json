@@ -1,0 +1,68 @@
+{
+ "audio_missing": [
+  "audio/bgm.mp3"
+ ],
+ "bgm_offset": 0.0,
+ "dur": 24.05,
+ "timeline": {
+  "v01": [
+   0.6,
+   4.59
+  ],
+  "v02": [
+   5.4,
+   10.04
+  ],
+  "v03": [
+   10.34,
+   13.68
+  ],
+  "v04": [
+   15.0,
+   18.77
+  ],
+  "v05": [
+   19.2,
+   21.45
+  ]
+ },
+ "secs": [
+  {
+   "id": "c0",
+   "start": 0.0,
+   "end": 5.4,
+   "last": false
+  },
+  {
+   "id": "c1",
+   "start": 5.4,
+   "end": 15.0,
+   "last": false
+  },
+  {
+   "id": "c2",
+   "start": 15.0,
+   "end": 19.2,
+   "last": false
+  },
+  {
+   "id": "c3",
+   "start": 19.2,
+   "end": 24.05,
+   "last": true
+  }
+ ],
+ "sfx": [
+  {
+   "t": 0.65,
+   "kind": "whoosh"
+  },
+  {
+   "t": 14.96,
+   "kind": "impact"
+  }
+ ],
+ "bgm_gain": 0.0,
+ "lufs": -70.0,
+ "bgm_vs_vo_db": null
+}
