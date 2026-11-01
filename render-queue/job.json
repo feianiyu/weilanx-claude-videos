@@ -1,0 +1,5 @@
+{"pipeline": "knowledge-video",
+ "episode": "laoyang/knowledge-video/episodes/_test_出片机试运行",
+ "voice": "fake",
+ "publish_mb": 25,
+ "note": "安装后的第一次试运行：模板 + 静音占位配音，只验证流程，不用发布"}
