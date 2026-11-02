@@ -214,7 +214,8 @@ def kv_assets(job: Job):
     """下载素材，再逐个确认是能打开的音频 / 图片；下坏的（网页报错页、半截文件）删掉，构建会当静音或占位处理并写进报告。"""
     out = job.sh([py(), os.path.join(kv_core(), "fetch_assets.py"), job.ep], timeout=900)
     D = json.load(open(os.path.join(job.ep, "lines.json"), encoding="utf-8"))
-    files = [D.get("bg", "assets/bg.jpg")] + ([D["bgm"]["file"]] if isinstance(D.get("bgm"), dict) else []) + [c["file"] for c in D.get("sfxlib", {}).values()]
+    bgm = D["bgm"].get("file") if isinstance(D.get("bgm"), dict) else None   # 深度版 bgm 可以是 {"synth":"pad"}，没有文件
+    files = [D.get("bg", "assets/bg.jpg")] + [b["file"] for b in D.get("bgs", [])] + ([bgm] if bgm else []) + [c["file"] for c in D.get("sfxlib", {}).values()]
     broken = []
     for f in files:
         p = os.path.join(job.ep, f)
@@ -233,9 +234,9 @@ def kv_assets(job: Job):
 def kv_beat(job: Job):
     lp = os.path.join(job.ep, "lines.json")
     L = json.load(open(lp, encoding="utf-8"))
-    bgm = L["bgm"]["file"] if isinstance(L.get("bgm"), dict) else L.get("bgm")
-    if L.get("beat"):
-        return "lines.json 已有拍子"
+    bgm = L["bgm"].get("file") if isinstance(L.get("bgm"), dict) else L.get("bgm")
+    if L.get("beat") or L.get("style") == "deep":   # 深度版不卡拍
+        return "lines.json 已有拍子" if L.get("beat") else "深度版不卡拍，跳过测拍"
     if not bgm or not os.path.exists(os.path.join(job.ep, bgm)):
         return "没有配乐文件，跳过测拍"
     rough = os.path.join(job.ep, "build", "beats_rough.json")

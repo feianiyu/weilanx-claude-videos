@@ -6,7 +6,7 @@ from _browser import launch_args
 from playwright.async_api import async_playwright
 CORE = os.path.dirname(os.path.abspath(__file__)); EP = os.path.abspath(sys.argv[1]); os.chdir(EP)
 D = json.load(open("lines.json")); C = D["cover"]; os.makedirs("out", exist_ok=True); os.makedirs("build", exist_ok=True)
-h = open(f"{CORE}/cover.html", encoding="utf-8").read().replace("__FONT__", f"file://{CORE}/assets/NotoSansSC.ttf").replace("__BG__", "file://" + os.path.abspath(D.get("bg", "assets/bg.jpg")))
+h = open(f"{CORE}/cover.html", encoding="utf-8").read().replace("__FONT__", f"file://{CORE}/assets/NotoSansSC.ttf").replace("__BG__", "file://" + os.path.abspath(D.get("bg") or (D["bgs"][0]["file"] if D.get("bgs") else "assets/bg.jpg")))
 h = h.replace("__EY__", C.get("eyebrow", "—— 老杨魔方 · 经营信号 ——")).replace("__TT__", C["title"]).replace("__SS__", C["sub"])
 open("build/cover.html", "w", encoding="utf-8").write(h)
 async def main():

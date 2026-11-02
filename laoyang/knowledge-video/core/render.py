@@ -13,6 +13,9 @@ if len(sys.argv) > 5 and sys.argv[2] == "part": sys.argv[5] = os.path.abspath(sy
 os.chdir(EP)
 URL = "file://" + os.path.abspath("build/index.html") + "?capture=1"
 FPS = 30
+# 深度版：暗部渐变多，帧用 PNG 无损截图 + crf 15，避免底图色带和糊
+DEEP = json.load(open("lines.json")).get("style") == "deep"
+CRF = "15" if DEEP else "18"
 
 async def session(fn):
     async with async_playwright() as p:
@@ -30,10 +33,10 @@ async def snap(pg):
 
 async def part(pg):
     a, b, out = int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
-    ff = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "image2pipe", "-framerate", str(FPS), "-c:v", "mjpeg", "-i", "-",
-                           "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
+    ff = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "image2pipe", "-framerate", str(FPS), "-c:v", "png" if DEEP else "mjpeg", "-i", "-",
+                           "-c:v", "libx264", "-preset", "medium", "-crf", CRF, "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
     for f in range(a, b):
-        await pg.evaluate(f"render({f / FPS})"); ff.stdin.write(await pg.screenshot(type="jpeg", quality=92))
+        await pg.evaluate(f"render({f / FPS})"); ff.stdin.write(await pg.screenshot(type="png") if DEEP else await pg.screenshot(type="jpeg", quality=92))
         if (f - a) % 300 == 0: print(f"  [{a}-{b}] frame {f}", flush=True)
     ff.stdin.close(); ff.wait()
 
