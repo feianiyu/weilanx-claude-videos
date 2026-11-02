@@ -1,5 +1,7 @@
-{"pipeline": "knowledge-video",
+{
+ "pipeline": "knowledge-video",
  "episode": "laoyang/knowledge-video/episodes/2026-11-03_万历十五年_深度版",
  "voice": "auto",
  "publish_mb": 120,
- "note": "深度拆解版正式出片：文案老杨已定稿（11-02 22:15），本人声音；重点看高清底图压暗后清不清楚、卡片出现时机"}
+ "note": "第二次出片：底图遮罩再压暗、来源注加阴影；配音沿用缓存（不重新收费）"
+}
