@@ -1,5 +1,13 @@
 """页面内检查（qc.py 和 regress.py 共用）：中间区越界、字幕位置/溢出"""
-CHECK = """(()=>{const out=[];const v2=document.getElementById('v').classList.contains('v2');const L0=v2?104:104,R0=v2?976:976,T0=v2?530:590,SL=v2?120:150,SR=v2?960:930;
+CHECK = """(()=>{const out=[];
+if(document.getElementById('cards')){   // 深度版：卡片区 x80–1000 / y400–1310，字幕 y1500–1730（页脚线 1745）
+ document.querySelectorAll('#cards .card').forEach(c=>{if(getComputedStyle(c).visibility==='hidden'||+c.style.opacity<0.5)return;
+  c.querySelectorAll('*').forEach(e=>{let op=1;for(let x=e;x&&x!==c;x=x.parentElement)op*=+(getComputedStyle(x).opacity);if(op<0.3)return;
+   if(e.closest('.ch-in'))return;const r=e.getBoundingClientRect();if(!r.width||!r.height)return;
+   if(r.left<76||r.right>1004||r.top<396||r.bottom>1312)out.push(c.dataset.id+' 越界(出卡片区) '+[r.left,r.top,r.right,r.bottom].map(Math.round)+' '+(e.textContent||e.className).trim().slice(0,12));});});
+ const s=document.getElementById('sub');if(s.textContent){const r=s.getBoundingClientRect();if(r.top<1500)out.push('字幕太高');if(r.bottom>1730)out.push('字幕压到页脚');if(s.scrollWidth>s.clientWidth+2)out.push('字幕溢出');}
+ return out;}
+const v2=document.getElementById('v').classList.contains('v2');const L0=v2?104:104,R0=v2?976:976,T0=v2?530:590,SL=v2?120:150,SR=v2?960:930;
 const box=e=>{const own=[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());if(own){const r=document.createRange();r.selectNodeContents(e);return r.getBoundingClientRect();}
  if(e.children.length)return null;return e.getBoundingClientRect();};
 document.querySelectorAll('#stage .scene').forEach(c=>{if(getComputedStyle(c).visibility==='hidden'||+c.style.opacity<0.5)return;

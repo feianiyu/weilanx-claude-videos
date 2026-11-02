@@ -5,6 +5,7 @@ import json, os, sys, urllib.request
 EP = os.path.abspath(sys.argv[1]); os.chdir(EP); D = json.load(open("lines.json"))
 items = []
 if D.get("bgUrl"): items.append((D.get("bg", "assets/bg.jpg"), D["bgUrl"]))
+items += [(b["file"], b["url"]) for b in D.get("bgs", []) if b.get("url")]   # 深度版：多张高清底图（下原图，不要带 ?w= 缩略参数）
 if isinstance(D.get("bgm"), dict) and D["bgm"].get("url"): items.append((D["bgm"]["file"], D["bgm"]["url"]))
 items += [(c["file"], c["url"]) for c in D.get("sfxlib", {}).values() if c.get("url")]
 for f, u in items:

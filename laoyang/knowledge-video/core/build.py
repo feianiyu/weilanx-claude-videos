@@ -16,7 +16,8 @@ D = json.load(open("lines.json"))
 L = D["lines"]; CUT = set(D.get("cut", []))
 GAP = D.get("gapSec", 0.3); SECGAP = D.get("secGap", 0.6)
 keys = [k for k in L if k not in CUT]
-BGM = D["bgm"]["file"] if isinstance(D.get("bgm"), dict) else D.get("bgm")
+BGM = D["bgm"].get("file") if isinstance(D.get("bgm"), dict) else D.get("bgm")
+DEEP = D.get("style") == "deep"   # 深度拆解版（STANDARD_DEEP.md）：shell_deep.html + cards.js，卡片写在 lines.json → cards
 
 # ---------- timeline（v2.1：章节首句起点吸附到 BGM 拍点；restBefore 句前多留一拍静止） ----------
 BEAT = D.get("beat"); REST = D.get("restBefore")
@@ -70,18 +71,31 @@ shell = open(f"{CORE}/shell.html", encoding="utf-8").read()
 # 片尾预告（可选，系列片用）：lines.json "endNext": "下期讲：怎么去" → 冒号前灰、冒号后橙
 _en = D.get("endNext", "")
 ENDNEXT_HTML = (_en.split("：", 1)[0] + "：<span style=\"color:var(--o)\">" + _en.split("：", 1)[1] + "</span>") if "：" in _en else _en
-fx = open(f"{CORE}/fx.js", encoding="utf-8").read()
-fxp = open(f"{CORE}/fx_particles.js", encoding="utf-8").read()
-fxt = open(f"{CORE}/fx_text.js", encoding="utf-8").read()
-ep_html = open("scenes.html", encoding="utf-8").read(); ep_js = open("scenes.js", encoding="utf-8").read()
 ep_css = open("scenes.css", encoding="utf-8").read() if os.path.exists("scenes.css") else ""
 last_sec = L[keys[-1]]["sec"]
-tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp).replace("//@TEXTFX", fxt).replace("//@FX", fx).replace("//@SCENES_JS", ep_js).replace("/*@EP_CSS*/", ep_css)
+if DEEP:
+    FR = D.get("frame", {})
+    def svg_cube(px): return f'<svg width="{px}" height="{px}" viewBox="-56 -56 112 112">{CUBE}</svg>'
+    ep_html = ""; ep_js = open("scenes.js", encoding="utf-8").read() if os.path.exists("scenes.js") else ""
+    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
+           .replace("/*@EP_CSS*/", ep_css).replace("__CUBE64__", svg_cube(64)).replace("__CUBE58__", svg_cube(58))
+           .replace("__T1__", D["series"]["title"]).replace("__SERIES__", FR.get("seriesLine", D["series"]["title"]))
+           .replace("__COLUMN__", FR.get("column", "LAOYANG CUBE")).replace("__EPNO__", FR.get("ep", "")))
+else:
+  fx = open(f"{CORE}/fx.js", encoding="utf-8").read()
+  fxp = open(f"{CORE}/fx_particles.js", encoding="utf-8").read()
+  fxt = open(f"{CORE}/fx_text.js", encoding="utf-8").read()
+  ep_html = open("scenes.html", encoding="utf-8").read(); ep_js = open("scenes.js", encoding="utf-8").read()
+  tpl = (shell.replace("<!--@SCENES_HTML-->", ep_html).replace("//@PARTICLES", fxp).replace("//@TEXTFX", fxt).replace("//@FX", fx).replace("//@SCENES_JS", ep_js).replace("/*@EP_CSS*/", ep_css)
        .replace("__CUBE56__", f'<svg width="56" height="56" viewBox="-56 -56 112 112">{CUBE}</svg>').replace("__CUBEPATH__", CUBE)
        .replace("__ENDSEC__", last_sec).replace("__ENDNEXT__", ENDNEXT_HTML).replace("__T1__", D["series"]["title"]).replace("__T2__", D["series"]["sub"]))
 SFXLIST = D.get("sfx", [])
 # 锚点：scenes.js 里任何写成 'v07|词|s' 的字符串都算（包括写在数组里的），加上 scenes.html 的 data-at 和音效表
 specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST} | {h[0] for h in D.get("heads", []) if h[0].startswith("v")}
+CARDS = D.get("cards", []) if DEEP else []
+for c in CARDS:
+    for x in [c["at"]] + list(c.get("steps", [])):
+        if "|" in x: specs.add(x)
 A = {s: anchor(s) for s in sorted(specs)}
 
 # sections (cards)
@@ -175,8 +189,8 @@ os.makedirs("build", exist_ok=True)
 def load(path, sec=4.0):
     if REGRESS:
         return np.zeros(int(sec * SR), np.float32)
-    if not os.path.exists(path):
-        MISSING.append(path); print("!! 缺音频，用静音占位：", path); return np.zeros(int(sec * SR), np.float32)
+    if not path or not os.path.exists(path):
+        if path: MISSING.append(path); print("!! 缺音频，用静音占位：", path); return np.zeros(int(sec * SR), np.float32)
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
                          capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.float32).copy()
@@ -185,7 +199,24 @@ vo = np.zeros(N, np.float32)
 for k in keys:
     a = load(f"vo/{k}.mp3", L[k]["dur"]); i = int(tl[k][0] * SR); vo[i:i + len(a)] += a[:N - i]
 
-if BGM_OFF >= 0:
+def pad(sec):
+    """深度版默认配乐：程序合成的低调和声垫底（无旋律起伏、不卡拍），确定性、无版权问题。lines.json "bgm": {"synth": "pad"}"""
+    n = int(sec * SR); tt = np.arange(n, dtype=np.float64) / SR; out = np.zeros(n)
+    prog = [[57, 60, 64, 69], [53, 57, 60, 65], [48, 55, 60, 64], [55, 59, 62, 67]]   # Am F C G，每个 8 秒
+    seg = 8.0
+    for i in range(int(sec // seg) + 1):
+        a0 = int(i * seg * SR); a1 = min(n, int((i + 1) * seg * SR + 2.5 * SR))
+        if a0 >= n: break
+        t_ = tt[a0:a1] - i * seg; env = np.clip(t_ / 2.5, 0, 1) * np.clip((seg + 2.5 - t_) / 2.5, 0, 1)
+        for m in prog[i % 4]:
+            f = 440 * 2 ** ((m - 69 - 12) / 12)
+            for det in (-0.12, 0.0, 0.11):
+                out[a0:a1] += np.sin(2 * np.pi * (f + det) * t_ + m) * env * 0.08
+    k = int(SR * 0.004); out = np.convolve(out, np.ones(k) / k, "same")   # 柔化
+    return out.astype(np.float32)
+if isinstance(D.get("bgm"), dict) and D["bgm"].get("synth") == "pad":
+    b = np.zeros(int(DUR * SR), np.float32) if REGRESS else pad(DUR + 5)
+elif BGM_OFF >= 0:
     b = load(BGM, DUR + BGM_OFF + 5)[int(BGM_OFF * SR):]
 else:   # 片子比曲子的高潮位置还长：曲子从头起播，前面留空（原来负数切片会只剩曲尾几秒）
     b = load(BGM, DUR + 5); b = np.concatenate([np.zeros(int(-BGM_OFF * SR), np.float32), b])
@@ -204,7 +235,7 @@ def wrms(x, mask):
     xs = x[:n * w].reshape(n, w); ms = mask[:n * w].reshape(n, w).mean(1) > .5
     return 20 * np.log10(np.sqrt((xs[ms] ** 2).mean()) + 1e-9)
 target = wrms(vo, speech) - float(D.get('bgmUnder', 7.0))
-g = float(np.clip(10 ** ((target - wrms(b, speech)) / 20), 0.03, 0.8)) if np.abs(b).max() > 0 else 0.0
+g = (float(np.clip(10 ** ((target - wrms(b, speech)) / 20), 0.03, 0.8)) if speech.any() else 0.05) if np.abs(b).max() > 0 else 0.0
 bg = b * g
 if REST and BEAT:   # 段落前收一拍：BGM 在 v09 前一拍淡到 0，v09 起点回来
     r1 = tl[REST][0]; r0 = r1 - BEAT["period"]; i0, i1 = int(r0 * SR), int(r1 * SR); fz = int(.06 * SR)
@@ -307,13 +338,27 @@ for key, txt in D.get("heads", []):
     h_, fs_ = head_html(txt); HEADS.append({"t": round(t_, 3), "html": h_, "fs": fs_, "src": txt})
 HEADS.sort(key=lambda x: x["t"])
 for h in HEADS: print("HEAD", h["t"], h["fs"], h["src"])
+if DEEP:
+    cdat = []
+    for i, c in enumerate(CARDS):
+        at = c["at"]; t0 = 0.0 if i == 0 else (A[at] - 0.15 if "|" in at else tl[at][0] - 0.3)
+        cdat.append({"id": c.get("id", f"k{i}"), "type": c["type"], "data": c.get("data", {}), "t0": round(t0, 3), "first": i == 0,
+                     "st": [round(A[x] - 0.1, 3) for x in c.get("steps", [])]})
+    for i, c in enumerate(cdat):
+        c["t1"] = cdat[i + 1]["t0"] if i + 1 < len(cdat) else DUR; c["last"] = i + 1 == len(cdat)
+        assert c["t1"] > c["t0"] + 0.5, ("卡片时间太短或顺序错", c["id"], c["t0"], c["t1"])
+        for j, x in enumerate(c["st"]):
+            if not (c["t0"] - 0.01 <= x <= c["t1"]): print(f"!! 卡 {c['id']} 第 {j+1} 个 step 在卡片时间外：{x} 不在 {c['t0']}–{c['t1']}")
+        print(f"CARD {c['id']:<6} {c['type']:<9} {c['t0']:7.2f}–{c['t1']:7.2f}  {c['t1']-c['t0']:5.1f}s  steps {len(c['st'])}")
+    sl = D.get("frame", {}).get("seriesLine", D["series"]["title"])
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
-        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})}
+        "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})} if not DEEP else \
+       {"anchors": A, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "series": D["series"], "cards": cdat, "seriesFs": int(min(44, 940 / max(1, cw(sl))))}
 meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
 
-chars = "".join(sorted(set(re.sub(r"<[^>]+>", "", tpl) + ep_js + "".join(L[k]["sub"] for k in keys) + "0123456789.%：（）·＋…≠“”《》→—✕▶❚播放暂停" + D["series"]["title"] + D["series"]["sub"])))
+chars = "".join(sorted(set(re.sub(r"<[^>]+>", "", tpl) + (json.dumps(CARDS, ensure_ascii=False) + "▶→●" if DEEP else "") + ep_js + "".join(L[k]["sub"] for k in keys) + "0123456789.%：（）·＋…≠“”《》→—✕▶❚播放暂停" + D["series"]["title"] + D["series"]["sub"])))
 open("build/chars.txt", "w").write(chars)
 subprocess.run(["pyftsubset", f"{CORE}/assets/NotoSansSC.ttf", "--text-file=build/chars.txt",
                 "--output-file=build/font.ttf", "--layout-features=*"], check=True)
@@ -322,7 +367,26 @@ dj = json.dumps(data, ensure_ascii=False)
 for m in set(re.findall(r"__IMG:([\w.]+)__", tpl)):
     tpl = tpl.replace(f"__IMG:{m}__", "data:image/jpeg;base64," + base64.b64encode(open("assets/" + m, "rb").read()).decode())
 BGP = D.get("bg", "assets/bg.jpg")
-if REGRESS or not os.path.exists(BGP):
+BGL = []   # 深度版：多张高清底图 [{"file","from","dim","pos"}]，from = 卡片 id（那张卡开始时交叉切换）
+if DEEP:
+    from PIL import Image
+    cstart = {c["id"]: c["t0"] for c in data["cards"]}
+    for i, b in enumerate(D.get("bgs") or [{"file": BGP}]):
+        dst = f"bg_{i}" + os.path.splitext(b["file"])[1].lower()
+        if REGRESS or not os.path.exists(b["file"]):
+            if not REGRESS: MISSING.append(b["file"]); print("!! 缺底图，用占位色：", b["file"])
+            dst = f"bg_{i}.jpg"
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x1a140c:s=1080x1920", "-frames:v", "1", "build/" + dst], check=True)
+        else:
+            w_, h_ = Image.open(b["file"]).size; need = 1104 / 1962
+            vis_h = h_ if w_ / h_ >= need else w_ / need     # cover 裁切后实际用到的原图高度
+            if vis_h < 1962: print(f"!! 底图分辨率不够：{b['file']} {w_}×{h_}，竖屏裁切后只有 {int(vis_h)}px 高（要 ≥1962，否则会被放大发糊）——换更大的原图")
+            else: print(f"底图 {b['file']} {w_}×{h_} ✓")
+            shutil.copy(b["file"], "build/" + dst)   # 原样复制，不再压缩
+        BGL.append({"src": dst, "t0": 0.0 if i == 0 else cstart[b["from"]], "dim": b.get("dim", 1), **({"pos": b["pos"]} if b.get("pos") else {})})
+    data["bgs"] = BGL; dj = json.dumps(data, ensure_ascii=False)
+if DEEP: pass
+elif REGRESS or not os.path.exists(BGP):
     if not REGRESS: MISSING.append(BGP); print("!! 缺底图，用占位色：", BGP)
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x3a342b:s=1080x1920", "-frames:v", "1", "build/bg.jpg"], check=True)
 else:
@@ -330,8 +394,11 @@ else:
 cap = tpl.replace("__BG__", "bg.jpg").replace("__FONT__", "font.ttf").replace("__AUDIO__", "mix.m4a").replace("__DATA__", dj)
 open("build/index.html", "w", encoding="utf-8").write(cap)
 b64 = lambda p: base64.b64encode(open(p, "rb").read()).decode()
-pre = tpl.replace("__BG__", "data:image/jpeg;base64," + b64("build/bg.jpg")).replace("__FONT__", "data:font/ttf;base64," + b64("build/font.ttf")) \
-         .replace("__AUDIO__", "data:audio/mpeg;base64," + b64("build/mix.mp3")).replace("__DATA__", dj)
+if DEEP:
+    dpre = dict(data, bgs=[dict(b, src=("data:image/png;base64," if b["src"].endswith(".png") else "data:image/jpeg;base64,") + b64("build/" + b["src"])) for b in BGL]); djp = json.dumps(dpre, ensure_ascii=False)
+else: djp = dj
+pre = tpl.replace("__BG__", "data:image/jpeg;base64," + b64("build/bg.jpg") if not DEEP else "").replace("__FONT__", "data:font/ttf;base64," + b64("build/font.ttf")) \
+         .replace("__AUDIO__", "data:audio/mpeg;base64," + b64("build/mix.mp3")).replace("__DATA__", djp)
 open("build/preview.html", "w", encoding="utf-8").write(pre)
 print(json.dumps({k: meta[k] for k in ("dur", "bgm_gain", "bgm_vs_vo_db")}), "sfx", [(e["t"], e["kind"]) for e in sfx])
 if MISSING: print(f"!! 有 {len(MISSING)} 个音频缺失（静音占位）——只能看画面，不能出成片。先运行 python3 core/fetch_assets.py {sys.argv[1]}")
