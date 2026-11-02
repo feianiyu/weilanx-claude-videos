@@ -369,7 +369,9 @@ for m in set(re.findall(r"__IMG:([\w.]+)__", tpl)):
 BGP = D.get("bg", "assets/bg.jpg")
 BGL = []   # 深度版：多张高清底图 [{"file","from","dim","pos"}]，from = 卡片 id（那张卡开始时交叉切换）
 if DEEP:
-    from PIL import Image
+    def img_size(f):   # 不依赖 Pillow（出片机 venv 未必装），用 ffprobe 读尺寸
+        o = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", f], capture_output=True, text=True).stdout.strip()
+        w, h = o.split(",")[:2]; return int(w), int(h)
     cstart = {c["id"]: c["t0"] for c in data["cards"]}
     for i, b in enumerate(D.get("bgs") or [{"file": BGP}]):
         dst = f"bg_{i}" + os.path.splitext(b["file"])[1].lower()
@@ -378,7 +380,7 @@ if DEEP:
             dst = f"bg_{i}.jpg"
             subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x1a140c:s=1080x1920", "-frames:v", "1", "build/" + dst], check=True)
         else:
-            w_, h_ = Image.open(b["file"]).size; need = 1104 / 1962
+            w_, h_ = img_size(b["file"]); need = 1104 / 1962
             vis_h = h_ if w_ / h_ >= need else w_ / need     # cover 裁切后实际用到的原图高度
             if vis_h < 1962: print(f"!! 底图分辨率不够：{b['file']} {w_}×{h_}，竖屏裁切后只有 {int(vis_h)}px 高（要 ≥1962，否则会被放大发糊）——换更大的原图")
             else: print(f"底图 {b['file']} {w_}×{h_} ✓")
