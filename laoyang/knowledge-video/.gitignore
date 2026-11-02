@@ -8,3 +8,5 @@ starter/assets/bg.jpg
 # 用户本人声音的试听版（个人声音不进公开仓库）
 episodes/_voice_*/
 episodes/*/assets/
+# 深度版用老杨本人声音，配音只在 Mac 本机（出片机），不进仓库
+episodes/2026-11-03_*/vo/
