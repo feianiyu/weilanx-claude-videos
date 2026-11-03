@@ -71,9 +71,9 @@ cards = [
 D = {
  "_说明": "深度拆解版（STANDARD_DEEP.md）。选题来自老杨 2026-11-03 控制台投稿 20261103-091621-25ba；用一手/可核对资料重写，不照搬投稿原文。PLAN.md / FACTS.md 是写稿依据",
  "style": "deep",
- "series": {"title": "高盛《阻力最小路径》·深度版", "sub": "产出撑得起，就业养不满"},
- "frame": {"seriesLine": "高盛的“阻力最小路径”：科技撑起产出，为什么养不起就业", "column": "LAOYANG CUBE / 宏观 · 就业", "ep": "EP.09"},
- "cover": {"eyebrow": "—— 老杨魔方 · 宏观 ——", "title": "阻力最小的路<br>对谁阻力最小", "sub": "高盛报告里的就业账"},
+ "series": {"title": "高盛报告里的就业账·深度版", "sub": "高科技撑起产出，却养不起就业"},
+ "frame": {"seriesLine": "高盛报告里的就业账：高科技撑起产出，为什么养不起就业", "column": "LAOYANG CUBE / 宏观 · 就业", "ep": "EP.09"},
+ "cover": {"eyebrow": "—— 老杨魔方 · 宏观 ——", "title": "高科技撑起产出<br>却养不起就业", "sub": "高盛报告里的就业账"},
  "bgs": [{"file": "assets/bg_factory.jpg", "url": "https://images.pexels.com/photos/34222005/pexels-photo-34222005.jpeg",
           "note": "Pexels #34222005《Automated Factory Conveyor System in Operation》Freek Wolsink（Pexels License）原图 6000×4000，下原图不缩放", "dim": 0.85, "pos": "50% 50%"}],
  "voice": {"engine": "volc", "tempo": 1.15, "name": "老杨本人（火山引擎声音复刻）"},
