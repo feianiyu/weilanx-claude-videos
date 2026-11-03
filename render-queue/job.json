@@ -3,5 +3,5 @@
  "episode": "laoyang/knowledge-video/episodes/2026-11-03_龙场时刻_深度版",
  "voice": "auto",
  "publish_mb": 120,
- "note": "龙场时刻重渲染：老杨已听完配音「没问题」；修 k03 流程卡右侧溢出（core/cards.js flow 节点定位），regress 46/46 通过；其余不动"
+ "note": "中国经济的龙场时刻：桥修好了，钱为什么更紧（老杨 11:50 确认文案「通过」；数字核财政部/统计局一手；底图下原图 Pexels #4345863；Hark 沙箱假人声 build + 14 卡抽帧已查）"
 }

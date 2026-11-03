@@ -44,7 +44,7 @@ const CARD={
  // 资金/流程线 {eyebrow,num,dec,unit,label,nodes:[{label,val}],note}
  flow:d=>(d.eyebrow?U(0,esc(d.eyebrow),'ey'):'')+(d.num!=null?U(0,num(d.num,d.dec,d.unit),'big','data-fx="count"'):'')+(d.label?U(0,hi(d.label),'big-l'):'')+
    `<div class="fl">`+U(sOf(d.line,1),'<div class="fl-line" data-fx="grow"></div><div class="fl-ar">▶</div>','fl-lw')+d.nodes.map((n,i)=>U(sOf(n,i+1),
-   `<div class="fl-k">${esc(n.label)}</div><div class="fl-v">${esc(n.val)}</div>`,'fl-n',`style="left:calc((100% - 180px) * ${(i/Math.max(1,d.nodes.length-1)).toFixed(4)})"`)).join('')+`</div>`+
+   `<div class="fl-k">${esc(n.label)}</div><div class="fl-v">${esc(n.val)}</div>`,'fl-n',`style="left:${(i/(Math.max(1,d.nodes.length-1))*86).toFixed(1)}%"`)).join('')+`</div>`+
    (d.note?U(sOf(d.note,d.nodes.length+1),`<span>${hi(d.note.k||'')}</span><b>${hi(d.note.v||d.note)}</b>`,'fl-note'):''),
  // 多项图（堆叠柱）{title,legend:[a,b],items:[{name,a,b}],zoom:{s,z,ox},mark:{s,name,label},unit}
  chart:d=>{const mx=Math.max(...d.items.map(x=>x.a+x.b)),n=d.items.length,w=840/n;
