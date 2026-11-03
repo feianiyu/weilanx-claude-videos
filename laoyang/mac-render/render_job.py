@@ -284,27 +284,29 @@ def kv_qc_video(job: Job):
 
 
 def find_video(job: Job):
-    vids = sorted((os.path.join(job.ep, "out", f) for f in os.listdir(os.path.join(job.ep, "out")) if f.endswith(".mp4") and "发布版" not in f), key=os.path.getmtime)
+    vids = sorted((os.path.join(job.ep, "out", f) for f in os.listdir(os.path.join(job.ep, "out")) if f.endswith(".mp4") and "发布版" not in f and ".压制中" not in f), key=os.path.getmtime)
     if not vids:
         raise StepFail("out/ 里没有成片")
     return vids[-1]
 
 
 def publish_version(job: Job):
+    """只留一个成片（2026-11-03 老杨要求）：成片不超过 publish_mb 就原样留着；超了就压到目标大小，压完替换原成片。
+    不再另出 _发布版.mp4。"""
     src = find_video(job)
     mb = float(job.job.get("publish_mb", 25))
     size = os.path.getsize(src) / 1e6
-    dst = src[:-4] + "_发布版.mp4"
     if size <= mb:
-        shutil.copyfile(src, dst)
-        return f"成片 {size:.1f}MB，本身就够小"
+        return f"成片 {size:.1f}MB，已够小，只保留这一个"
     dur = float(job.sh(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", src]).strip())
     vk = max(800, int(mb * 8000 * 0.94 / dur) - 160)
     base = os.path.join(job.ep, "build", "x264pass")
+    tmp = src[:-4] + ".压制中.mp4"
     common = ["-c:v", "libx264", "-preset", "slow", "-b:v", f"{vk}k", "-pix_fmt", "yuv420p"]
     job.sh(["ffmpeg", "-y", "-v", "error", "-i", src, *common, "-pass", "1", "-passlogfile", base, "-an", "-f", "mp4", os.devnull], timeout=1800)
-    job.sh(["ffmpeg", "-y", "-v", "error", "-i", src, *common, "-pass", "2", "-passlogfile", base, "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", dst], timeout=1800)
-    return f"{size:.1f}MB → {os.path.getsize(dst) / 1e6:.1f}MB"
+    job.sh(["ffmpeg", "-y", "-v", "error", "-i", src, *common, "-pass", "2", "-passlogfile", base, "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", tmp], timeout=1800)
+    os.replace(tmp, src)
+    return f"{size:.1f}MB → {os.path.getsize(src) / 1e6:.1f}MB（已替换原成片，只保留一个）"
 
 
 def run_knowledge_video(job: Job, selftest=False):
