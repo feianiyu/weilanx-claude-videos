@@ -92,12 +92,13 @@ cards = [
 ]
 
 D = {
- "_说明": "深度拆解版（STANDARD_DEEP.md）。卡片在 cards，文案在 lines；PLAN.md / FACTS.md 是写稿依据。待老杨确认，未出片。",
+ "_说明": "深度拆解版（STANDARD_DEEP.md）。卡片在 cards，文案在 lines；PLAN.md / FACTS.md 是写稿依据。老杨已确认文案（2026-11-04，“没问题”），推 render 分支出片。",
  "style": "deep",
  "series": {"title": "民营企业的营商环境·深度版", "sub": "产业链里的账期、机会与规则"},
  "frame": {"seriesLine": "民营企业的营商环境：审批之外还有什么", "column": "LAOYANG CUBE / 政策 · 经营环境", "ep": "EP.14"},
  "cover": {"topic": "营商环境", "title": "民营企业的营商环境<br>不只取决于政府", "sub": "审批更快、利率更低<br>生意为什么还是难做"},
- "bgs": [{"file": "assets/bg.jpg", "url": "", "note": "待选：产业园区/工厂实拍，Pexels 等可商用图库，原图不缩放（占位阶段未下载，用占位色）", "dim": 1, "pos": "50% 50%"}],
+ "bgs": [{"file": "assets/bg.jpg", "url": "https://images.pexels.com/photos/30341205/pexels-photo-30341205.jpeg",
+          "note": "Pexels #30341205《Dimly Lit Warehouse Aisle With Tall Shelves》by Othmane Ettalbi（Pexels License）原图 6048×8064，下原图不缩放", "dim": 1, "pos": "50% 50%"}],
  "voice": {"engine": "volc", "tempo": 1.15, "name": "老杨本人（火山引擎声音复刻）"},
  "gapSec": 0.25, "secGap": 0.5,
  "bgm": {"synth": "pad", "src": "程序合成和声垫底（无版权）"}, "bgmUnder": 19,
