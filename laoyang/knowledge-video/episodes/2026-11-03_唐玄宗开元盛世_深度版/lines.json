@@ -18,10 +18,10 @@
  "bgs": [
   {
    "file": "assets/bg_tang.jpg",
-   "url": "",
-   "note": "待定：文案确认后再选实拍底图（大唐宫殿/城墙一类，Pexels/Unsplash 可商用），占位阶段先用纯色底",
-   "dim": 1,
-   "pos": "50% 50%"
+   "url": "https://images.pexels.com/photos/10578436/pexels-photo-10578436.jpeg",
+   "note": "Pexels #10578436《Meridian Gate at Forbidden City in Beijing, China》JackerKun 摄（Pexels License，免费商用）；示意宫廷/皇权主题，正面城楼构图，取上半部门楼避开下方字幕区密纹；原图像素未在自动核查中确认，Mac 侧 build.py 的「分辨率不够就报错换图」会做最终把关",
+   "dim": 0.8,
+   "pos": "50% 30%"
   }
  ],
  "voice": {
