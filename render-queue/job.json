@@ -1,0 +1,7 @@
+{
+ "pipeline": "knowledge-video",
+ "episode": "laoyang/knowledge-video/episodes/2026-11-04_民营营商生态_深度版",
+ "voice": "auto",
+ "publish_mb": 180,
+ "note": "民营企业的营商环境·深度版：老杨 2026-11-04 控制台投稿（kind=script，id 20261104-173005-2266），文案已确认（“没问题”）。时长约 5:30，比标准深度版（2:30–4:00）明显长，publish_mb 按比例从默认 120 调到 180（约 3.5 分钟≈120MB≈4.5Mbps 的同等码率）；底图 Pexels #30341205 下原图 6048×8064，分辨率未在云端核查，fetch_assets 后留意 build.py 的分辨率报错。"
+}
