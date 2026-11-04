@@ -1,0 +1,7 @@
+{
+  "pipeline": "knowledge-video",
+  "episode": "laoyang/knowledge-video/episodes/2026-11-03_唐玄宗开元盛世_深度版",
+  "voice": "auto",
+  "publish_mb": 120,
+  "note": "唐玄宗开元盛世深度版：节度使制度前传，老杨文案已确认（topic-queue 20261103-212039-1b92）；底图 Pexels #10578436《午门》JackerKun，原图像素未在云端自动核查中确认，请 fetch_assets 后留意 build.py 的分辨率报错，不够就换图"
+}
