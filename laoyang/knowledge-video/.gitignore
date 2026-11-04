@@ -9,4 +9,5 @@ starter/assets/bg.jpg
 episodes/_voice_*/
 episodes/*/assets/
 # 深度版用老杨本人声音，配音只在 Mac 本机（出片机），不进仓库
-episodes/2026-11-03_*/vo/
+# 原来写死 2026-11-03_* 只覆盖了那一批期数，后来的深度版期数（按目录名统一以“_深度版”结尾）会漏掉，改成通配
+episodes/*_深度版/vo/
