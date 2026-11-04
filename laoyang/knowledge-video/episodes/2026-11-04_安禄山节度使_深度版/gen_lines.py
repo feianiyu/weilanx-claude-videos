@@ -162,7 +162,7 @@ out = {
  "series": {"title": "大唐最强的军队 · 深度版", "sub": "为什么最后打向了长安"},
  "frame": {"seriesLine": "大唐最强的军队，为什么最后打向了长安", "column": "LAOYANG CUBE / 历史 · 系统", "ep": "EP.12"},
  "cover": {"eyebrow": "—— 老杨魔方 · 历史 ——", "title": "大唐最强的军队<br>为什么打向了长安", "sub": "节度使制度与安史之乱"},
- "bgs": [{"file": "assets/bg_jiedushi.jpg", "url": "", "note": "待定：文案确认后再选实拍底图（唐代边塞/城墙/战马一类，Pexels/Unsplash 可商用），占位阶段先用纯色底", "dim": 1, "pos": "50% 50%"}],
+ "bgs": [{"file": "assets/bg_jiedushi.jpg", "url": "https://images.pexels.com/photos/2412603/pexels-photo-2412603.jpeg", "note": "Pexels #2412603《Great Wall Of China》Paulo Marcelo Martins（Pexels License，免费商用）原图 4000×6000（竖图），示意边塞/防线，取雾中长城与山脊，避开下方茂密枝叶纹理", "dim": 0.78, "pos": "50% 22%"}],
  "voice": {"engine": "volc", "tempo": 1.15, "name": "老杨本人（火山引擎声音复刻）"},
  "gapSec": 0.25, "secGap": 0.5,
  "bgm": {"synth": "pad", "src": "程序合成和声垫底（无版权）"},
