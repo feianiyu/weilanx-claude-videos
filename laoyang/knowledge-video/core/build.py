@@ -17,6 +17,12 @@ L = D["lines"]; CUT = set(D.get("cut", []))
 GAP = D.get("gapSec", 0.3); SECGAP = D.get("secGap", 0.6)
 keys = [k for k in L if k not in CUT]
 BGM = D["bgm"].get("file") if isinstance(D.get("bgm"), dict) else D.get("bgm")
+V2 = int(D.get("v", 1)) >= 2   # 深度 v2（STANDARD_DEEP_V2.md）：开场钩子体检 + 决策桥接 + 默认语速 +5%
+if V2:
+    sys.path.insert(0, CORE); import lint_opening
+    _e, _w = lint_opening.lint(L, keys, D)
+    for _x in _w: print("提示：", _x)
+    if _e: sys.exit("深度 v2 稿子体检未通过：\n  " + "\n  ".join(_e))
 DEEP = D.get("style") == "deep"   # 深度拆解版（STANDARD_DEEP.md）：shell_deep.html + cards.js，卡片写在 lines.json → cards
 
 # ---------- timeline（v2.1：章节首句起点吸附到 BGM 拍点；restBefore 句前多留一拍静止） ----------
