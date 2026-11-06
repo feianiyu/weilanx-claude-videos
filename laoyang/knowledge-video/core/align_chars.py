@@ -37,7 +37,7 @@ def voiced(x):
 
 def weight(c): return 0.5 if c.isascii() else 1.0
 
-TEMPO = float(L.get("voice", {}).get("tempo", 1.0))   # 整体提速（音调不变）：原始配音放 vo_raw/，提速后写 vo/
+TEMPO = float(L.get("voice", {}).get("tempo", 1.21 if int(L.get("v", 1)) >= 2 else 1.0))   # v2 默认 1.21 = 1.15 × 1.05（2026-11-06 老杨：语速再快 5%）   # 整体提速（音调不变）：原始配音放 vo_raw/，提速后写 vo/
 if TEMPO != 1.0:
     os.makedirs("vo_raw", exist_ok=True)
     for k in keys:

@@ -77,6 +77,40 @@ const CARD={
  // 收束卡：三栏证据 + 结论框 + 下期 {cols:[{k,v}],box,next}
  close:d=>`<div class="cols c3">`+d.cols.map((c,i)=>U(sOf(c,0),`<div class="ck">${hi(c.k)}</div><div class="cv">${hi(c.v||'')}</div>`,'col')).join('')+`</div>`+
    U(sOf(d.boxS,1),hi(d.box),'cl-box')+(d.next?U(sOf(d.nextS,2),hi(d.next),'cl-next'):''),
+ // ===== 深度 v2 新增（2026-11-06）=====
+ // 条文卡：法条 / 合同原文，关键词随口播逐个划线 {eyebrow,from(出处一行),parts:["普通",{t:"关键",s:1}],stamp:{text,s}}
+ quote:d=>(d.eyebrow?U(0,esc(d.eyebrow),'ey'):'')+(d.from?U(0,esc(d.from),'qt-src'):'')+
+   U(0,(d.parts||[]).map(x=>typeof x==='string'?esc(x):`<span class="mk" data-s="${x.s}" data-fx="mark">${esc(x.t)}</span>`).join(''),'qt-body')+
+   (d.stamp?U(sOf(d.stamp,9),esc(d.stamp.text||d.stamp),'stamp','data-fx="stamp"'):''),
+ // 折线卡：一条线走出趋势 {title,unit,pts:[{x,y}],end:{s,label},from:{label}}（x 只标首尾，y 标首尾值）
+ line:d=>{const ys=d.pts.map(p=>p.y),mn=Math.min(...ys),mx=Math.max(...ys),W=860,H=420,n=d.pts.length,pad=(mx-mn||1)*0.12;
+   const X=i=>40+i*(W-80)/Math.max(1,n-1),Y=v=>H-30-(v-mn+pad)/(mx-mn+2*pad)*(H-60);
+   const pl=d.pts.map((p,i)=>`${X(i).toFixed(1)},${Y(p.y).toFixed(1)}`).join(' ');
+   return head(d)+U(sOf(d.line,1),`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><line x1="40" y1="${H-30}" x2="${W-40}" y2="${H-30}" stroke="#4a463f" stroke-width="3"/>`+
+     `<polyline points="${pl}" fill="none" stroke="#F5A623" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>`+
+     d.pts.map((p,i)=>(i===0||i===n-1)?`<circle cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="12" fill="#F5A623"/>`:'').join('')+
+     `</svg>`,'ln-svg','data-fx="wipe"')+
+   `<div class="ln-lab">`+U(0,`<i>${esc(d.pts[0].x)}</i><b>${esc(d.from?d.from.label:d.pts[0].y)}</b>`,'ln-a')+U(sOf(d.end,2),`<i>${esc(d.pts[n-1].x)}</i><b class="o">${esc(d.end&&d.end.label||d.pts[n-1].y)}</b>`,'ln-b')+`</div>`+
+   (d.unit?U(0,esc(d.unit),'ch-unit'):'');},
+ // 瀑布卡：一笔账怎么从 A 变成 B（利润桥、估值桥）{title,unit,steps:[{name,v,total}]}（v 正为加、负为减；total:true 表示合计柱，v 为总值）
+ waterfall:d=>{let cum=0;const bars=d.steps.map(x=>{const a=x.total?0:cum,b=x.total?x.v:cum+x.v;cum=x.total?x.v:cum+x.v;return {x,lo:Math.min(a,b),hi:Math.max(a,b)}});
+   const mx=Math.max(...bars.map(b=>b.hi),1),n=bars.length,w=860/n,H=470;
+   return head(d)+`<div class="wf" style="height:${H+110}px">`+bars.map((b,i)=>U(sOf(b.x,i+1),
+     `<div class="wf-b ${b.x.total?'t':(b.x.v<0?'d':'u2')}" data-fx="grow" data-dir="y" style="bottom:${(b.lo/mx*H).toFixed(0)}px;height:${Math.max(6,(b.hi-b.lo)/mx*H).toFixed(0)}px"></div>`+
+     `<div class="wf-v" style="bottom:${(b.hi/mx*H+10).toFixed(0)}px">${esc((b.x.total?'':(b.x.v>0?'+':''))+b.x.v)}</div><div class="wf-n">${hi(b.x.name)}</div>`,'wf-c',`style="left:${(i*w).toFixed(1)}px;width:${(w-14).toFixed(1)}px"`)).join('')+`</div>`+(d.unit?U(0,esc(d.unit),'ch-unit'):'');},
+ // 天平：两边掂量 {title,left:{k,v},right:{k,v},tilt:"left|right",s,verdict}
+ balance:d=>head(d)+U(0,`<div class="bl-post"></div><div class="bl-pan l"><b>${hi(d.left.k)}</b><i>${hi(d.left.v||'')}</i></div><div class="bl-pan r"><b>${hi(d.right.k)}</b><i>${hi(d.right.v||'')}</i></div>`+
+   `<div class="bl u" data-s="${sOf(d.tiltS,1)}" data-fx="tilt" data-dir="${d.tilt==='left'?-1:1}"><div class="bl-beam"></div></div>`,'bl-w')+
+   (d.verdict?U(sOf(d.verdict,2),hi(d.verdict.text||d.verdict),'bl-v'):''),
+ // 四象限：把对象摆到坐标里 {title,xl:[低,高],yl:[低,高],quads:[a,b,c,d],dots:[{label,x,y,s,on}]}（x、y 取 0–1；quads 顺序 左上 右上 左下 右下）
+ matrix:d=>head(d)+`<div class="mx"><div class="mx-g">`+(d.quads||['','','','']).map((q,i)=>`<div class="mx-q q${i}">${hi(q)}</div>`).join('')+`</div>`+
+   `<div class="mx-x"><span>${esc(d.xl[0])}</span><span>${esc(d.xl[1])} →</span></div><div class="mx-y">↑ ${esc(d.yl[1])}　　↓ ${esc(d.yl[0])}</div>`+
+   d.dots.map((o,i)=>U(sOf(o,i+1),`<i class="${o.on?'on':''}"></i><span>${hi(o.label)}</span>`,'mx-d',`style="left:${(o.x*100).toFixed(1)}%;top:${((1-o.y)*100).toFixed(1)}%"`)).join('')+`</div>`,
+ // 决策清单：看完回去重新想的那几件事（桥接段专用）{title,items:[{t,n}],stamp}
+ check:d=>head(d)+`<div class="ck-l">`+d.items.map((x,i)=>U(sOf(x,i+1),
+   `<svg class="ck-box" viewBox="0 0 60 60" width="60" height="60"><rect x="4" y="4" width="52" height="52" rx="6" fill="none" stroke="#F5A623" stroke-width="5"/><polyline class="ck-tick" points="14,32 26,44 47,17" fill="none" stroke="#F5A623" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`+
+   `<div class="ck-t"><b>${hi(x.t)}</b>${x.n?`<small>${hi(x.n)}</small>`:''}</div>`,'ck-i','data-fx="tick"')).join('')+`</div>`+
+   (d.stamp?U(sOf(d.stamp,d.items.length+1),esc(d.stamp.text||d.stamp),'stamp','data-fx="stamp"'):''),
  // 纯文字卡 {eyebrow,title,body:[...]}
  text:d=>head(d)+(d.body||[]).map((b,i)=>U(sOf(b,i+1),hi(b.t||b),'tx')).join(''),
 };
@@ -101,7 +135,12 @@ function renderCards(t){
   k.el.style.visibility=a>0?'visible':'hidden';k.el.style.opacity=a.toFixed(3);k.el.style.transform=`translateY(${(24*(1-pin)).toFixed(1)}px)`;
   if(c.data&&c.data.src){src=c.data.src;srcA=a;}
   k.units.forEach(u=>{const T0=tau(c,u.s)+u.delay+(u.s===0&&!c.first?0.08:0);const p=eo(cl((t-T0)/0.35)),pg=eo(cl((t-T0)/0.6));
-   if(u.fx==='grow'){u.el.style.opacity=t>=T0?1:0;u.el.style.transform=u.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;}
+   if(u.fx==='wipe'){const q=io(cl((t-T0)/1.2));u.el.style.opacity=t>=T0?1:0;u.el.style.clipPath=`inset(0 ${((1-q)*100).toFixed(2)}% 0 0)`;}
+   else if(u.fx==='mark'){u.el.style.setProperty('--m',eo(cl((t-T0)/0.45)).toFixed(3));}
+   else if(u.fx==='tilt'){const q=eo(cl((t-T0)/0.9));u.el.parentElement.style.setProperty('--k',(q*(+u.el.dataset.dir)).toFixed(4));u.el.style.opacity=1;}
+   else if(u.fx==='stamp'){const q=cl((t-T0)/0.2);u.el.style.opacity=q.toFixed(3);u.el.style.setProperty('--k',(1+1.3*(1-eo(q))).toFixed(3));}
+   else if(u.fx==='tick'){u.el.style.opacity=eo(cl((t-T0)/0.3)).toFixed(3);u.el.style.setProperty('--tk',eo(cl((t-T0-0.15)/0.35)).toFixed(3));}
+   else if(u.fx==='grow'){u.el.style.opacity=t>=T0?1:0;u.el.style.transform=u.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;}
    else if(u.fx==='pop'){const q=cl((t-T0)/0.25);u.el.style.opacity=q.toFixed(3);u.el.style.setProperty('--k',(1.45-0.45*eo(q)).toFixed(3));}
    else{u.el.style.opacity=p.toFixed(3);u.el.style.transform=u.s===0&&!u.cnt?'':`translateY(${(14*(1-p)).toFixed(1)}px)`;}
    if(u.cnt){const to=+u.cnt.dataset.to,dec=+u.cnt.dataset.dec,q=eo(cl((t-T0)/0.6));u.cnt.textContent=fmtNum(to*q,dec);}

@@ -47,6 +47,6 @@ if __name__ == "__main__":
         t = L["lines"][k].get("tts", L["lines"][k]["sub"])
         open(os.path.join(EP, "vo_raw", f"{k}.mp3"), "wb").write(synth(t, key, spk, res)); print(k, t)
     # 提速和对齐交给 align_chars（它从 vo_raw/ 读、写 vo/）
-    if float(L.get("voice", {}).get("tempo", 1.0)) == 1.0:
+    if float(L.get("voice", {}).get("tempo", 1.21 if int(L.get("v", 1)) >= 2 else 1.0)) == 1.0:
         for k in keys: os.replace(os.path.join(EP, "vo_raw", f"{k}.mp3"), os.path.join(EP, "vo", f"{k}.mp3"))
     subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "align_chars.py"), EP, *keys], check=True)
