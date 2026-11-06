@@ -12,12 +12,17 @@ BAN = [  # (正则, 说明)  —— 开场前两句不许出现的「开章名�
 ]
 HOOK = [r"\d", r"[？?]", r"你", r"没想到|其实|居然|竟然|反而|却|才|只|多花|少了|亏|赔|赚|慌"]
 
+WRITTEN = ["归功于", "显著", "沉淀", "口径", "赋能", "闭环", "抓手", "落地", "聚焦", "由此可见", "综上", "值得注意的是", "高绩效", "重新排一遍", "不仅", "而且更"]   # 书面腔 / 「AI 味」词：只提示，不拦
+
 def lint(L, keys, D):
     errs, warns = [], []
     first = [L[k]["sub"] for k in keys[:2]]
     for i, t in enumerate(first):
         for rx, why in BAN:
             if re.search(rx, t): errs.append(f"第{i+1}句「{t[:24]}…」命中 {why}。开场必须直接给冲突/反常数字/具体场景，不许宣布「我要讲什么」。")
+    for k in keys:
+        hit = [w for w in WRITTEN if w in L[k]["sub"]]
+        if hit: warns.append(f"{k} 有书面腔 / AI 味的词：{'、'.join(hit)}。口播里怎么说就怎么写（换成「说白了」「其实」「差不多」这类话）。")
     n1 = len(re.sub(r"[，。？！、：；\s]", "", first[0]))
     if n1 > 30: errs.append(f"第1句 {n1} 字，太长（≤30 字，v2 语速下 ≈5 秒内必须抛出钩子）。")
     if not any(re.search(h, first[0]) for h in HOOK): warns.append("第1句看不出钩子特征（数字 / 提问 / 「你」/ 转折反常）；再检查一遍。")
