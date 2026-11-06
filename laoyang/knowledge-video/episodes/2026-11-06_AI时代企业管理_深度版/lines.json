@@ -23,8 +23,8 @@
  "bgs": [
   {
    "file": "assets/bg.jpg",
-   "url": "",
-   "note": "待选：Pexels 原图（暗调实拍，竖屏裁切后 ≥1962px 高）",
+   "url": "https://images.pexels.com/photos/30341205/pexels-photo-30341205.jpeg",
+   "note": "Pexels #30341205《Dimly Lit Warehouse Aisle With Tall Shelves》by Othmane Ettalbi（Pexels License，免费商用）原图 6048×8064 竖图，下原图不缩放；示意企业运转/流程",
    "dim": 1,
    "pos": "50% 50%"
   }
