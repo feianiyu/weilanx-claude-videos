@@ -1,0 +1,5 @@
+{"pipeline": "knowledge-video",
+ "episode": "laoyang/knowledge-video/episodes/2026-11-07_金税四期自查五问_深度版",
+ "voice": "auto",
+ "publish_mb": 120,
+ "note": "老杨指定选题，11-07 对话里直接给的文案（5个自查问题框架+加油站案例），深度版 v2 标准；老杨已确认文案和案例数字（2944.2万/792.79万）。底图 Pexels #6863282 在云端没法下载核验像素，fetch_assets 时请留意 build.py 的分辨率报错。这是「金税四期自查五问」版，不是 draft/jinshui4-deep-2026-11-05 的查链条版，两篇不是同一篇。"}
