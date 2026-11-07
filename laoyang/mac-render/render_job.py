@@ -13,7 +13,7 @@
    "publish_mb": 25,                                    # 发布版目标大小
    "note": "给老杨看的一句话"}
 
-产出：OUTBOX/<期>/ 下的 成片、发布版、封面、联系表、报告.md；报告和真实配音时间戳推回 render-report/<名字> 分支。
+产出：OUTBOX/<期>/ 下的 成片、发布版、封面、联系表、报告.md；报告、联系表、封面和真实配音时间戳推回 render-report/<名字> 分支。
 """
 import datetime as dt
 import difflib
@@ -410,7 +410,7 @@ def write_report(job: Job, failed=None):
 
 
 def push_report(job: Job):
-    """把报告、缩小的联系表、真实配音的时间戳推到 render-report/<名字>，Claude 用 git 就能读到，不用你转述。"""
+    """把报告、缩小的联系表、封面、真实配音的时间戳推到 render-report/<名字>，Claude 用 git 就能读到，不用你转述。"""
     if not CFG["PUSH_REPORTS"] or not job.branch:
         return "按配置不推送"
     rel = os.path.relpath(job.ep, REPO)
@@ -419,6 +419,8 @@ def push_report(job: Job):
     shutil.copy2(os.path.join(job.ep, "build", "出片报告.md"), rep_dir)
     if job.out and os.path.exists(os.path.join(job.out, "联系表.jpg")):
         shutil.copy2(os.path.join(job.out, "联系表.jpg"), rep_dir)
+    if job.out and os.path.exists(os.path.join(job.out, "封面.png")):
+        shutil.copy2(os.path.join(job.out, "封面.png"), rep_dir)
     meta = os.path.join(job.ep, "build", "meta.json")
     if os.path.exists(meta):
         shutil.copy2(meta, rep_dir)
