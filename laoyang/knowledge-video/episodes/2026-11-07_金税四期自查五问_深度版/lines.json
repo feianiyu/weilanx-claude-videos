@@ -1,5 +1,5 @@
 {
- "_说明": "金税四期背景下，民营企业税务合规要检查的5个问题（深度版 v2，老杨 2026-11-07 给的文案，按 PLAN.md 转写）。底图待选，assets/bg.jpg 先用占位色。",
+ "_说明": "金税四期背景下，民营企业税务合规要检查的5个问题（深度版 v2，老杨 2026-11-07 给的文案，按 PLAN.md 转写）。老杨已确认文案和案例数字，推 render 分支。底图在云端会话里没法下载核验像素（网络只到允许名单内的站点），已选定 Pexels #6863282，交给 Mac 出片机 fetch_assets 时按 STANDARD_DEEP.md §5.1 实测分辨率，不够的话会在出片报告里报错换图。",
  "v": 2,
  "style": "deep",
  "decision": "要不要现在就把这五件事过一遍：个人账户代收款怎么处理、买来的票有没有真实业务撑着、老板与公司的往来有没有记录、用工合同和实际关系是否一致、正在用的节税方案是不是真有政策依据",
@@ -23,9 +23,10 @@
  "bgs": [
   {
    "file": "assets/bg.jpg",
-   "note": "待选：建议财务单据 / 税务大厅 / 账本实拍，Pexels 等可商用图库，贴题低调光；出片前需按 STANDARD_DEEP.md §5.1 核实分辨率和许可",
-   "dim": 0.8,
-   "pos": "50% 40%"
+   "url": "https://images.pexels.com/photos/6863282/pexels-photo-6863282.jpeg",
+   "note": "Pexels #6863282《Tax Document on Black Surface》Nataliya Vaitkevich（Pexels License）原图 4160×6240 竖幅，下原图不缩放；云端会话网络拦截 images.pexels.com，像素未机器核验，Mac fetch_assets 时请留意 build.py 的分辨率报错，不够就换图",
+   "dim": 0.85,
+   "pos": "50% 45%"
   }
  ],
  "voice": {
