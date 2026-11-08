@@ -10,3 +10,6 @@ episodes/_voice_*/
 episodes/*/assets/
 # 深度版用老杨本人声音，配音只在 Mac 本机（出片机），不进仓库
 episodes/2026-11-03_*/vo/
+# build 生成的发布文案（源头是 lines.json → publish）
+episodes/*/publish_meta.json
+episodes/*/发布文案.md

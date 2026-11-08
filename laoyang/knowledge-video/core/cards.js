@@ -111,6 +111,12 @@ const CARD={
    `<svg class="ck-box" viewBox="0 0 60 60" width="60" height="60"><rect x="4" y="4" width="52" height="52" rx="6" fill="none" stroke="#F5A623" stroke-width="5"/><polyline class="ck-tick" points="14,32 26,44 47,17" fill="none" stroke="#F5A623" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`+
    `<div class="ck-t"><b>${hi(x.t)}</b>${x.n?`<small>${hi(x.n)}</small>`:''}</div>`,'ck-i','data-fx="tick"')).join('')+`</div>`+
    (d.stamp?U(sOf(d.stamp,d.items.length+1),esc(d.stamp.text||d.stamp),'stamp','data-fx="stamp"'):''),
+ // ===== 留人套件（深度 v2.2，2026-11-08，lines.json 写 "retain" 才启用；STANDARD_DEEP_V2 §2.7）=====
+ // 钩子大字卡：全片第 1 张，0 秒就在屏上，开口那句冲突砸出来 {kicker,lines:["第一行",{t:"第二行",s:1}]}（*词* 橙色）
+ //   字符串行随卡依次砸出（每行隔 0.35s）；写成 {t,s} 的行等第 s 个 step 锚点
+ hook:d=>{let k=0;const n=Math.max(...(d.lines||[]).map(l=>String(l.t||l).replace(/\*/g,'').length)),fs=Math.min(96,Math.floor(910/n));return `<div class="hk" style="--hf:${fs}px">`+(d.kicker?U(0,esc(d.kicker),'hk-k'):'')+(d.lines||[]).map(l=>typeof l==='string'||l.s==null?U(0,hi(l.t||l),'hk-l',`data-fx="slam" data-delay="${(0.35*k++).toFixed(2)}"`):U(l.s,hi(l.t),'hk-l','data-fx="slam"')).join('')+`</div>`;},
+ // 金句卡：结尾那句能截图转发的话 {text,sub,s}（*词* 橙色；下划线随卡长出）
+ punch:d=>{const n=Math.max(...String(d.text).replace(/\*/g,'').split('|').map(x=>x.length));return `<div class="pc">`+U(0,'“','pc-q')+U(0,hi(d.text),'pc-t',`data-fx="slam" style="font-size:${Math.min(78,Math.floor(900/n))}px"`)+U(sOf(d.line,1),'<div class="pc-ln" data-fx="grow"></div>','pc-lw')+(d.sub?U(sOf(d.subS,1),hi(d.sub),'pc-s'):'')+`</div>`;},
  // 纯文字卡 {eyebrow,title,body:[...]}
  text:d=>head(d)+(d.body||[]).map((b,i)=>U(sOf(b,i+1),hi(b.t||b),'tx')).join(''),
 };
@@ -138,6 +144,7 @@ function renderCards(t){
    if(u.fx==='wipe'){const q=io(cl((t-T0)/1.2));u.el.style.opacity=t>=T0?1:0;u.el.style.clipPath=`inset(0 ${((1-q)*100).toFixed(2)}% 0 0)`;}
    else if(u.fx==='mark'){u.el.style.setProperty('--m',eo(cl((t-T0)/0.45)).toFixed(3));}
    else if(u.fx==='tilt'){const q=eo(cl((t-T0)/0.9));u.el.parentElement.style.setProperty('--k',(q*(+u.el.dataset.dir)).toFixed(4));u.el.style.opacity=1;}
+   else if(u.fx==='slam'){const q=cl((t-T0)/0.18);u.el.style.opacity=q.toFixed(3);u.el.style.transform=`scale(${(1+0.28*(1-eo(q))).toFixed(4)})`;}
    else if(u.fx==='stamp'){const q=cl((t-T0)/0.2);u.el.style.opacity=q.toFixed(3);u.el.style.setProperty('--k',(1+1.3*(1-eo(q))).toFixed(3));}
    else if(u.fx==='tick'){u.el.style.opacity=eo(cl((t-T0)/0.3)).toFixed(3);u.el.style.setProperty('--tk',eo(cl((t-T0-0.15)/0.35)).toFixed(3));}
    else if(u.fx==='grow'){u.el.style.opacity=t>=T0?1:0;u.el.style.transform=u.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;}
