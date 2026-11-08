@@ -23,6 +23,12 @@ if V2:
     _e, _w = lint_opening.lint(L, keys, D)
     for _x in _w: print("提示：", _x)
     if _e: sys.exit("深度 v2 稿子体检未通过：\n  " + "\n  ".join(_e))
+if D.get("publish"):   # §2.6：lines.json → publish 生成 发布文案.md（出片机交付时一并拷进成片目录，发布台读它）
+    _P = D["publish"]
+    open("发布文案.md", "w", encoding="utf-8").write(
+        "# 发布文案（由 lines.json → publish 自动生成，改这里没用，改 lines.json）\n\n"
+        f"## 短标题\n{_P.get('title', '')}\n\n## 描述\n{_P.get('desc', '')}\n\n## 标签\n{' '.join(_P.get('tags', []))}\n"
+        + (f"\n## 置顶评论\n{_P['pin']}\n" if _P.get("pin") else ""))
 DEEP = D.get("style") == "deep"   # 深度拆解版（STANDARD_DEEP.md）：shell_deep.html + cards.js，卡片写在 lines.json → cards
 
 # ---------- timeline（v2.1：章节首句起点吸附到 BGM 拍点；restBefore 句前多留一拍静止） ----------

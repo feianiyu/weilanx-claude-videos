@@ -12,6 +12,43 @@ BAN = [  # (正则, 说明)  —— 开场前两句不许出现的「开章名�
 ]
 HOOK = [r"\d", r"[？?]", r"你", r"没想到|其实|居然|竟然|反而|却|才|只|多花|少了|亏|赔|赚|慌"]
 
+# §2.6 感觉词（2026-11-08，视频号 81 条实测：有感觉词、无知识框架词的一组，播放中位 2016，3 秒划走 33%；
+# 只有知识框架词的一组，播放中位 614，3 秒划走 47%）。词表从自己账号的爆款里来，可以往里加。
+FEEL = ("危险|断裂|透支|焦虑|不确定|无限责任|至暗|生死|生存|活不|活下去|困|慌|颓|狂|输|苦|憋屈|委屈|累|怕|"
+        "白干|白换|保不住|扛不住|撑不住|拖垮|拖下去|卡住|卡死|被卡|要命|吃亏|亏|赔|罚|多交|白交|踩雷|翻出来|查实|"
+        "来不及|最后一年|到头|说变就变|说不清|对不上|难做|难熬|不再有人|落幕|心寒|睡不着|睡得着|没想到|明明|却|反而|偷偷")
+WHO = r"你|老板|我们|咱们"
+# 知识框架词：放在第 1 句 = 报题目（这组 3 秒划走 47%）。STRICT 在第 1 句直接报错；SOFT 只提示。
+FRAME_STRICT = r"解读|研报|新规|范式|赛道|从哪里来|长坡厚雪|新范式|一文看懂|科普"
+FRAME_SOFT = r"如何|路径|模式|机制|重构|榜单|[一二三四五六七八九十\d]+\s*(个|条|点|步)"
+# 标签（§2.6.5）：主标签必带，冷门词和跑题词不用
+TAG_MAIN = "#民营企业"
+TAG_BAN = r"#(vibe知识大赏|Vibe知识大赏|Deepseek故障|朱婷|上热门|热搜)"
+
+def lint_publish(D, first):
+    """lines.json → publish：{"title": 短标题, "desc": 描述, "tags": [...]}。build 用它生成 发布文案.md。"""
+    errs, warns = [], []
+    P = D.get("publish")
+    if not P:
+        warns.append("缺 lines.json → publish（短标题 / 描述 / 标签，§2.6.4–5）：发布台会没有按规则写的发布文案。")
+        return errs, warns
+    t = (P.get("title") or "").strip()
+    n = len(re.sub(r"[，。？！、：；\s]", "", t))
+    if not t: errs.append("publish.title 为空。")
+    else:
+        if n > 16: errs.append(f"publish.title {n} 字，超过 16 字（视频号短标题上限）。")
+        if re.search(FRAME_STRICT, t): errs.append(f"publish.title「{t}」用了知识框架词（解读/新规/赛道……）：标题写老板的处境或代价，不写知识点。")
+        if not re.search(FEEL, t) and not re.search(r"[？?]", t): warns.append(f"publish.title「{t}」看不出感觉词，也不是问句；再检查一遍。")
+    d = (P.get("desc") or "").strip()
+    if not d: errs.append("publish.desc 为空：描述第一行就写开口句。")
+    elif first and d.split("\n")[0][:8] != first[:8]: warns.append("publish.desc 第一行不是开口句：信息流只露这一行，直接用第 1 句。")
+    tags = P.get("tags") or []
+    if TAG_MAIN not in tags: errs.append(f"publish.tags 缺主标签 {TAG_MAIN}。")
+    if not 3 <= len(tags) <= 4: warns.append(f"publish.tags {len(tags)} 个；固定 3–4 个（1 主 + 1 支柱 + 1–2 题）。")
+    bad = [x for x in tags if re.search(TAG_BAN, x)]
+    if bad: errs.append(f"publish.tags 有跑题标签：{'、'.join(bad)}。")
+    return errs, warns
+
 def lint(L, keys, D):
     errs, warns = [], []
     first = [L[k]["sub"] for k in keys[:2]]
@@ -22,6 +59,13 @@ def lint(L, keys, D):
     if n1 > 30: errs.append(f"第1句 {n1} 字，太长（≤30 字，v2 语速下 ≈5 秒内必须抛出钩子）。")
     if not any(re.search(h, first[0]) for h in HOOK): warns.append("第1句看不出钩子特征（数字 / 提问 / 「你」/ 转折反常）；再检查一遍。")
     if not re.search(r"[？?]", "".join(first)) and not re.search(r"\d", "".join(first)): warns.append("前两句既没有问句也没有数字：先有一个观众答不上来的问题或一个说不通的数。")
+    if re.search(FRAME_STRICT, first[0]): errs.append(f"第1句「{first[0][:24]}…」用了知识框架词（解读/新规/赛道/从哪里来……）＝报题目。第1句写老板的处境和代价，知识点放到第3句以后。")
+    elif re.search(FRAME_SOFT, first[0]): warns.append(f"第1句「{first[0][:24]}…」有知识框架词（如何/模式/X个……），容易像课本开头；能改成处境句就改。")
+    two = "".join(first)
+    if not re.search(FEEL, two): warns.append("前两句没有感觉词（危险/白干/保不住/说不清/明明……却……，§2.6）：只有信息没有情绪，3 秒留不住人。")
+    if not re.search(WHO, two): warns.append("前两句没有「你/老板/我们」：观众代入不进去。")
+    pe, pw = lint_publish(D, first[0] if first else "")
+    errs += pe; warns += pw
     if not (D.get("decision") or "").strip(): errs.append("缺 lines.json → decision（这期看完，企业家要重新想一想的那个具体决策，一句话；见选题测试）。")
     if D.get("decision") and not any(c.get("type") in ("check", "close") for c in D.get("cards", [])): warns.append("没有 check / close 卡：v2 要求结尾有一张「回去重新想的决策」桥接卡。")
     return errs, warns
