@@ -367,6 +367,15 @@ def deliver(job: Job):
         if os.path.exists(p):
             shutil.copy2(p, os.path.join(job.out, f))
             got.append(f)
+    meta = os.path.join(job.ep, "publish_meta.json")   # 深度 v2.1：lines.json → publish；拼成发布台交片格式（video.mp4 + cover.png + meta.json）
+    vids = [f for f in got if f.endswith(".mp4")]
+    if os.path.exists(meta) and vids and os.path.exists(os.path.join(job.out, "封面.png")):
+        pub = os.path.join(job.out, "发布_视频号")
+        os.makedirs(pub, exist_ok=True)
+        shutil.copy2(os.path.join(job.out, vids[-1]), os.path.join(pub, "video.mp4"))
+        shutil.copy2(os.path.join(job.out, "封面.png"), os.path.join(pub, "cover.png"))
+        shutil.copy2(meta, os.path.join(pub, "meta.json"))
+        got.append("发布_视频号/")
     sheet = os.path.join(job.ep, "build", "qc_sheet.png")
     if os.path.exists(sheet):
         # 缩小的联系表：Claude 只看这一张，省 token

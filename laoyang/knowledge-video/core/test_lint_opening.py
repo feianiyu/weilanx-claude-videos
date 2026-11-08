@@ -3,7 +3,7 @@
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lint_opening import lint
-PUB = {"title": "这份合同，多交的税是你签的", "desc": "x", "tags": ["#民营企业", "#老板思维", "#税务合规"]}
+PUB = {"title": "这份合同 多交的税是你签的", "desc": "x", "tags": ["#民营企业", "#老板思维", "#税务合规"]}
 def run(first, second="接着看一笔账。", decision="x", cards=({"type": "check"},), publish=PUB):
     L = {"v01": {"sub": first}, "v02": {"sub": second}}
     return lint(L, ["v01", "v02"], {"decision": decision, "cards": list(cards), "publish": publish})
@@ -24,6 +24,8 @@ e, _ = run(GOOD[0], publish={"title": "增值税法新规解读", "desc": "x", "
 if not any("publish.title" in x for x in e): print("知识框架标题应报错"); fail += 1
 e, _ = run(GOOD[0], publish={"title": "很多老板不是被查出来的", "desc": "x", "tags": ["#老板思维", "#朱婷", "#税务"]})
 if not any("主标签" in x for x in e) or not any("跑题" in x for x in e): print("缺主标签/跑题标签应报错"); fail += 1
+e, _ = run(GOOD[0], publish={"title": "审批快了，生意为什么更难做", "desc": "x", "tags": ["#民营企业", "#老板思维", "#税务"]})
+if not any("不允许的符号" in x for x in e): print("标题带逗号应报错"); fail += 1
 _, w = run(GOOD[0], publish=None)
 if not any("publish" in x for x in w): print("缺 publish 应提示"); fail += 1
 _, w = run("麦肯锡今年8月发布了一项全球调查。", "调查覆盖97个国家。")

@@ -24,6 +24,8 @@ FRAME_SOFT = r"如何|路径|模式|机制|重构|榜单|[三四五六七八九�
 # 标签（§2.6.5）：主标签必带，冷门词和跑题词不用
 TAG_MAIN = "#民营企业"
 TAG_BAN = r"#(vibe知识大赏|Vibe知识大赏|Deepseek故障|朱婷|上热门|热搜)"
+# 视频号短标题规则（与发布台 ~/publish-hub/hub.py 的 SPH_TITLE_OK / 6–16 字检查一致；不合格发布台会拒收）
+SPH_TITLE_OK = set(" 《》“”‘’\"'：:+＋？?%％℃")
 
 def lint_publish(D, first):
     """lines.json → publish：{"title": 短标题, "desc": 描述, "tags": [...]}。build 用它生成 发布文案.md。"""
@@ -33,10 +35,13 @@ def lint_publish(D, first):
         warns.append("缺 lines.json → publish（短标题 / 描述 / 标签，§2.6.4–5）：发布台会没有按规则写的发布文案。")
         return errs, warns
     t = (P.get("title") or "").strip()
-    n = len(re.sub(r"[，。？！、：；\s]", "", t))
+    n = len(t)   # 发布台按原样计数（空格、问号都算）
     if not t: errs.append("publish.title 为空。")
     else:
-        if n > 16: errs.append(f"publish.title {n} 字，超过 16 字（视频号短标题上限）。")
+        if n > 16: errs.append(f"publish.title {n} 字，超过 16 字（视频号短标题上限，发布台会拒收）。")
+        if n < 6: errs.append(f"publish.title {n} 字，少于 6 字（发布台会拒收）。")
+        badc = "".join(dict.fromkeys(ch for ch in t if not (ch.isalnum() or ch in SPH_TITLE_OK)))
+        if badc: errs.append(f"publish.title 含视频号不允许的符号「{badc}」：逗号、顿号、句号都用空格代替（只允许《》“”：+？%）。")
         if re.search(FRAME_STRICT, t): errs.append(f"publish.title「{t}」用了知识框架词（解读/新规/赛道……）：标题写老板的处境或代价，不写知识点。")
         if not re.search(FEEL, t) and not re.search(r"[？?]", t): warns.append(f"publish.title「{t}」看不出感觉词，也不是问句；再检查一遍。")
     d = (P.get("desc") or "").strip()
