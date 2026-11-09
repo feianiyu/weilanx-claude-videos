@@ -3,5 +3,5 @@
  "episode": "laoyang/knowledge-video/episodes/2026-11-06_AI时代企业管理_深度版",
  "voice": "auto",
  "publish_mb": 120,
- "note": "换新复刻音色（S_dWvqQMUi2），配音缓存已清，全部句子重新配音；其余同上"
+ "note": "配音加情绪：每句 emo 语气提示（文案不变），全部句子重新配音；其余同前。重点听：开场第一句、数字句、转折句、结尾"
 }
