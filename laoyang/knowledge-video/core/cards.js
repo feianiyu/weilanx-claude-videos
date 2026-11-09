@@ -117,6 +117,8 @@ const CARD={
  hook:d=>{let k=0;const n=Math.max(...(d.lines||[]).map(l=>String(l.t||l).replace(/\*/g,'').length)),fs=Math.min(96,Math.floor(910/n));return `<div class="hk" style="--hf:${fs}px">`+(d.kicker?U(0,esc(d.kicker),'hk-k'):'')+(d.lines||[]).map(l=>typeof l==='string'||l.s==null?U(0,hi(l.t||l),'hk-l',`data-fx="slam" data-delay="${(0.35*k++).toFixed(2)}"`):U(l.s,hi(l.t),'hk-l','data-fx="slam"')).join('')+`</div>`;},
  // 金句卡：结尾那句能截图转发的话 {text,sub,s}（*词* 橙色；下划线随卡长出）
  punch:d=>{const n=Math.max(...String(d.text).replace(/\*/g,'').split('|').map(x=>x.length));return `<div class="pc">`+U(0,'“','pc-q')+U(0,hi(d.text),'pc-t',`data-fx="slam" style="font-size:${Math.min(78,Math.floor(900/n))}px"`)+U(sOf(d.line,1),'<div class="pc-ln" data-fx="grow"></div>','pc-lw')+(d.sub?U(sOf(d.subS,1),hi(d.sub),'pc-s'):'')+`</div>`;},
+ // 融合层文字卡（深度 v2.3，需要 lines.json 写 fx）：画在 #fxo 上，见 fx_mist.js
+ fxtext:d=>'',
  // 纯文字卡 {eyebrow,title,body:[...]}
  text:d=>head(d)+(d.body||[]).map((b,i)=>U(sOf(b,i+1),hi(b.t||b),'tx')).join(''),
 };

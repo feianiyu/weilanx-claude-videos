@@ -93,7 +93,13 @@ if DEEP:
     FR = D.get("frame", {})
     def svg_cube(px): return f'<svg width="{px}" height="{px}" viewBox="-56 -56 112 112">{CUBE}</svg>'
     ep_html = ""; ep_js = open("scenes.js", encoding="utf-8").read() if os.path.exists("scenes.js") else ""
-    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
+    FXLIB = ""
+    if D.get("fx"):   # 深度 v2.3 融合层：彩雾 + 文字出场（STANDARD_DEEP_V2 §2.8）；不写 fx 的期数画面不变
+        FXLIB = ("const X=$('fxo').getContext('2d'),O='#F5A623',AU='#F0B429',G='#3CF07A',IV='#FFE9C4',GR='#8C857A',RD='#E8553A',lerp=(a,b,p)=>a+(b-a)*p,"
+                 "rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${Math.max(0,a)})`;};\n"
+                 + "\n".join(open(f"{CORE}/{f}", encoding="utf-8").read() for f in ("fx.js", "fx_particles.js", "fx_text.js", "fx_mist.js"))
+                 + "\n$('mist').style.display='block';$('fxo').style.display='block';\n")
+    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
            .replace("/*@EP_CSS*/", ep_css).replace("__CUBE64__", svg_cube(64)).replace("__CUBE58__", svg_cube(58))
            .replace("__T1__", D["series"]["title"]).replace("__SERIES__", FR.get("seriesLine", D["series"]["title"]))
            .replace("__COLUMN__", FR.get("column", "LAOYANG CUBE")).replace("__EPNO__", FR.get("ep", "")))
@@ -112,6 +118,8 @@ CARDS = D.get("cards", []) if DEEP else []
 for c in CARDS:
     for x in [c["at"]] + list(c.get("steps", [])):
         if "|" in x: specs.add(x)
+for x in (D.get("fx") or {}).get("hits", []) if DEEP and isinstance(D.get("fx"), dict) else []:
+    specs.add(x)
 A = {s: anchor(s) for s in sorted(specs)}
 
 # sections (cards)
@@ -370,6 +378,9 @@ if DEEP:
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
         "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})} if not DEEP else \
        {"anchors": A, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "series": D["series"], "cards": cdat, "seriesFs": int(min(44, 940 / max(1, cw(sl))))}
+if DEEP and D.get("fx"):
+    data["fx"] = dict({"mist": 0.8}, **(D["fx"] if isinstance(D["fx"], dict) else {}))
+    data["fx"]["hits"] = [round(A[x], 3) for x in data["fx"].get("hits", [])]
 RETAIN = D.get("retain") if DEEP else None   # 留人套件（深度 v2.2，STANDARD_DEEP_V2 §2.7）：不写 retain 的期数画面不变
 if RETAIN:
     RETAIN = dict({"lift": 3.0, "feel": True, "maxGap": 5.0}, **(RETAIN if isinstance(RETAIN, dict) else {}))

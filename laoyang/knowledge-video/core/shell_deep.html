@@ -208,11 +208,11 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 </style></head>
 <body>
 <div id="wrap"><div id="v">
- <div id="bgs" class="abs" style="inset:0"></div><div id="shade" class="abs"></div><div id="vig" class="abs"></div>
+ <div id="bgs" class="abs" style="inset:0"></div><div id="shade" class="abs"></div><canvas id="mist" class="abs" width="540" height="960" style="left:0;top:0;width:1080px;height:1920px;display:none"></canvas><div id="vig" class="abs"></div>
  <canvas id="grain" width="540" height="960"></canvas>
  <div id="brand" class="abs">__CUBE64__<b>老杨魔方</b><i>企业经营观察</i></div>
  <div id="series" class="abs">__SERIES__</div>
- <div id="cards" class="abs"></div>
+ <div id="cards" class="abs"></div><canvas id="fxo" class="abs" width="1080" height="1920" style="left:0;top:0;display:none"></canvas>
  <div id="src" class="abs"></div>
  <div id="voice" class="abs"><div id="av">__CUBE58__</div><div><div id="wave"></div><div id="who">老杨魔方</div></div></div>
  <div id="sub" class="abs"></div>
@@ -250,6 +250,7 @@ function render(t){
   b.el.style.opacity=(t>=b.t0-0.01||i===0?a*b.dim:0).toFixed(3);b.el.style.transform=`scale(${(1+0.02*kb+(RT?0.07*(1-lift):0)).toFixed(4)})`;});
  if(RT){$('shade').style.opacity=(0.55+0.45*lift).toFixed(3);}
  renderCards(t);
+ if(D.fx){fxFrame(t);}
  const lv=WS.length?parseInt(WS[Math.min(WS.length-1,Math.max(0,f))],36)/35:0;
  bars.forEach((b,i)=>{const j=0.62+0.38*Math.abs(Math.sin(f*0.37+i*1.93)*Math.cos(f*0.21+i*0.71));b.style.height=(6+52*lv*env[i]*j).toFixed(1)+'px';});
  const tt=f/30;let si=-1;for(let i=0;i<D.subs.length;i++){const s=D.subs[i];if(tt>=s.s-0.05&&tt<s.e+0.2){si=i;break;}}
