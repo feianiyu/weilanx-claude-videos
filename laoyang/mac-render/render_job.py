@@ -13,7 +13,7 @@
    "publish_mb": 25,                                    # 发布版目标大小
    "note": "给老杨看的一句话"}
 
-产出：OUTBOX/<期>/ 下的 成片、发布版、封面、联系表、报告.md；报告和真实配音时间戳推回 render-report/<名字> 分支。
+产出：OUTBOX/<期>/ 下的 成片、发布版、封面、联系表、报告.md；报告、联系表、封面和真实配音时间戳推回 render-report/<名字> 分支。
 """
 import datetime as dt
 import difflib
@@ -110,7 +110,9 @@ def py():
 def voice_hash(L, k):
     v = L.get("voice", {})
     t = L["lines"][k].get("tts", L["lines"][k]["sub"])
-    return hashlib.sha1(json.dumps([t, v.get("name"), v.get("rate"), v.get("engine"), v.get("tempo")], ensure_ascii=False).encode()).hexdigest()[:12]
+    # 本人声音带情绪（语气提示）：全片基调 voice.context + 本句 emo 都进指纹，改了语气就重配；"emo1" 是语气功能的版本号，升级默认语气时 +1
+    emo = ["emo1", v.get("context"), L["lines"][k].get("emo")] if v.get("engine") in ("volc", "volcano", "本人") else []
+    return hashlib.sha1(json.dumps([t, v.get("name"), v.get("rate"), v.get("engine"), v.get("tempo"), *emo], ensure_ascii=False).encode()).hexdigest()[:12]
 
 
 def kv_voice(job: Job):
@@ -367,6 +369,15 @@ def deliver(job: Job):
         if os.path.exists(p):
             shutil.copy2(p, os.path.join(job.out, f))
             got.append(f)
+    meta = os.path.join(job.ep, "publish_meta.json")   # 深度 v2.1：lines.json → publish；拼成发布台交片格式（video.mp4 + cover.png + meta.json）
+    vids = [f for f in got if f.endswith(".mp4")]
+    if os.path.exists(meta) and vids and os.path.exists(os.path.join(job.out, "封面.png")):
+        pub = os.path.join(job.out, "发布_视频号")
+        os.makedirs(pub, exist_ok=True)
+        shutil.copy2(os.path.join(job.out, vids[-1]), os.path.join(pub, "video.mp4"))
+        shutil.copy2(os.path.join(job.out, "封面.png"), os.path.join(pub, "cover.png"))
+        shutil.copy2(meta, os.path.join(pub, "meta.json"))
+        got.append("发布_视频号/")
     sheet = os.path.join(job.ep, "build", "qc_sheet.png")
     if os.path.exists(sheet):
         # 缩小的联系表：Claude 只看这一张，省 token
@@ -410,7 +421,7 @@ def write_report(job: Job, failed=None):
 
 
 def push_report(job: Job):
-    """把报告、缩小的联系表、真实配音的时间戳推到 render-report/<名字>，Claude 用 git 就能读到，不用你转述。"""
+    """把报告、缩小的联系表、封面、真实配音的时间戳推到 render-report/<名字>，Claude 用 git 就能读到，不用你转述。"""
     if not CFG["PUSH_REPORTS"] or not job.branch:
         return "按配置不推送"
     rel = os.path.relpath(job.ep, REPO)
@@ -419,6 +430,8 @@ def push_report(job: Job):
     shutil.copy2(os.path.join(job.ep, "build", "出片报告.md"), rep_dir)
     if job.out and os.path.exists(os.path.join(job.out, "联系表.jpg")):
         shutil.copy2(os.path.join(job.out, "联系表.jpg"), rep_dir)
+    if job.out and os.path.exists(os.path.join(job.out, "封面.png")):
+        shutil.copy2(os.path.join(job.out, "封面.png"), rep_dir)
     meta = os.path.join(job.ep, "build", "meta.json")
     if os.path.exists(meta):
         shutil.copy2(meta, rep_dir)

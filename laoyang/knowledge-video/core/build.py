@@ -23,6 +23,16 @@ if V2:
     _e, _w = lint_opening.lint(L, keys, D)
     for _x in _w: print("提示：", _x)
     if _e: sys.exit("深度 v2 稿子体检未通过：\n  " + "\n  ".join(_e))
+if D.get("publish"):   # §2.6：lines.json → publish 生成 发布文案.md（给人看）+ publish_meta.json（发布台 meta.json 格式，出片机交付时拼成 发布_视频号/）
+    _P = D["publish"]; _tags = " ".join(_P.get("tags", []))
+    _meta = {"short_title": _P.get("title", ""), "desc": (_P.get("desc", "").strip() + " " + _tags).strip()}
+    for _k in ("dy_title", "dy_desc"):
+        if _P.get(_k): _meta[_k] = _P[_k]
+    json.dump(_meta, open("publish_meta.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    open("发布文案.md", "w", encoding="utf-8").write(
+        "# 发布文案（由 lines.json → publish 自动生成，改这里没用，改 lines.json）\n\n"
+        f"## 短标题\n{_meta['short_title']}\n\n## 描述（含话题）\n{_meta['desc']}\n"
+        + (f"\n## 置顶评论\n{_P['pin']}\n" if _P.get("pin") else ""))
 DEEP = D.get("style") == "deep"   # 深度拆解版（STANDARD_DEEP.md）：shell_deep.html + cards.js，卡片写在 lines.json → cards
 
 # ---------- timeline（v2.1：章节首句起点吸附到 BGM 拍点；restBefore 句前多留一拍静止） ----------
@@ -360,6 +370,12 @@ if DEEP:
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
         "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})} if not DEEP else \
        {"anchors": A, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "series": D["series"], "cards": cdat, "seriesFs": int(min(44, 940 / max(1, cw(sl))))}
+RETAIN = D.get("retain") if DEEP else None   # 留人套件（深度 v2.2，STANDARD_DEEP_V2 §2.7）：不写 retain 的期数画面不变
+if RETAIN:
+    RETAIN = dict({"lift": 3.0, "feel": True, "maxGap": 5.0}, **(RETAIN if isinstance(RETAIN, dict) else {}))
+    sys.path.insert(0, CORE); import lint_opening
+    data["retain"] = {"lift": RETAIN["lift"]}
+    if RETAIN["feel"]: data["subHi"] = lint_opening.FEEL_SUB
 meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
@@ -393,6 +409,17 @@ if DEEP:
             shutil.copy(b["file"], "build/" + dst)   # 原样复制，不再压缩
         BGL.append({"src": dst, "t0": 0.0 if i == 0 else cstart[b["from"]], "dim": b.get("dim", 1), **({"pos": b["pos"]} if b.get("pos") else {})})
     data["bgs"] = BGL; dj = json.dumps(data, ensure_ascii=False)
+    if RETAIN:   # §2.7 体检：第 1 张是钩子大字卡；前 20% 画面每 ≤maxGap 秒变一次；后段有金句卡
+        R_err = []
+        if not cdat or cdat[0]["type"] != "hook": R_err.append("第 1 张卡必须是 hook（钩子大字卡），0 秒就把开口那句冲突砸在屏上。")
+        W = round(0.2 * DUR, 2)
+        ev = sorted({0.0, W, *[c["t0"] for c in cdat], *[x for c in cdat for x in c["st"]], *[b["t0"] for b in BGL]})
+        ev = [x for x in ev if x <= W]; gaps = [(round(b - a, 1), round(a, 1)) for a, b in zip(ev, ev[1:])]
+        big = [g for g in gaps if g[0] > RETAIN["maxGap"]]
+        if big: R_err.append(f"前 20%（0–{W}s）画面有 {len(big)} 段超过 {RETAIN['maxGap']}s 没变化：" + "、".join(f"{a}s 起 {g}s" for g, a in big) + "。加一个 step / 换卡 / 换底图。")
+        print(f"留人套件：前 20%（0–{W}s）画面变化 {len(ev) - 1} 次，最长间隔 {max([g for g, _ in gaps] or [0])}s")
+        if not any(c["type"] == "punch" and c["t0"] >= 0.6 * DUR for c in cdat): print("提示： 后 40% 没有 punch（金句卡）：结尾那句能截图转发的话，最好单独给一张卡。")
+        if R_err: sys.exit("留人套件体检未通过：\n  " + "\n  ".join(R_err))
 if DEEP: pass
 elif REGRESS or not os.path.exists(BGP):
     if not REGRESS: MISSING.append(BGP); print("!! 缺底图，用占位色：", BGP)
