@@ -110,7 +110,9 @@ def py():
 def voice_hash(L, k):
     v = L.get("voice", {})
     t = L["lines"][k].get("tts", L["lines"][k]["sub"])
-    return hashlib.sha1(json.dumps([t, v.get("name"), v.get("rate"), v.get("engine"), v.get("tempo")], ensure_ascii=False).encode()).hexdigest()[:12]
+    # 本人声音带情绪（语气提示）：全片基调 voice.context + 本句 emo 都进指纹，改了语气就重配；"emo1" 是语气功能的版本号，升级默认语气时 +1
+    emo = ["emo1", v.get("context"), L["lines"][k].get("emo")] if v.get("engine") in ("volc", "volcano", "本人") else []
+    return hashlib.sha1(json.dumps([t, v.get("name"), v.get("rate"), v.get("engine"), v.get("tempo"), *emo], ensure_ascii=False).encode()).hexdigest()[:12]
 
 
 def kv_voice(job: Job):
