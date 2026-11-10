@@ -88,7 +88,7 @@
 
 ## 老杨魔方 · 知识分享版（独立管线，`laoyang/knowledge-video/`）
 
-- **深度拆解版（当前主力）按 `STANDARD_DEEP_V3.md` 做**：`lines.json` 写 `"v": 3`，配音走 v3（表现力增强版、按气口组、每句 `emo`），画面默认带融合层和留人套件；v1 / v2 标准是它的背景规则。
+- **深度拆解版（当前主力）按 `STANDARD_DEEP_V3.md` 做**：`lines.json` 写 `"v": 3`，配音走 v3（表现力增强版、按气口组、每句 `emo`），画面默认降饱和底图和留人套件；讲机制、框架、因果链的段落改用 `STANDARD_DEEP_V4.md` 的结构图卡（`map` / `stack`），可与 v3 卡片在同一期混用；v1 / v2 标准是背景规则。
 - 不用 Remotion：每期 `episodes/<期>/` 三件套（lines.json / scenes.html / scenes.js）套进固定外壳 `core/shell.html`，Python 构建、Chromium 逐帧渲染。规则见 `STANDARD.md`，效果见 `EFFECTS.md`，迭代制度见 `ITERATION.md`。
 - 同样遵守「画面 = 时间的纯函数」：`render(t)` 不用真实时间和 `Math.random()`，随机用 `rnd(seed)`。
 - 改 `laoyang/knowledge-video/core/` 后必须跑 `python3 laoyang/knowledge-video/core/regress.py`；PR 上 GitHub Actions 会自动跑。底图、BGM、音效不进仓库（`core/fetch_assets.py` 下载）。
