@@ -50,6 +50,11 @@ for k in keys:
             lo = t + 0.12; t = snap(t + SECGAP, lo)
             if k == REST: t = snap(t + BEAT["period"], t + BEAT["period"] - 0.01)
         else: t += GAP
+        # 配音 v3：同一气口组里的句子是一次合成后切开的，停顿已经在音频里，时间轴上紧接上一句（vo/<句>.meta.json → gap）
+        _mj = f"vo/{k}.meta.json"
+        if os.path.exists(_mj):
+            _g = json.load(open(_mj)).get("gap")
+            if _g is not None: t = tl[prev][1] + float(_g)
     elif BEAT: t = snap(t, t)
     tl[k] = (round(t, 3), round(t + L[k]["dur"], 3)); t += L[k]["dur"]; prev = k
 DUR = round(t + TAIL, 3)

@@ -115,6 +115,18 @@ def voice_hash(L, k):
     return hashlib.sha1(json.dumps([t, v.get("name"), v.get("rate"), v.get("engine"), v.get("tempo"), *emo], ensure_ascii=False).encode()).hexdigest()[:12]
 
 
+def voice_hashes(job, L, keys):
+    """每句的缓存指纹。配音 v3（按气口组合成）的指纹由 gen_vo_volc.py 自己算：组里任何一句改了，整组都要重配。"""
+    v = L.get("voice", {})
+    if int(v.get("v", 0)) >= 3 and v.get("engine") in ("volc", "volcano", "本人"):
+        out = subprocess.run([py(), os.path.join(kv_core(), "gen_vo_volc.py"), job.ep, "--hashes"], capture_output=True, text=True, timeout=60)
+        hs = json.loads(out.stdout.strip().splitlines()[-1]) if out.returncode == 0 and out.stdout.strip() else {}
+        if hs:
+            spk = read_env(CFG["TTS_ENV"]).get("VOLC_SPEAKER_ID", "")   # 换了复刻音色，缓存自动作废
+            return {k: "v3" + hashlib.sha1((hs[k] + spk).encode()).hexdigest()[:12] for k in keys}
+    return {k: voice_hash(L, k) for k in keys}
+
+
 def kv_voice(job: Job):
     L = json.load(open(os.path.join(job.ep, "lines.json"), encoding="utf-8"))
     mode = job.job.get("voice", "auto")
@@ -133,11 +145,17 @@ def kv_voice(job: Job):
     os.makedirs(vo, exist_ok=True)
     keys = [k for k in L["lines"] if k not in L.get("cut", [])]
     todo = []
+    H = voice_hashes(job, L, keys)
     for k in keys:
-        h = voice_hash(L, k)
+        h = H[k]
+        mj = os.path.join(vo, f"{k}.meta.json")
+        if os.path.exists(mj):
+            os.replace(mj, mj + ".old")   # 上一次的停顿信息不能混进这一次
         if os.path.exists(os.path.join(cache, f"{h}.mp3")) and os.path.exists(os.path.join(cache, f"{h}.words.json")):
             shutil.copyfile(os.path.join(cache, f"{h}.mp3"), os.path.join(vo, f"{k}.mp3"))
             shutil.copyfile(os.path.join(cache, f"{h}.words.json"), os.path.join(vo, f"{k}.words.json"))
+            if os.path.exists(os.path.join(cache, f"{h}.meta.json")):
+                shutil.copyfile(os.path.join(cache, f"{h}.meta.json"), mj)
         else:
             todo.append(k)
     job.facts["配音"] = f"{engine}，新配 {len(todo)} 句，沿用缓存 {len(keys) - len(todo)} 句"
@@ -160,9 +178,11 @@ def kv_voice(job: Job):
         d = float(job.sh(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", mp3]).strip())
         L["lines"][k]["dur"] = round(d, 2)
         if k in todo:
-            h = voice_hash(L, k)
+            h = H[k]
             shutil.copyfile(mp3, os.path.join(cache, f"{h}.mp3"))
             shutil.copyfile(os.path.join(vo, f"{k}.words.json"), os.path.join(cache, f"{h}.words.json"))
+            if os.path.exists(os.path.join(vo, f"{k}.meta.json")):
+                shutil.copyfile(os.path.join(vo, f"{k}.meta.json"), os.path.join(cache, f"{h}.meta.json"))
     json.dump(L, open(lp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     return f"新配 {', '.join(todo) or '无'}"
 
