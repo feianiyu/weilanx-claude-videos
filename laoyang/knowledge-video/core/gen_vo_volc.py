@@ -61,10 +61,12 @@ def synth(text, key, spk, res, ctx=None, rate=None):
 if __name__ == "__main__":
     EP = os.path.abspath(sys.argv[1]); key, spk, res = creds()
     L = json.load(open(os.path.join(EP, "lines.json"), encoding="utf-8"))
+    if L.get("voice", {}).get("speaker"):   # 客户片：用官方预置音色（不是老杨本人复刻），如 zh_male_ruyayichen_uranus_bigtts + seed-tts-2.0
+        spk, res = L["voice"]["speaker"], L["voice"].get("resource", "seed-tts-2.0")
     keys = sys.argv[2:] or list(L["lines"]); os.makedirs(os.path.join(EP, "vo_raw"), exist_ok=True); os.makedirs(os.path.join(EP, "vo"), exist_ok=True)
     for k in keys:
         t = L["lines"][k].get("tts", L["lines"][k]["sub"])
-        open(os.path.join(EP, "vo_raw", f"{k}.mp3"), "wb").write(synth(t, key, spk, res, None if L.get('voice', {}).get('context') == '' else ctx_for(L, k), L.get('voice', {}).get('rate'))); print(k, t)
+        open(os.path.join(EP, "vo_raw", f"{k}.mp3"), "wb").write(synth(t, key, spk, res, None if L.get('voice', {}).get('context') == '' else ctx_for(L, k), L['lines'][k].get('speech_rate', L.get('voice', {}).get('rate')))); print(k, t)
     # 提速和对齐交给 align_chars（它从 vo_raw/ 读、写 vo/）
     if float(L.get("voice", {}).get("tempo", 1.21 if int(L.get("v", 1)) >= 2 else 1.0)) == 1.0:
         for k in keys: os.replace(os.path.join(EP, "vo_raw", f"{k}.mp3"), os.path.join(EP, "vo", f"{k}.mp3"))
