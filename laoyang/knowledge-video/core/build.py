@@ -401,6 +401,8 @@ if DEEP and int(D.get("v", 1)) >= 3 and D.get("stage", True):
 if DEEP and D.get("fx"):
     data["fx"] = dict({"mist": 0.8}, **(D["fx"] if isinstance(D["fx"], dict) else {}))
     data["fx"]["hits"] = [round(A[x], 3) for x in data["fx"].get("hits", [])]
+if DEEP and int(D.get("v", 1)) >= 3 and D.get("retain") is None:
+    D["retain"] = {"maxGap": 7.0}   # 深度 v3 默认带留人套件（第 1 张 hook、前 20% 画面间隔体检）；不要写 "retain": false
 RETAIN = D.get("retain") if DEEP else None   # 留人套件（深度 v2.2，STANDARD_DEEP_V2 §2.7）：不写 retain 的期数画面不变
 if RETAIN:
     RETAIN = dict({"lift": 3.0, "feel": True, "maxGap": 5.0}, **(RETAIN if isinstance(RETAIN, dict) else {}))
