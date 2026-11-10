@@ -20,6 +20,29 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 #shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,4,4,.95) 0px,rgba(4,4,4,.90) 420px,rgba(4,4,4,.80) 900px,rgba(4,4,4,.70) 1250px,rgba(4,4,4,.76) 1560px,rgba(4,4,4,.88) 1920px)}
 #vig{position:absolute;inset:0;background:radial-gradient(ellipse 85% 70% at 50% 62%,transparent 55%,rgba(0,0,0,.55) 100%)}
 #grain{position:absolute;inset:0;opacity:.07;mix-blend-mode:overlay}
+
+/* ---------- 深度 v4 结构图（cards_map.js） ---------- */
+.mp{margin-top:18px;width:920px}.mp svg{display:block;overflow:hidden}
+.mpn rect{fill:rgba(10,10,10,.72);stroke:rgba(244,241,234,.6);stroke-width:2.5}
+.mpn text{font-family:"NSC";fill:#F4F1EA;text-anchor:middle}
+.mpn .mpn-t{font-size:38px;font-weight:900}.mpn .mpn-n{font-size:26px;font-weight:700;fill:#C9C3B8}
+.mpn.k-ai rect{fill:rgba(245,166,35,.14);stroke:#F5A623;stroke-width:3}.mpn.k-ai .mpn-t{fill:#F5A623;font-size:30px}
+.mpn .mpn-ai{font-size:20px;font-weight:900;fill:#0A0A0A;text-anchor:start}
+.mpn.k-ai .mpn-ai{paint-order:stroke;stroke:#F5A623;stroke-width:16px;stroke-linejoin:round}
+.mpn.k-hot rect,.mpn.on-hot rect{fill:#F5A623;stroke:#F5A623}.mpn.k-hot text,.mpn.on-hot text{fill:#111}
+.mpn.k-ghost rect{fill:none;stroke:rgba(244,241,234,.28);stroke-dasharray:8 8}.mpn.k-ghost text{fill:rgba(244,241,234,.45)}
+.mpn.k-warn rect{stroke:#E8553A;stroke-width:3}.mpn.k-person rect{rx:40px}
+.mpe-l{font-family:"NSC";font-size:27px;font-weight:700;fill:#E6E1D7;paint-order:stroke;stroke:rgba(5,5,5,.9);stroke-width:8px}
+.k-break .mpe-l{fill:#FF8A70}.k-up .mpe-l,.k-flow .mpe-l{fill:#F5A623}
+.mpb rect{fill:rgba(245,166,35,.16);stroke:#F5A623;stroke-width:3}.mpb text{font-family:"NSC";font-size:30px;font-weight:900;fill:#F5A623;text-anchor:middle}
+.mpt text{font-family:"NSC";font-size:31px;font-weight:900;fill:#F5A623;text-anchor:middle;paint-order:stroke;stroke:rgba(5,5,5,.92);stroke-width:10px}
+.mpt.k-note text{font-size:24px;font-weight:700;fill:#B9B3A8}
+.mpt.k-sticker text{font-size:32px;fill:#111;stroke:none}.mpt-bg{fill:#F5A623}
+.stk{display:flex;gap:56px;align-items:flex-end;margin-top:40px}
+.stk-bars{display:flex;flex-direction:column-reverse;width:520px}
+.stk-b{height:34px;background:rgba(244,241,234,.55);transform-origin:left center;border-radius:3px}.stk-b.lit{background:#F5A623}
+.stk-num{font-size:210px;font-weight:900;color:var(--o);line-height:1}.stk-lab{font-size:40px;font-weight:900;margin-top:10px;max-width:330px;line-height:1.3}
+.stk-note{font-size:32px;color:#B9B3A8;margin-top:36px}
 /* 深度 v3 底图观感（#v 上的 class）：muted = 彩色照片降饱和（默认，老杨 11-11）；mono = 纯黑白。两种都轻压暗、不加颗粒。
    压暗只在需要读字的地方加深：顶部（logo、标题）、中段卡片区适中、底部字幕区；照片细节留在两侧和卡片后面。 */
 .look-mono .bgl{filter:grayscale(1) contrast(1.12) brightness(.92)}
@@ -188,11 +211,11 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 .wf-n{position:absolute;left:-8px;right:-8px;bottom:-96px;text-align:center;font-size:24px;font-weight:700;line-height:1.3;color:#CFC9BE}
 .bl-w{position:relative;height:560px;margin-top:40px}
 .bl-w{--k:0}.bl{position:absolute;inset:0}
-.bl-beam{position:absolute;left:60px;right:60px;top:120px;height:12px;background:#E6E1D7;transform:rotate(calc(var(--k)*5deg))}
+.bl-beam{position:absolute;left:60px;right:60px;top:120px;height:12px;background:#E6E1D7;transform:rotate(calc(var(--k)*8deg))}
 .bl-post{position:absolute;left:50%;top:120px;width:12px;height:380px;background:#4a463f;margin-left:-6px}
 .bl-pan{position:absolute;top:190px;width:380px;border:4px solid var(--g2);background:rgba(0,0,0,.55);padding:26px 24px;text-align:center}
-.bl-pan.l{left:30px;transform:translateY(calc(var(--k)*-60px))}
-.bl-pan.r{right:30px;transform:translateY(calc(var(--k)*60px))}
+.bl-pan.l{left:30px;transform:translateY(calc(var(--k)*-47px))}
+.bl-pan.r{right:30px;transform:translateY(calc(var(--k)*47px))}
 .bl-pan b{display:block;font-size:42px;font-weight:900}.bl-pan i{display:block;font-style:normal;font-size:26px;color:var(--g);margin-top:10px}
 .bl-v{margin-top:20px;font-size:46px;font-weight:900;color:var(--o)}
 .mx{position:relative;height:620px;margin:70px 0 0 0;width:920px}

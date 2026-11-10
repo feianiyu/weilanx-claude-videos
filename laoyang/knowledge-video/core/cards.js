@@ -124,6 +124,7 @@ const CARD={
 };
 
 // ---------- 实例化 + 逐帧动画 ----------
+if(typeof CARD_EXT!=='undefined')Object.assign(CARD,CARD_EXT);   // 深度 v4 结构图卡（cards_map.js）
 const CARDS=(window.DATA.cards||[]).map((c,ci)=>{
  const el=document.createElement('div');el.className='card c-'+c.type;el.dataset.id=c.id;
  if(!CARD[c.type]){console.error('unknown card type',c.type);return null;}
@@ -142,9 +143,10 @@ function stageLayout(){if(_STAGED||!window.DATA.stage)return;_STAGED=true;docume
    const all=[...el.querySelectorAll('*')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.height);
    return {r0,bottom:all.length?Math.max(...all.map(r=>r.bottom)):r0.top};};
   let z=1.08,m=place(z);
-  if(m.bottom>1380){z=Math.max(1,Math.min(1.08,z*(1380-400)/(m.bottom-400)));m=place(z);}   // 内容本来就高的卡：少放大一点，保证不压到署名
+  const lim=k.c.data&&k.c.data.src?1300:1380;   // 有出处行的卡，底边让开出处（y≈1318）
+  if(m.bottom>lim){z=Math.max(0.8,Math.min(1.08,z*(lim-400)/(m.bottom-400)));m=place(z);}   // 内容本来就高的卡：少放大一点，保证不压到出处和署名
   if(['hook','punch'].includes(k.c.type)){const w=el.firstElementChild;if(w){const h=w.getBoundingClientRect().height;w.style.top=(Math.max(0,(910-h)*0.36)/z).toFixed(1)+'px';}}
-  else{const off=Math.max(0,(1370-m.bottom)*0.5);el.style.top=((400+off)/z).toFixed(1)+'px';}
+  else{const off=Math.max(0,(lim-10-m.bottom)*0.5);el.style.top=((400+off)/z).toFixed(1)+'px';}
   el.style.visibility=vis;});}
 function tau(c,s){if(s<=0)return c.t0;const st=c.st||[];return st[s-1]!=null?st[s-1]:c.t0+0.5*s;}
 function fmtNum(v,dec){return dec>0?v.toFixed(dec):Math.round(v).toLocaleString('en-US').replace(/,/g,'');}
@@ -167,6 +169,7 @@ function renderCards(t){
    else{u.el.style.opacity=p.toFixed(3);u.el.style.transform=u.s===0&&!u.cnt?'':`translateY(${(14*(1-p)).toFixed(1)}px)`;}
    if(u.cnt){const to=+u.cnt.dataset.to,dec=+u.cnt.dataset.dec,q=eo(cl((t-T0)/0.6));u.cnt.textContent=fmtNum(to*q,dec);}
    u.grow.forEach(g=>{g.style.transform=g.dataset.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;});});
+  if(typeof CARD_RENDER!=='undefined'&&CARD_RENDER[c.type])CARD_RENDER[c.type](k,t);
   if(k.zoom){const T0=tau(c,+k.zoom.dataset.zs),z=+k.zoom.dataset.z,q=io(cl((t-T0)/1.3));k.zoom.style.transform=`scale(${(1+(z-1)*q).toFixed(4)})`;}
  });
  const se=document.getElementById('src');if(se.dataset.v!==src){se.dataset.v=src;se.textContent=src;}se.style.opacity=srcA.toFixed(3);
