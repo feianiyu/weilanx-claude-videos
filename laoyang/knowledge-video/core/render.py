@@ -2,7 +2,7 @@
 """逐帧确定性渲染 <期>/build/index.html（render(t) 是时间的纯函数）
   python3 core/render.py <期> snap 5.0 20.3 ...        → build/snap_<t>.png
   python3 core/render.py <期> part a b out.mp4         → 只渲第 a..b 帧（无声）
-  python3 core/render.py <期> final [--jobs 3]         → 并行分段 → 拼接 → 混入 build/mix.wav → out/老杨魔方_<标题>.mp4
+  python3 core/render.py <期> final [--jobs 3]         → 并行分段 → 拼接 → 混入 build/mix.wav → out/<outPrefix 默认老杨魔方>_<标题>.mp4
 """
 import sys, os, json, subprocess, asyncio
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -50,7 +50,7 @@ def final():
     for p in ps:
         if p.wait(): sys.exit("分段渲染失败")
     open("build/parts/list.txt", "w").write("".join(f"file 'p{i}.mp4'\n" for i in range(jobs)))
-    out = f"out/老杨魔方_{D['series']['title']}.mp4"
+    out = f"out/{D.get('outPrefix', '老杨魔方')}_{D['series']['title']}.mp4"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", "build/parts/list.txt", "-i", "build/mix.wav",
                     "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out], check=True)
     print("成片：", os.path.join(EP, out))

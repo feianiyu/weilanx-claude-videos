@@ -23,7 +23,7 @@ if nl(C.get("sub", "")) > 2: sys.exit("封面摘要最多两行（用 <br> 分�
 ep = (D.get("frame") or {}).get("ep", "")
 tag, tag2 = C.get("tag", ep), C.get("tag2", "深度拆解" if D.get("style") == "deep" else "")
 bgf = D.get("bg") or (D["bgs"][0]["file"] if D.get("bgs") else "assets/bg.jpg")
-h = open(f"{CORE}/cover.html", encoding="utf-8").read().replace("__FONT__", f"file://{CORE}/assets/NotoSansSC.ttf").replace("__BG__", "file://" + os.path.abspath(bgf))
+h = open(C["tpl"] if C.get("tpl") else f"{CORE}/cover.html", encoding="utf-8").read().replace("__EP__", "file://" + EP).replace("__FONT__", f"file://{CORE}/assets/NotoSansSC.ttf").replace("__BG__", "file://" + os.path.abspath(bgf))   # 客户片：cover.tpl 指向本期封面模板
 h = (h.replace("__CHIP__", C.get("chip", "老杨魔方 · 企业经营观察")).replace("__TT__", C["title"]).replace("__EN__", C.get("en", ""))
      .replace("__SS__", C.get("sub", "")).replace("__TAG__", tag).replace("__TAG2__", tag2))
 open("build/cover.html", "w", encoding="utf-8").write(h)

@@ -24,7 +24,7 @@ async def frames(times):
 
 def video():
     meta = json.load(open("build/meta.json")); D = json.load(open("lines.json"))
-    v = f"out/老杨魔方_{D['series']['title']}.mp4"
+    v = f"out/{D.get('outPrefix', '老杨魔方')}_{D['series']['title']}.mp4"
     o = subprocess.run(["ffmpeg", "-i", v, "-af", "ebur128=framelog=quiet:peak=true", "-f", "null", "-"], capture_output=True, text=True).stderr
     print("响度 I =", re.findall(r"I:\s+(-?[\d.]+) LUFS", o)[-1], "LUFS（目标 −14±0.5）  真峰值", re.findall(r"Peak:\s+(-?[\d.]+) dBFS", o)[-1], "dBFS")
     o = subprocess.run(["ffmpeg", "-i", v, "-vf", "signalstats,metadata=print:key=lavfi.signalstats.YAVG", "-f", "null", "-"], capture_output=True, text=True).stderr

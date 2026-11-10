@@ -1,0 +1,389 @@
+{
+ "_说明": "天强 2026 年度峰会宣传片（客户片）：不出现老杨魔方任何品牌。外壳用本期 shell_tacter.html，封面用 cover_tacter.html。",
+ "series": {
+  "title": "2026天强年度峰会",
+  "sub": "向新生长"
+ },
+ "outPrefix": "天强峰会",
+ "shell": "shell_tacter.html",
+ "cover": {
+  "tpl": "cover_tacter.html",
+  "title": "看见了，也行动了<br>为什么还是<em>没改变</em>？",
+  "en": "重新定义设计企业的价值、边界与未来",
+  "sub": "11月26—27日 · 上海天益宾馆",
+  "tag": "一天半 · 三场",
+  "tag2": "只在现场"
+ },
+ "bg": "assets/vortex.jpg",
+ "bgNote": "代码生成的深蓝紫漩涡（src 无版权问题），随仓库提交",
+ "voice": {
+  "name": "zh-CN-YunyangNeural",
+  "rate": "+12%",
+  "pitch": "-2Hz",
+  "engine": "edge-tts"
+ },
+ "gapSec": 0.32,
+ "secGap": 0.7,
+ "bgmUnder": 8.5,
+ "bgm": {
+  "file": "audio/bgm_mixkit_driving_ambition_32.mp3",
+  "url": "https://assets.mixkit.co/music/32/32.mp3",
+  "src": "Mixkit《Driving Ambition》by Ahjay Stelino（id 32）· Mixkit Stock Music Free License"
+ },
+ "beat": {
+  "bpm": 100.0,
+  "period": 0.6,
+  "t0": 0.0,
+  "src": "src/beatfit.py assets/bgm_mixkit_driving_ambition_32.mp3 95 99.4 → 100.0 BPM, 首拍 0.125s, 乐句线 38.525+9.6k"
+ },
+ "restBefore": "v08",
+ "bgmSection": 67.325,
+ "progress": [
+  [
+   "开场",
+   "c0"
+  ]
+ ],
+ "sfx": [
+  [
+   "v01|为什么|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v01|没改变|s",
+   "shatter",
+   0.0
+  ],
+  [
+   "v02|十四年|s",
+   "bass",
+   0.0
+  ],
+  [
+   "v03|存量压力|s",
+   "sub",
+   0.0
+  ],
+  [
+   "v06|收缩|s",
+   "thud",
+   0.0
+  ],
+  [
+   "v07|没变|s",
+   "glitch",
+   0.0
+  ],
+  [
+   "v08|向新生长|s",
+   "impact",
+   0.0
+  ],
+  [
+   "v09|重新定义|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v10|十一月|s",
+   "stamp",
+   0.0
+  ],
+  [
+   "v11|二十六日|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v12|二十七日|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v13|二十七日|s",
+   "swish",
+   0.0
+  ],
+  [
+   "v14|第四年|s",
+   "lock",
+   0.0
+  ],
+  [
+   "v15|推动改变|s",
+   "whoosh",
+   0.0
+  ],
+  [
+   "v16|看见新生|s",
+   "sparkle",
+   0.0
+  ],
+  [
+   "v18|困住了|s",
+   "land",
+   0.15
+  ],
+  [
+   "v19|十一月|s",
+   "vs",
+   0.0
+  ],
+  [
+   "v21|报名|s",
+   "lock",
+   0.0
+  ]
+ ],
+ "sfxlib": {
+  "whoosh": {
+   "file": "audio/sfx/1492.mp3",
+   "hit": 1.081,
+   "from": 0.4,
+   "lvl": -12,
+   "src": "Mixkit #1492 Cinematic whoosh fast transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1492/1492-preview.mp3"
+  },
+  "land": {
+   "file": "audio/sfx/3049.mp3",
+   "hit": 0.034,
+   "lvl": -9,
+   "src": "Mixkit #3049 Quest game heavy stomp",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3049/3049-preview.mp3"
+  },
+  "shatter": {
+   "file": "audio/sfx/759.mp3",
+   "hit": 0.022,
+   "lvl": -10,
+   "src": "Mixkit #759 Glass break with hammer thud",
+   "url": "https://assets.mixkit.co/active_storage/sfx/759/759-preview.mp3"
+  },
+  "swish": {
+   "file": "audio/sfx/1490.mp3",
+   "hit": 0.725,
+   "from": 0.3,
+   "lvl": -15,
+   "src": "Mixkit #1490 Fast whoosh transition",
+   "url": "https://assets.mixkit.co/active_storage/sfx/1490/1490-preview.mp3"
+  },
+  "sub": {
+   "file": "audio/sfx/2299.mp3",
+   "hit": 0.085,
+   "lvl": -8,
+   "src": "Mixkit #2299 Short bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3"
+  },
+  "thud": {
+   "file": "audio/sfx/2182.mp3",
+   "hit": 0.06,
+   "lvl": -13,
+   "src": "Mixkit #2182 Wood hard hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2182/2182-preview.mp3"
+  },
+  "stamp": {
+   "file": "audio/sfx/3057.mp3",
+   "hit": 0.386,
+   "from": 0.2,
+   "to": 1.4,
+   "lvl": -9,
+   "src": "Mixkit #3057 Apocalyptic stomp impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3057/3057-preview.mp3"
+  },
+  "glitch": {
+   "file": "audio/sfx/2951.mp3",
+   "hit": 0.015,
+   "lvl": -13,
+   "src": "Mixkit #2951 Digital glitch break",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2951/2951-preview.mp3"
+  },
+  "lock": {
+   "file": "audio/sfx/3218.mp3",
+   "hit": 0.248,
+   "to": 1.2,
+   "lvl": -14,
+   "src": "Mixkit #3218 Positive tech alert",
+   "url": "https://assets.mixkit.co/active_storage/sfx/3218/3218-preview.mp3"
+  },
+  "sparkle": {
+   "file": "audio/sfx/2350.mp3",
+   "hit": 0.453,
+   "to": 2.0,
+   "lvl": -15,
+   "src": "Mixkit #2350 Magic sparkle whoosh",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2350/2350-preview.mp3"
+  },
+  "bass": {
+   "file": "audio/sfx/2303.mp3",
+   "hit": 0.21,
+   "to": 1.6,
+   "lvl": -9,
+   "src": "Mixkit #2303 Futuristic bass hit",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2303/2303-preview.mp3"
+  },
+  "impact": {
+   "file": "audio/sfx/2908.mp3",
+   "hit": 0.985,
+   "from": 0.2,
+   "to": 3.2,
+   "lvl": -5,
+   "src": "Mixkit #2908 Movie trailer epic impact",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2908/2908-preview.mp3"
+  },
+  "vs": {
+   "file": "audio/sfx/2903.mp3",
+   "hit": 0.942,
+   "from": 0.2,
+   "to": 2.6,
+   "lvl": -9,
+   "src": "Mixkit #2903 Movie whoosh impact presentation",
+   "url": "https://assets.mixkit.co/active_storage/sfx/2903/2903-preview.mp3"
+  }
+ },
+ "hangNote": "tts 里「行业」写成「航业」保证读 háng；字幕不变",
+ "publish": {
+  "title": "2026天强年度峰会｜向新生长",
+  "desc": "十四年，一年没断。11月26—27日，上海天益宾馆，一天半，三场。看见了，也行动了，为什么还是没改变？答案只在现场。",
+  "tags": [
+   "#天强年度峰会",
+   "#向新生长",
+   "#设计企业",
+   "#企业转型"
+  ]
+ },
+ "lines": {
+  "v01": {
+   "sec": "c0",
+   "sub": "看见了，也行动了，为什么还是没改变？",
+   "dur": 3.95
+  },
+  "v02": {
+   "sec": "c1",
+   "sub": "从2013年第一届思翔年度峰会算起，这件事，天强做了十四年。",
+   "tts": "从二零一三年第一届思翔年度峰会算起，这件事，天强做了十四年。",
+   "dur": 6.56
+  },
+  "v03": {
+   "sec": "c1",
+   "sub": "这十四年，行业从高速增长走到增速放缓，从增量市场走到存量压力。",
+   "dur": 6.78,
+   "tts": "这十四年，航业从高速增长走到增速放缓，从增量市场走到存量压力。"
+  },
+  "v04": {
+   "sec": "c1",
+   "sub": "行业在变，这件事一年没断过。",
+   "dur": 3.12,
+   "tts": "航业在变，这件事一年没断过。"
+  },
+  "v05": {
+   "sec": "c1",
+   "sub": "每年的主题不同，追的始终是同一个问题：设计企业该怎么认识自己，往哪里走。",
+   "dur": 7.83
+  },
+  "v06": {
+   "sec": "c2",
+   "sub": "今年行业在收缩。",
+   "dur": 1.85,
+   "tts": "今年航业在收缩。"
+  },
+  "v07": {
+   "sec": "c2",
+   "sub": "但比收缩更难的，是很多企业看见了，也行动了，却还是没变。",
+   "dur": 6.09
+  },
+  "v08": {
+   "sec": "c3",
+   "sub": "所以，2026年这一届，主题叫「向新生长」。",
+   "tts": "所以，二零二六年这一届，主题叫，向新生长。",
+   "rate": "+0%",
+   "dur": 4.57,
+   "screens": [
+    "所以，2026年这一届，",
+    "主题叫「向新生长」。"
+   ]
+  },
+  "v09": {
+   "sec": "c3",
+   "sub": "重新定义设计企业的价值、边界与未来。",
+   "rate": "+0%",
+   "dur": 3.99
+  },
+  "v10": {
+   "sec": "c4",
+   "sub": "11月26日到27日，上海，一天半，三场。",
+   "tts": "十一月二十六日到二十七日，上海，一天半，三场。",
+   "dur": 5.0
+  },
+  "v11": {
+   "sec": "c4",
+   "sub": "26日下午，年度主题演讲专场；",
+   "tts": "二十六日下午，年度主题演讲专场；",
+   "rate": "+18%",
+   "dur": 3.55
+  },
+  "v12": {
+   "sec": "c4",
+   "sub": "27日上午，专题论坛「行动2027」；",
+   "tts": "二十七日上午，专题论坛，行动二零二七；",
+   "rate": "+18%",
+   "dur": 4.17
+  },
+  "v13": {
+   "sec": "c4",
+   "sub": "27日下午，专题论坛「数智生长」暨大创智数字创新产业专题论坛。",
+   "tts": "二十七日下午，专题论坛，数智生长，暨大创智数字创新产业专题论坛。",
+   "rate": "+18%",
+   "dur": 6.96
+  },
+  "v14": {
+   "sec": "c5",
+   "sub": "2023年，天强创始人祝波善开始做全天的个人年度演讲，到今年已经是第四年。",
+   "tts": "二零二三年，天强创始人祝波善，开始做全天的个人年度演讲，到今年已经是第四年。",
+   "dur": 8.26
+  },
+  "v15": {
+   "sec": "c5",
+   "sub": "今年的演讲题目，是《推动改变 走向企业创变》。",
+   "tts": "今年的演讲题目，是，推动改变，走向企业创变。",
+   "rate": "+0%",
+   "dur": 4.78
+  },
+  "v16": {
+   "sec": "c5",
+   "sub": "四个部分：看清处境、看见难题、看懂方法、看见新生。",
+   "rate": "+0%",
+   "dur": 5.4
+  },
+  "v17": {
+   "sec": "c5",
+   "sub": "从行业这一年发生了什么，讲到2027该往哪里长。",
+   "tts": "从航业这一年发生了什么，讲到二零二七该往哪里长。",
+   "dur": 5.29
+  },
+  "v18": {
+   "sec": "c6",
+   "sub": "不是做错了，而是被「过去做对的事」困住了。",
+   "tts": "不是做错了。而是被，过去做对的事，困住了。",
+   "rate": "-6%",
+   "dur": 4.57
+  },
+  "v19": {
+   "sec": "c7",
+   "sub": "11月26日，上海天益宾馆。",
+   "tts": "十一月二十六日，上海天益宾馆。",
+   "rate": "+0%",
+   "dur": 3.34
+  },
+  "v20": {
+   "sec": "c7",
+   "sub": "本届不设直播，所有内容只在现场。",
+   "dur": 3.55
+  },
+  "v21": {
+   "sec": "c7",
+   "sub": "报名入口在这里。",
+   "dur": 1.85
+  }
+ },
+ "tail": 4.5
+}

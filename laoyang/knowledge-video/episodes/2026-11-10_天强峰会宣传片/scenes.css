@@ -1,0 +1,45 @@
+/* 天强峰会宣传片 · 场景样式 */
+.yr{left:0;width:1080px;text-align:center;top:1250px;font-size:132px;font-weight:900;letter-spacing:6px;line-height:1;font-variant-numeric:tabular-nums;
+ background:linear-gradient(90deg,#F5A623,#C8D44A 45%,#5FB8E8 80%,#3A6DFF);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 18px rgba(0,0,0,.6))}
+.ylab{left:0;width:1080px;text-align:center;top:1408px;font-size:36px;font-weight:800;letter-spacing:3px;color:#E6EBFF;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.ylab b{color:var(--o);font-weight:900}
+.chipC{position:absolute;display:flex;align-items:center;gap:14px;padding:0 26px;height:74px;border-radius:40px;font-size:38px;font-weight:900;letter-spacing:2px;white-space:nowrap;
+ background:rgba(14,18,60,.72);border:2px solid rgba(185,198,255,.45);box-shadow:0 8px 30px rgba(0,0,20,.45)}
+.chipC i{display:inline-block;width:34px;height:34px;border-radius:50%;position:relative}
+.ok i{background:#8BC34A}.ok i:after{content:"";position:absolute;left:11px;top:5px;width:9px;height:17px;border:solid #0B0F3A;border-width:0 5px 5px 0;transform:rotate(45deg)}
+.no{border-color:rgba(255,90,78,.8)}.no i{background:#FF5A4E}.no i:before,.no i:after{content:"";position:absolute;left:15px;top:6px;width:5px;height:22px;background:#fff;border-radius:2px}
+.no i:before{transform:rotate(45deg)}.no i:after{transform:rotate(-45deg)}
+.curveL{font-size:34px;font-weight:800;color:#E6EBFF;letter-spacing:2px;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.curveL b{color:var(--au)}
+.bigdate{left:0;width:1080px;text-align:center;top:395px;font-size:150px;font-weight:900;letter-spacing:2px;line-height:1;
+ background:linear-gradient(90deg,#F5A623,#F7C04A 40%,#9CCB4A 70%,#4AA8F0);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 24px rgba(0,0,0,.55))}
+.bigdate small{font-size:64px;letter-spacing:4px}
+.metaRow{left:0;width:1080px;top:600px;display:flex;justify-content:center;gap:22px}
+.metaRow .m{font-size:42px;font-weight:900;letter-spacing:4px;padding:6px 26px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(220,228,255,.3)}
+.card{position:absolute;left:100px;width:880px;height:178px;border-radius:22px;display:flex;align-items:center;gap:30px;padding:0 34px 0 0;overflow:hidden;
+ background:linear-gradient(90deg,rgba(20,26,86,.86),rgba(14,18,60,.7));border:1px solid rgba(185,198,255,.32);box-shadow:0 14px 40px rgba(0,0,30,.45)}
+.card .bar{width:12px;align-self:stretch}
+.card .when{width:170px;text-align:center;flex:none}
+.card .when b{display:block;font-size:56px;font-weight:900;line-height:1;color:var(--au)}
+.card .when span{display:block;font-size:32px;font-weight:800;color:#C9D3FF;margin-top:8px;letter-spacing:4px}
+.card .what{display:flex;flex-direction:column;gap:8px;white-space:nowrap}
+.card .what b{font-size:46px;font-weight:900;letter-spacing:1px}
+.card .what span{font-size:30px;font-weight:700;color:#AFC0FF;letter-spacing:1px}
+.card .what em{font-style:normal;color:var(--au)}
+.cell{position:absolute;font-size:40px;font-weight:900;text-align:center;width:180px;letter-spacing:2px}
+.title2{left:0;width:1080px;text-align:center;font-weight:900;color:#fff;letter-spacing:6px;line-height:1.25;text-shadow:0 6px 30px rgba(0,0,30,.7)}
+.title2 em{font-style:normal;background:linear-gradient(90deg,#F5A623,#9CCB4A 60%,#4AA8F0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.part{position:absolute;width:400px;height:190px;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+ background:rgba(14,18,64,.66);border:1px solid rgba(185,198,255,.35)}
+.part i{font-style:normal;font-size:30px;font-weight:800;color:#8FA2E8;letter-spacing:4px}
+.part b{font-size:58px;font-weight:900;letter-spacing:6px}
+.end{left:0;width:1080px;text-align:center}
+.qr{position:absolute;width:300px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.qr .pad{width:260px;height:260px;background:#fff;border-radius:22px;padding:18px;box-shadow:0 0 0 4px rgba(247,192,74,.6),0 16px 40px rgba(0,0,20,.5)}
+.qr .pad img{width:224px;height:224px;image-rendering:auto}
+.qr b{font-size:36px;font-weight:900;letter-spacing:3px}
+.qr span{font-size:26px;font-weight:700;color:#B9C6FF;margin-top:-8px}
+.host{position:absolute;left:90px;width:900px;display:flex;align-items:center;gap:24px;white-space:nowrap}
+.host .k{font-size:28px;font-weight:800;color:#AFC0FF;letter-spacing:4px;width:130px;flex:none}
+.host img{display:block}
+.host .s{font-size:32px;font-weight:900;letter-spacing:2px}

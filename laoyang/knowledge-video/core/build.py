@@ -13,6 +13,7 @@ REGRESS = os.environ.get("LY_REGRESS") == "1"   # 回归测试：占位底图 + 
 SR = 48000
 LEAD, TAIL = 0.4, 2.6          # v2.2：结尾停 2.6s（logo 描线收尾）
 D = json.load(open("lines.json"))
+TAIL = float(D.get("tail", TAIL))   # 客户片：片尾定格可以更长（报名页留时间扫码）
 L = D["lines"]; CUT = set(D.get("cut", []))
 GAP = D.get("gapSec", 0.3); SECGAP = D.get("secGap", 0.6)
 keys = [k for k in L if k not in CUT]
@@ -83,7 +84,7 @@ def anchor(spec):
 
 CUBE = ('<g fill="none" stroke="#3EF09A" stroke-width="11.5"><polyline points="-29,-33 0,-50 29,-33"/><polyline points="-45,-24 0,2 45,-24"/>'
         '<polyline points="-41,-8 -41,24 -12,41"/><polyline points="41,-8 41,24 12,41"/></g><polygon points="-5.75,2 5.75,2 5.75,46.7 0,50 -5.75,46.7" fill="#3EF09A"/>')
-shell = open(f"{CORE}/shell.html", encoding="utf-8").read()
+shell = open(D["shell"] if D.get("shell") else f"{CORE}/shell.html", encoding="utf-8").read()   # 客户片：lines.json "shell" 指向本期自带外壳（不出现老杨魔方品牌）
 # 片尾预告（可选，系列片用）：lines.json "endNext": "下期讲：怎么去" → 冒号前灰、冒号后橙
 _en = D.get("endNext", "")
 ENDNEXT_HTML = (_en.split("：", 1)[0] + "：<span style=\"color:var(--o)\">" + _en.split("：", 1)[1] + "</span>") if "：" in _en else _en

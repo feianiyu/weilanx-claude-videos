@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026 天强·年度峰会 · 向新生长</title>
+<style>
+/* =====================================================================
+   天强 2026 年度峰会宣传片 · 客户片专用外壳（不含任何老杨魔方品牌）
+   全屏构图：深蓝紫漩涡底（慢转）+ 全屏画布 + DOM 场景 + 底部字幕
+   顶栏 y150：天强 TACTER（左）· 峰会名（右）；字幕 y1500；y>1700 不放内容
+   ===================================================================== */
+@font-face{font-family:"NSC";src:url(__FONT__) format("truetype");font-weight:100 900}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-serif}
+#wrap{position:absolute;left:50%;top:0;transform-origin:top center}
+#v{position:relative;width:1080px;height:1920px;overflow:hidden;background:#070920;color:#fff}
+.abs{position:absolute}
+:root{--o:#F5A623;--au:#F7C04A;--g:#8BC34A;--b:#3A8DFF;--ink:#0B0F3A;--pale:#C9D3FF}
+#bg{position:absolute;left:-610px;top:-290px;width:2300px;height:2300px;background:url(__BG__) center/cover no-repeat;transform-origin:50% 50%;will-change:transform,filter}
+#shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,24,.72) 0px,rgba(5,6,24,.30) 360px,rgba(5,6,24,.18) 900px,rgba(5,6,24,.42) 1380px,rgba(5,6,24,.86) 1640px,rgba(5,6,24,.92) 1920px)}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 50% 48%,rgba(0,0,0,0) 55%,rgba(3,3,16,.55) 100%)}
+#cv{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#top{left:70px;right:70px;top:142px;height:46px;display:flex;align-items:center;justify-content:space-between}
+#top img{height:40px}
+#top span{font-size:26px;font-weight:700;letter-spacing:4px;color:rgba(220,228,255,.78);white-space:nowrap}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden}
+.t{position:absolute;white-space:nowrap}
+#sub{left:110px;top:1500px;width:860px;text-align:center;font-size:50px;font-weight:800;line-height:68px;text-shadow:0 2px 12px rgba(0,0,20,.95),0 0 3px rgba(0,0,0,.9)}
+#ui{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:rgba(8,10,30,.92);display:flex;gap:10px;align-items:center;color:#dfe6ff;font:14px sans-serif;z-index:99}
+#ui button{background:#F5A623;color:#210;border:0;border-radius:6px;padding:8px 14px;font-weight:700;font-size:15px}
+#ui input{flex:1}
+.cap #ui{display:none}
+/*@EP_CSS*/
+</style></head>
+<body>
+<div id="wrap"><div id="v">
+ <div id="bg"></div><div id="shade" class="abs"></div><div id="vig" class="abs"></div>
+ <canvas id="cv" width="1080" height="1920"></canvas>
+ <div id="stage" class="abs" style="inset:0">
+<!--@SCENES_HTML-->
+ </div>
+ <div id="top" class="abs"><img src="__IMG:logo_tacter.png__" alt=""><span>2026 天强·年度峰会</span></div>
+ <div id="sub" class="abs"></div>
+</div></div>
+<div id="ui"><button id="pp">▶ 播放</button><span id="tc">0:00.0</span><input id="seek" type="range" min="0" max="1000" value="0"><span id="dur"></span></div>
+<audio id="au" src="__AUDIO__" preload="auto"></audio>
+<script>window.DATA=__DATA__;</script>
+<script>
+(function(){
+const D=window.DATA, A=D.anchors;
+const cap=/capture/.test(location.search); if(cap) document.documentElement.classList.add('cap');
+function fit(){const h=window.innerHeight-(cap?0:56), w=window.innerWidth; const s=cap?1:Math.min(h/1920,w/1080); document.getElementById('wrap').style.transform=`translateX(-50%) scale(${s})`;}
+window.addEventListener('resize',fit);fit();
+const cl=x=>x<0?0:x>1?1:x, eo=x=>1-Math.pow(1-x,3), io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const $=id=>document.getElementById(id);
+const T=k=>{const v=A[k];if(v===undefined){console.error('missing anchor',k);return 0;}return v;};
+const rnd=i=>{const x=Math.sin(i*12.9898+78.233)*43758.5453;return x-Math.floor(x);};
+const lerp=(a,b,p)=>a+(b-a)*p;
+const S={};D.secs.forEach(s=>S[s.id]=s);
+const BEAT=D.beat;
+const cv=$('cv'),X=cv.getContext('2d');
+const O='#F5A623',AU='#F7C04A',G='#8BC34A',IV='#EEF2FF',GR='#8D93B5',RD='#FF5A4E',BL='#3A8DFF',PL='#B9C6FF';
+const rgba=(hex,a)=>{const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${Math.max(0,a)})`;};
+//@FX
+//@PARTICLES
+//@TEXTFX
+// 客户片全屏构图：羽化遮罩覆盖整屏（上下边缘渐隐），取代知识分享版的中间区遮罩
+function featherMask(){if(_MASK)return _MASK;const c=document.createElement('canvas');c.width=1080;c.height=1920;const g=c.getContext('2d');
+ const gr=g.createLinearGradient(0,120,0,1720);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(0.06,'#fff');gr.addColorStop(0.94,'#fff');gr.addColorStop(1,'rgba(255,255,255,0)');
+ g.fillStyle=gr;g.fillRect(0,120,1080,1600);_MASK=c;return c;}
+const order=D.secs.map(s=>s.id), ENDSEC=order[order.length-1];
+const restSec=D.rest?D.rest.sec:null, REST_PREV=restSec?order[order.indexOf(restSec)-1]:null;
+const restB=D.rest?D.rest.t:-1, restA=D.rest?restB-(BEAT?BEAT.period:0.6):-1;
+function vis(id,t){const s=S[id];const i=order.indexOf(id);const a=s.start-(i?0.1:0),b=s.end;
+ if(t<a||t>b+0.35)return 0;if(id===REST_PREV&&t>=restB)return 0;const pin=i?eo(cl((t-a)/0.4)):1;const pout=s.last?1:1-cl((t-(b-0.05))/0.35);return Math.min(pin,pout);}
+// 每期内容：SCENES[章节id] = {canvas(t,a,f), dom(t,a,f)}；HOOKS.bg(t) → {rot,b,s,z} 底图转速/亮度/饱和/缩放
+const SCENES={}, HOOKS={};
+//@SCENES_JS
+const subEl=$('sub');let lastSub=-2;
+const scenes=order.map(id=>document.querySelector(`.scene[data-sec="${id}"]`));
+order.forEach((id,i)=>{if(!scenes[i])console.error('scene DOM missing',id);if(!SCENES[id])console.error('SCENES missing',id);});
+const bg=$('bg');
+function render(t){
+ const f=Math.round(t*30);
+ const rest=t>=restA&&t<restB?1:0;
+ const tc=rest?restA:t;
+ const B=HOOKS.bg?HOOKS.bg(tc):{rot:t*2.4,b:1,s:1,z:1};
+ bg.style.transform=`rotate(${B.rot.toFixed(3)}deg) scale(${(1.0*B.z).toFixed(4)})`;
+ bg.style.filter=`brightness(${(B.b*(rest?0.45:1)).toFixed(3)}) saturate(${B.s.toFixed(3)})`;
+ X.clearRect(0,0,1080,1920);
+ const V=order.map(id=>vis(id,tc));
+ X.save();X.globalAlpha=rest?0.4:1;
+ order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].canvas)SCENES[id].canvas(tc,V[i],f);});
+ X.restore();
+ const rpi=order.indexOf(REST_PREV);
+ scenes.forEach((el,i)=>{if(!el)return;const v=V[i]*(rest?(i===rpi?0.4:0):1);el.style.opacity=v.toFixed(3);el.style.visibility=v>0?'visible':'hidden';});
+ order.forEach((id,i)=>{if(V[i]>0&&SCENES[id]&&SCENES[id].dom)SCENES[id].dom(tc,V[i],f);});
+ // 字幕
+ const tt=f/30;let si=-1;for(let i=0;i<D.subs.length;i++){const s=D.subs[i];if(tt>=s.s-0.05&&tt<s.e+0.2){si=i;break;}}
+ if(si!==lastSub){if(si>=0){const s=D.subs[si];subEl.innerHTML=s.lines.map(x=>x.replace(/&/g,'&amp;').replace(/</g,'&lt;')).join('<br>');subEl.style.fontSize=Math.min(50,s.fs)+'px';}else subEl.innerHTML='';lastSub=si;}
+ subEl.style.opacity=si>=0?cl((tt-D.subs[si].s+0.05)/0.12):0;
+}
+window.render=render;window.DUR=D.dur;
+render(0);
+if(!cap){const au=$('au'),pp=$('pp'),sk=$('seek'),tcl=$('tc');
+ $('dur').textContent=D.dur.toFixed(1)+'s';
+ const fmt=t=>Math.floor(t/60)+':'+(t%60).toFixed(1).padStart(4,'0');
+ pp.onclick=()=>{if(au.paused)au.play();else au.pause();};
+ au.onplay=()=>pp.textContent='❚❚ 暂停';au.onpause=()=>pp.textContent='▶ 播放';
+ let drag=false;sk.oninput=()=>{drag=true;const t=sk.value/1000*D.dur;au.currentTime=t;render(t);tcl.textContent=fmt(t);};sk.onchange=()=>drag=false;
+ (function loop(){const t=au.currentTime;if(!au.paused)render(t);if(!drag)sk.value=t/D.dur*1000;tcl.textContent=fmt(t);requestAnimationFrame(loop);})();
+ document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();pp.onclick();}});
+}
+})();
+</script>
+</body></html>

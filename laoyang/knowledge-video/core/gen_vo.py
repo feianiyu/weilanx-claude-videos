@@ -7,7 +7,7 @@ import edge_tts
 EP = os.path.abspath(sys.argv[1]); os.chdir(EP); os.makedirs("vo", exist_ok=True)
 L = json.load(open("lines.json")); V = L["voice"]; K = sys.argv[2:] or list(L["lines"])
 async def one(k, t):
-    c = edge_tts.Communicate(t, V["name"], rate=V["rate"], pitch=V.get("pitch", "+0Hz"), boundary="WordBoundary"); words = []
+    c = edge_tts.Communicate(t, V["name"], rate=L["lines"][k].get("rate", V["rate"]), pitch=V.get("pitch", "+0Hz"), boundary="WordBoundary"); words = []
     with open(f"vo/{k}.mp3", "wb") as f:
         async for ch in c.stream():
             if ch["type"] == "audio": f.write(ch["data"])
