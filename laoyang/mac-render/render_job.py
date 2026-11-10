@@ -165,7 +165,8 @@ def kv_voice(job: Job):
             env.update(read_env(CFG["TTS_ENV"]))
             if not env.get("VOLC_API_KEY"):
                 raise StepFail(f"本人声音缺凭证：{CFG['TTS_ENV']} 里没有 VOLC_API_KEY")
-            job.sh([py(), os.path.join(kv_core(), "gen_vo_volc.py"), job.ep, *todo], env=env, timeout=1800)
+            env.update(LY_WHISPER_PY=CFG["WHISPER_PY"], LY_WHISPER_MODEL=CFG["WHISPER_MODEL"], LY_TTS_ENV=CFG["TTS_ENV"])   # 配音 v3 抽卡时用本机 whisper 剔掉念错的那一遍
+            job.sh([py(), os.path.join(kv_core(), "gen_vo_volc.py"), job.ep, *todo], env=env, timeout=3600)
         else:
             job.sh([py(), os.path.join(kv_core(), "gen_vo.py"), job.ep, *todo], timeout=900)
     # 所有句子的时长按真实 mp3 重写进 lines.json（build 按它排时间轴）

@@ -11,10 +11,11 @@
   4. 同一期共用一个会话 ID（section_id），服务端带着上文合成，组与组之间也接得上。
   5. 语速在模型里调（voice.rate，默认 15 ≈ 1.15 倍；老杨 2026-11-10：在 1.21 倍上降 5%），不再后期 atempo 硬拉。
   6. 逐字时间戳用服务端返回的真实值（不再按字数估），组内句子之间保留真实停顿（写进 vo/<句>.meta.json 的 gap，build 照着排）。
-  7. 抽卡择优：每组配 voice.takes 遍（默认 2，含 hook 的组 3 遍），先剔掉漏字、卡顿、语速离谱的，再挑起伏最自然的一遍。
+  7. 抽卡择优：每组配 voice.takes 遍（默认 2，含 hook 的组 3 遍），先剔掉漏字、卡顿、语速离谱的，
+     再用本机 whisper 听写一遍、留下念得最准的，最后挑起伏最自然的一遍。
   8. 每组响度对齐到同一水平，组与组不会忽大忽小。
 旧期（voice.v < 3）走原来的逐句流程，行为不变。"""
-import hashlib, json, os, re, subprocess, sys
+import difflib, hashlib, json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tts_volc as T
 
@@ -80,7 +81,7 @@ def hashes(L, keys):
     """一句的指纹 = 它所在气口组的全部文字 + 语气 + 参数（组里任何一句改了，整组重配，才能保持连贯）。"""
     P = params(L); out = {}
     for grp in groups_of(L, keys):
-        h = hashlib.sha1(json.dumps(["v3", [text_of(L, k) for k in grp], ctx_of(L, grp), P["model"], P["rate"], P["takes"],
+        h = hashlib.sha1(json.dumps(["v3b", [text_of(L, k) for k in grp], ctx_of(L, grp), P["model"], P["rate"], P["takes"],
                                      L.get("voice", {}).get("pick")], ensure_ascii=False).encode()).hexdigest()[:10]
         for i, k in enumerate(grp): out[k] = f"{h}_{i}"
     return out
@@ -153,6 +154,25 @@ def judge(x, words, text):
     return True, ""
 
 
+def listen(EP, items):
+    """用本机 mlx-whisper 把每一遍配音听写回文字。items = [(名字, 波形)]；返回 {名字: 文字}。没有 whisper 返回 {}。"""
+    wpy = os.path.expanduser(os.environ.get("LY_WHISPER_PY", "")); model = os.environ.get("LY_WHISPER_MODEL", "")
+    if not items or not wpy or not os.path.exists(wpy) or not model: return {}
+    d = os.path.join(EP, "build", "takes"); os.makedirs(d, exist_ok=True); files = []
+    for name, x in items:
+        f = os.path.join(d, name + ".mp3"); encode(x, f); files.append((name, f))
+    code = ("import json,sys,mlx_whisper\nout={}\n"
+            "for k,f in json.load(open(sys.argv[1])):\n"
+            "    out[k]=mlx_whisper.transcribe(f,path_or_hf_repo=sys.argv[2],language='zh',initial_prompt='以下是普通话。')['text']\n"
+            "json.dump(out,open(sys.argv[3],'w'),ensure_ascii=False)\n")
+    fi, fo = os.path.join(d, "_in.json"), os.path.join(d, "_out.json"); json.dump(files, open(fi, "w"))
+    try:
+        subprocess.run([wpy, "-c", code, fi, model, fo], check=True, capture_output=True, timeout=1200)
+        return json.load(open(fo, encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001
+        print("提示： 听写没做成，只按起伏挑：", str(e)[:120]); return {}
+
+
 def run_v3(EP, L, keys_req):
     import numpy as np
     key, spk, res = T.creds(); P = params(L); v = L.get("voice", {})
@@ -161,6 +181,8 @@ def run_v3(EP, L, keys_req):
     if keys_req: grps = [g for g in grps if any(k in keys_req for k in g)]   # 组里有一句要重配，整组重配
     os.makedirs(os.path.join(EP, "vo"), exist_ok=True); os.makedirs(os.path.join(EP, "vo_raw"), exist_ok=True)
     section = T.new_section(); log = []
+    # 第一步：每组配 N 遍，先过体检
+    todo = []
     for grp in grps:
         texts = [text_of(L, k) for k in grp]; text = "".join(texts); ctx = ctx_of(L, grp)
         n_takes = P["takes"] + (1 if any(L["lines"][k].get("emo") == "hook" for k in grp) and P["takes"] > 1 else 0)
@@ -173,13 +195,22 @@ def run_v3(EP, L, keys_req):
             x = decode(a); ok, why = judge(x, words, text)
             sc = liveliness(x, words) if ok else (0, 0, 0)
             cands.append({"n": n, "ok": ok, "why": why, "score": round(sc[0], 2), "f0_sd": round(sc[1], 2), "dur_cv": round(sc[2], 3), "x": x, "words": words})
+        if not any("x" in c for c in cands): raise SystemExit(f"{grp[0]} 这一组合成失败：{cands[-1]['why']}")
+        todo.append((grp, texts, text, cands)); print(" ".join(grp), f"配了 {len(cands)} 遍", flush=True)
+    # 第二步：本机 whisper 把每一遍听写回文字（出片机提供 LY_WHISPER_PY；没有就跳过），念错字的那一遍不要
+    heard = listen(EP, [(f"{g[0]}_{c['n']}", c["x"]) for g, _, _, cs in todo for c in cs if c.get("ok")])
+    norm = lambda t: re.sub(r"[^一-鿿0-9a-zA-Z]", "", t)
+    for grp, texts, text, cands in todo:
         good = [c for c in cands if c["ok"]]
         if not good:
-            usable = [c for c in cands if "x" in c]
-            if not usable: raise SystemExit(f"{grp[0]} 这一组合成失败：{cands[-1]['why']}")
-            good = usable[:1]; print(f"!! {grp} 没有一遍通过体检（{[c['why'] for c in cands]}），先用第一遍，请听一下")
-        best = good[0] if v.get("pick") == "first" else max(good, key=lambda c: c["score"])
-        log.append({"group": grp, "picked": best["n"], "takes": [{k: c[k] for k in ("n", "ok", "why", "score", "f0_sd", "dur_cv") if k in c} for c in cands]})
+            good = [c for c in cands if "x" in c][:1]; print(f"!! {grp} 没有一遍通过体检（{[c['why'] for c in cands]}），先用第一遍，请听一下")
+        for c in good:
+            h = heard.get(f"{grp[0]}_{c['n']}")
+            c["sim"] = round(difflib.SequenceMatcher(None, norm(text), norm(h)).ratio(), 2) if h is not None else None
+        if any(c.get("sim") is not None for c in good):
+            top = max(c["sim"] or 0 for c in good); good = [c for c in good if (c["sim"] or 0) >= top - 0.03]   # 念得最准的那几遍里再挑
+        best = good[0] if v.get("pick") == "first" else max(good, key=lambda c: c.get("score", 0))
+        log.append({"group": grp, "picked": best["n"], "takes": [{k: c[k] for k in ("n", "ok", "why", "score", "f0_sd", "dur_cv", "sim") if k in c} for c in cands]})
         x, words = level(best["x"]), best["words"]
         encode(x, os.path.join(EP, "vo_raw", f"{grp[0]}_group.mp3"))
         per = assign(words, texts); dur = len(x) / SR
@@ -201,7 +232,7 @@ def run_v3(EP, L, keys_req):
             json.dump({"gap": 0.0 if i > 0 else None, "group": grp[0], "take": best["n"], "score": best.get("score")},
                       open(os.path.join(EP, "vo", f"{k}.meta.json"), "w"), ensure_ascii=False)
             L["lines"][k]["dur"] = round(len(seg) / SR, 2)
-        print(" ".join(grp), f"{dur:.1f}s 取第 {best['n'] + 1}/{len(cands)} 遍 起伏 {best.get('score')}", flush=True)
+        print(" ".join(grp), f"{dur:.1f}s 取第 {best['n'] + 1}/{len(cands)} 遍 起伏 {best.get('score')} 听写相似 {best.get('sim')}", flush=True)
     json.dump(L, open(os.path.join(EP, "lines.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     old = []
     lp = os.path.join(EP, "vo", "_takes.json")
