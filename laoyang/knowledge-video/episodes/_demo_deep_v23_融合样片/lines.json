@@ -198,5 +198,6 @@
  "bgm": {
   "synth": "pad",
   "src": "程序合成和声垫底（无版权）"
- }
+ },
+ "retain": false
 }
