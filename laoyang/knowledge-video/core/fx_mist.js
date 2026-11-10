@@ -29,11 +29,11 @@ function mistLevel(t){ // 当前卡的雾强度，卡与卡之间 0.5s 平滑
  if(!cur)return 0.5;const L=c=>MIST_LEVEL[c.type]!=null?MIST_LEVEL[c.type]:0.6,u=eo(cl((t-cur.t0)/0.5));
  return prev&&cur.t0-prev.t1<0.8?lerp(L(prev),L(cur),u):L(cur);}
 // 事件造成的「冲量」：炸开 = 向外推 + 变亮，指数衰减；收拢 = 炸开前 0.6s 向内缩
-function mistImpulse(t){let push=0,glow=0;const ev=fxEvents();
- for(const e of ev){const dt=t-e.t;
-  if(e.k==='burst'){if(dt>=-0.6&&dt<0){push-=0.35*e.w*SM((dt+0.6)/0.6);glow+=0.25*e.w*SM((dt+0.6)/0.6);}
-   else if(dt>=0&&dt<2.4){const k=Math.exp(-dt/0.55);push+=e.w*k;glow+=0.9*e.w*k;}}
-  else if(dt>=0&&dt<1.4){const k=Math.exp(-dt/0.35);push+=0.3*e.w*k;glow+=0.5*e.w*k;}}
+function mistImpulse(t){let push=0,glow=0;const ev=fxEvents();   // 全程连续：炸开有 0.33s 起势，逐帧亮度变化 < 20（不做频闪）
+ for(const e of ev){const dt=t-e.t,w=e.w;
+  if(e.k==='burst'){if(dt>=-0.6&&dt<0){const u=SM((dt+0.6)/0.6);push-=0.35*w*u;glow+=0.2*w*u;}
+   else if(dt>=0&&dt<3){const a=SM(dt/0.33),k=Math.exp(-dt/0.6);push+=w*(-0.35*(1-a)+a*k);glow+=w*(0.2*(1-a)+0.6*a*k);}}
+  else if(dt>=0&&dt<1.6){const a=SM(dt/0.25),k=Math.exp(-dt/0.4);push+=0.3*w*a*k;glow+=0.35*w*a*k;}}
  return {push,glow};}
 function mistFrame(t){
  const cv=$('mist'),g=cv.getContext('2d'),cfg=window.DATA.fx||{},amt=(cfg.mist==null?0.8:cfg.mist),lv=mistLevel(t),{push,glow}=mistImpulse(t);
@@ -42,7 +42,7 @@ function mistFrame(t){
  for(const b of _MB){
   let x=b.bx+70*Math.sin(t*b.f*6.283+b.ph)+30*Math.sin(t*b.f*2.9+b.ph*1.7),y=b.by+34*Math.cos(t*b.f*5.1+b.ph*1.3);
   const dx=x-cx,dy=y-cy,d=Math.hypot(dx,dy)+1,p=push*(90+d*0.25);x+=dx/d*p;y+=dy/d*p*0.6;
-  const R=b.R*(1+0.35*Math.max(0,push)-0.2*Math.max(0,-push)),al=Math.min(0.5,b.a*(1+glow*1.6)*amt*(0.45+0.55*lv)*2.0);
+  const R=b.R*(1+0.35*Math.max(0,push)-0.2*Math.max(0,-push)),al=Math.min(0.42,b.a*(1+glow*1.5)*amt*(0.45+0.55*lv)*1.8);
   if(al<=0.004)continue;const [r,gg,bb]=b.col;g.save();g.translate(x,y);g.scale(b.sx,1);const gr=g.createRadialGradient(0,0,0,0,0,R);
   gr.addColorStop(0,`rgba(${r},${gg},${bb},${al.toFixed(3)})`);gr.addColorStop(0.45,`rgba(${r},${gg},${bb},${(al*0.42).toFixed(3)})`);gr.addColorStop(1,`rgba(${r},${gg},${bb},0)`);
   g.fillStyle=gr;g.beginPath();g.arc(0,0,R,0,6.283);g.fill();g.restore();}
