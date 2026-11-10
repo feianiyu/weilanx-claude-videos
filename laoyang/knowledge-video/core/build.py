@@ -399,7 +399,7 @@ data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "t
 if DEEP and int(D.get("v", 1)) >= 3 and D.get("stage", True):
     data["stage"] = True
 if DEEP and int(D.get("v", 1)) >= 3:
-    data["look"] = D.get("look", "mono")   # 底图观感：mono = 高清黑白照片、轻压暗（老杨 11-11 定）；dark = v2 的重压暗
+    data["look"] = D.get("look", "muted")   # 底图观感：muted = 彩色照片降饱和、轻压暗（老杨 11-11 定）；mono = 纯黑白；dark = v2 的重压暗
 if DEEP and D.get("fx"):
     data["fx"] = dict({"mist": 0 if int(D.get("v", 1)) >= 3 else 0.8}, **(D["fx"] if isinstance(D["fx"], dict) else {}))
     data["fx"]["hits"] = [round(A[x], 3) for x in data["fx"].get("hits", [])]
