@@ -33,9 +33,10 @@
   "engine": "volc",
   "v": 3,
   "model": "expressive",
-  "rate": 21,
+  "rate": 15,
   "takes": 2,
-  "name": "老杨本人（火山引擎声音复刻 2.0 · 表现力增强版）"
+  "name": "老杨本人（火山引擎声音复刻 2.0 · 表现力增强版）",
+  "group": "line"
  },
  "gapSec": 0.25,
  "secGap": 0.5,
