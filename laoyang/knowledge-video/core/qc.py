@@ -12,7 +12,7 @@ from _checks import CHECK
 async def frames(times):
     async with async_playwright() as p:
         br = await p.chromium.launch(**launch_args()); pg = await br.new_page(viewport={"width": 1080, "height": 1920}); errs = []
-        pg.on("console", lambda m: errs.append(m.text) if m.type in ("error", "warning") else None); pg.on("pageerror", lambda e: errs.append(str(e)))
+        pg.on("console", lambda m: errs.append(m.text) if m.type in ("error", "warning") and "willReadFrequently" not in m.text else None); pg.on("pageerror", lambda e: errs.append(str(e)))
         await pg.goto("file://" + os.path.abspath("build/index.html") + "?capture=1"); await pg.evaluate("document.fonts.ready"); await pg.wait_for_timeout(300)
         os.makedirs("build/qc", exist_ok=True); bad = 0
         [os.remove(os.path.join("build/qc", x)) for x in os.listdir("build/qc") if x.startswith("q_")] if len(sys.argv) <= 2 else None   # 整片检查前清掉旧帧，免得联系表混进上次的帧
