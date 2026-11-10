@@ -36,7 +36,9 @@ function mistImpulse(t){let push=0,glow=0;const ev=fxEvents();   // 全程连续
   else if(dt>=0&&dt<1.6){const a=SM(dt/0.25),k=Math.exp(-dt/0.4);push+=0.3*w*a*k;glow+=0.35*w*a*k;}}
  return {push,glow};}
 function mistFrame(t){
- const cv=$('mist'),g=cv.getContext('2d'),cfg=window.DATA.fx||{},amt=(cfg.mist==null?0.8:cfg.mist),lv=mistLevel(t),{push,glow}=mistImpulse(t);
+ const cv=$('mist'),cfg=window.DATA.fx||{},amt=(cfg.mist==null?0.8:cfg.mist);
+ if(amt<=0){cv.style.display='none';return;}   // mist:0 = 只要文字出场，不要烟带和微尘
+ const g=cv.getContext('2d'),lv=mistLevel(t),{push,glow}=mistImpulse(t);
  g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.clearRect(0,0,540,960);g.globalCompositeOperation='lighter';
  const cx=270,cy=500;
  for(const b of _MB){

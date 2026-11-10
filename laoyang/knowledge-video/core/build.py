@@ -35,7 +35,7 @@ if D.get("publish"):   # §2.6：lines.json → publish 生成 发布文案.md�
         + (f"\n## 置顶评论\n{_P['pin']}\n" if _P.get("pin") else ""))
 DEEP = D.get("style") == "deep"   # 深度拆解版（STANDARD_DEEP.md）：shell_deep.html + cards.js，卡片写在 lines.json → cards
 if DEEP and int(D.get("v", 1)) >= 3 and D.get("fx") is None:
-    D["fx"] = {"mist": 0.8}   # 深度 v3 默认带融合层（彩雾 + 文字出场）；不想要写 "fx": false
+    D["fx"] = {"mist": 0}   # 深度 v3 默认只带文字出场；暖色烟带默认关（老杨 11-11：不要黄色颗粒，保留照片清晰度）。要烟带写 "fx": {"mist": 0.8}
 
 # ---------- timeline（v2.1：章节首句起点吸附到 BGM 拍点；restBefore 句前多留一拍静止） ----------
 BEAT = D.get("beat"); REST = D.get("restBefore")
@@ -398,8 +398,10 @@ data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "t
        {"anchors": A, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "series": D["series"], "cards": cdat, "seriesFs": int(min(44, 940 / max(1, cw(sl))))}
 if DEEP and int(D.get("v", 1)) >= 3 and D.get("stage", True):
     data["stage"] = True
+if DEEP and int(D.get("v", 1)) >= 3:
+    data["look"] = D.get("look", "mono")   # 底图观感：mono = 高清黑白照片、轻压暗（老杨 11-11 定）；dark = v2 的重压暗
 if DEEP and D.get("fx"):
-    data["fx"] = dict({"mist": 0.8}, **(D["fx"] if isinstance(D["fx"], dict) else {}))
+    data["fx"] = dict({"mist": 0 if int(D.get("v", 1)) >= 3 else 0.8}, **(D["fx"] if isinstance(D["fx"], dict) else {}))
     data["fx"]["hits"] = [round(A[x], 3) for x in data["fx"].get("hits", [])]
 if DEEP and int(D.get("v", 1)) >= 3 and D.get("retain") is None:
     D["retain"] = {"maxGap": 7.0}   # 深度 v3 默认带留人套件（第 1 张 hook、前 20% 画面间隔体检）；不要写 "retain": false
