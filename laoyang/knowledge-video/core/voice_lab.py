@@ -50,6 +50,20 @@ def main():
                     p = os.path.join(d, f"para_t{n}.mp3"); open(p, "wb").write(a)
                     rv["lines"].append({"k": "para", "take": n, "sec": round(dur(p), 3), "chars": len(text), "words": words, "meta": meta})
                     if n == 0: picked.append(p)
+            elif v.get("mode") == "chunk":   # 按「气口组」合成：同一组（lines[].g 相同）的句子一次合成，组内语气连贯，每组有自己的语气提示
+                groups = []
+                for ln in lines:
+                    if groups and groups[-1][0] == ln.get("g"): groups[-1][1].append(ln)
+                    else: groups.append([ln.get("g"), [ln]])
+                for g, lns in groups:
+                    text = "".join(ln["text"] for ln in lns)
+                    hints = "；".join(f"第{i + 1}句，{ln['ctx']}" for i, ln in enumerate(lns) if ln.get("ctx")) if len(lns) > 1 else (lns[0].get("ctx") or "")
+                    ctx = ((base + " " + hints).strip() or None) if v.get("ctx") else None
+                    for n in range(int(v.get("takes", 1))):
+                        a, words, meta = T.synth(text, key, spk, res, ctx=ctx, model=model, rate=v.get("rate", 0), section=sec)
+                        p = os.path.join(d, f"{lns[0]['k']}_t{n}.mp3"); open(p, "wb").write(a)
+                        rv["lines"].append({"k": lns[0]["k"], "take": n, "sec": round(dur(p), 3), "chars": len(text), "words": words, "meta": meta})
+                        if n == 0: picked.append(p)
             else:
                 for ln in lines:
                     ctx = None
