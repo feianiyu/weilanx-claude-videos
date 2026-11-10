@@ -6,11 +6,10 @@
 
 配音 v3（2026-11-10，lines.json → voice.v = 3，STANDARD_DEEP_V3 §3）——为「自然、有情绪、像当面聊天」重做：
   1. 表现力增强版模型（seed-tts-2.0-expressive）。默认的标准版不支持语音指令，旧流程写的语气提示其实没生效。
-  2. 按「气口组」合成：同一个意思的 2–3 句一次合成（lines[k].g 相同的相邻句；不写就自动分），组内语气、音高一气呵成；
-     逐句单配会让每句像重新起头、音区忽高忽低。
+  2. 默认逐句合成（老杨 2026-11-10 试听后选定）。voice.group = "breath" 时按「气口组」合成：lines[k].g 相同的相邻 2–3 句一次配完。
   3. 每组一段语气提示 = 全片人设基调（voice.context）+ 每句的演法（lines[k].emo：预设名或一整句描述）。
   4. 同一期共用一个会话 ID（section_id），服务端带着上文合成，组与组之间也接得上。
-  5. 语速在模型里调（voice.rate，默认 21 ≈ 1.21 倍），不再后期 atempo 硬拉。
+  5. 语速在模型里调（voice.rate，默认 15 ≈ 1.15 倍；老杨 2026-11-10：在 1.21 倍上降 5%），不再后期 atempo 硬拉。
   6. 逐字时间戳用服务端返回的真实值（不再按字数估），组内句子之间保留真实停顿（写进 vo/<句>.meta.json 的 gap，build 照着排）。
   7. 抽卡择优：每组配 voice.takes 遍（默认 2，含 hook 的组 3 遍），先剔掉漏字、卡顿、语速离谱的，再挑起伏最自然的一遍。
   8. 每组响度对齐到同一水平，组与组不会忽大忽小。
@@ -41,6 +40,8 @@ PICK_BAND = (3.6, 9.0)   # 合理语速（字/秒，含停顿），超出视为�
 
 def groups_of(L, keys):
     """气口组：显式 g 相同的相邻句一组；没写 g 的按「同一章节、最多 3 句 / 85 字」自动并。"""
+    if L.get("voice", {}).get("group", "line") == "line":   # 默认逐句配（老杨 2026-11-10 试听三种配法后选的）；写 "group": "breath" 才按气口组
+        return [[k] for k in keys]
     out = []
     for k in keys:
         ln = L["lines"][k]; g = ln.get("g"); txt = ln.get("tts", ln["sub"])
@@ -72,7 +73,7 @@ def text_of(L, k):
 def params(L):
     v = L.get("voice", {})
     return {"model": {"expressive": T.EXPRESSIVE, "standard": T.STANDARD}.get(v.get("model", "expressive"), v.get("model")),
-            "rate": int(v.get("rate", 21)), "takes": int(v.get("takes", 2))}
+            "rate": int(v.get("rate", 15)), "takes": int(v.get("takes", 2))}
 
 
 def hashes(L, keys):
