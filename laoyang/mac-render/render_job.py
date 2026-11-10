@@ -184,6 +184,13 @@ def kv_voice(job: Job):
             if os.path.exists(os.path.join(vo, f"{k}.meta.json")):
                 shutil.copyfile(os.path.join(vo, f"{k}.meta.json"), os.path.join(cache, f"{h}.meta.json"))
     json.dump(L, open(lp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    tk = os.path.join(vo, "_takes.json")   # 配音 v3：每组配了几遍、取了哪一遍、有没有哪组没通过体检
+    if os.path.exists(tk) and int(L.get("voice", {}).get("v", 0)) >= 3:
+        T_ = json.load(open(tk, encoding="utf-8"))
+        bad = [g["group"][0] for g in T_ if not any(t.get("ok") for t in g["takes"])]
+        job.facts["配音取样"] = f"{len(T_)} 组，共配 {sum(len(g['takes']) for g in T_)} 遍，每组取起伏最自然的一遍" + (f"；{'、'.join(bad)} 这几组没有一遍通过体检，请重点听" if bad else "")
+        if bad:
+            job.warn.append("配音有的组没通过体检：" + "、".join(bad))
     return f"新配 {', '.join(todo) or '无'}"
 
 

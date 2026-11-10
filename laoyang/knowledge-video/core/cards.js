@@ -133,10 +133,20 @@ const CARDS=(window.DATA.cards||[]).map((c,ci)=>{
  const zoom=el.querySelector('[data-zs]');
  return {c,el,units,zoom};
 }).filter(Boolean);
+// 舞台居中（深度 v3，DATA.stage）：卡片内容原来顶对齐，竖屏中段大片空着；量出内容高度后整体下移到内容区的视觉中心（略偏上）
+let _STAGED=false;
+function stageLayout(){if(_STAGED||!window.DATA.stage)return;_STAGED=true;const z=1.08;document.body.classList.add('stage');
+ CARDS.forEach(k=>{const el=k.el;if(k.c.type==='fxtext')return;
+  el.style.zoom=z;el.style.left=((1080-920*z)/2/z).toFixed(1)+'px';el.style.top=(400/z).toFixed(1)+'px';
+  const vis=el.style.visibility;el.style.visibility='hidden';el.style.display='block';const r0=el.getBoundingClientRect();
+  if(['hook','punch'].includes(k.c.type)){const w=el.firstElementChild;if(w){const h=w.getBoundingClientRect().height;w.style.top=(Math.max(0,(910-h)*0.36)/z).toFixed(1)+'px';}}
+  else{const kids=[...el.children].filter(e=>getComputedStyle(e).position!=='absolute');
+   if(kids.length){const h=Math.max(...kids.map(e=>e.getBoundingClientRect().bottom))-r0.top;const off=Math.max(0,(910-h)*0.42);el.style.top=((400+off)/z).toFixed(1)+'px';}}
+  el.style.visibility=vis;});}
 function tau(c,s){if(s<=0)return c.t0;const st=c.st||[];return st[s-1]!=null?st[s-1]:c.t0+0.5*s;}
 function fmtNum(v,dec){return dec>0?v.toFixed(dec):Math.round(v).toLocaleString('en-US').replace(/,/g,'');}
 function renderCards(t){
- let src='',srcA=0;
+ stageLayout();let src='',srcA=0;
  CARDS.forEach(k=>{const c=k.c;
   if(t<c.t0-0.01||t>c.t1+0.01){k.el.style.visibility='hidden';k.el.style.opacity=0;return;}
   const pin=c.first?1:eo(cl((t-c.t0)/0.4)),pout=c.last?1:1-cl((t-(c.t1-0.2))/0.2),a=Math.min(pin,pout);

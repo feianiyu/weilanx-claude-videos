@@ -12,11 +12,12 @@ const MIST_LEVEL={hook:1,punch:1,question:0.95,bignum:0.8,myth:0.8,fxtext:1,quot
  bars:0.3,chart:0.3,waterfall:0.3,line:0.3,matrix:0.3,balance:0.4,split:0.35,flow:0.4,shift:0.5,chain:0.5};
 const MIST_BURST=new Set(['hook','punch','bignum','myth','fxtext']);
 const MIST_COLS=[[245,166,35],[255,122,60],[255,206,120],[63,208,201],[120,150,255]];   // 橙 · 赤橙 · 金 · 青 · 靛（橙为主，青靛点缀）
-const MIST_N=34, DUST_N=260;
-function _mistSeedBlob(i){const r=k=>rnd(i*9.17+k*3.31+0.5);const ci=r(1)<0.62?(r(2)<0.5?0:(r(3)<0.5?1:2)):(r(4)<0.55?3:4);
- return {bx:r(5)*540,by:r(6)*960,R:70+r(7)*120,a:0.05+r(8)*0.07,col:MIST_COLS[ci],f:0.05+r(9)*0.09,ph:r(10)*6.283};}
+const MIST_N=16, DUST_N=220;
+// 烟带：少而大、横向拉长的暖色烟团，压在画面下半部和顶部边缘，中间留给内容（2026-11-10 改：原来 34 团小圆斑像散景光斑，显得碎）
+function _mistSeedBlob(i){const r=k=>rnd(i*9.17+k*3.31+0.5);const low=i%4!==3;const ci=i%8===5?3:(i%8===2?4:(r(2)<0.5?0:(r(3)<0.6?1:2)));
+ return {bx:r(5)*540,by:low?560+r(6)*400:r(6)*170-30,R:150+r(7)*150,sx:1.5+r(11)*0.9,a:(low?0.05:0.035)+r(8)*0.035,col:MIST_COLS[ci],f:0.03+r(9)*0.05,ph:r(10)*6.283};}
 const _MB=[...Array(MIST_N)].map((_,i)=>_mistSeedBlob(i));
-const _MD=[...Array(DUST_N)].map((_,i)=>{const r=k=>rnd(i*5.71+k*2.13+9.1);return {bx:r(1)*540,by:r(2)*960,s:0.6+r(3)*1.6,z:0.3+r(4)*0.7,a:0.25+r(5)*0.5,col:MIST_COLS[r(6)<0.7?2:(r(7)<0.5?0:3)],ph:r(8)*6.283};});
+const _MD=[...Array(DUST_N)].map((_,i)=>{const r=k=>rnd(i*5.71+k*2.13+9.1);return {bx:r(1)*540,by:r(2)*960,s:0.6+r(3)*1.5,z:0.3+r(4)*0.7,a:0.22+r(5)*0.45,col:MIST_COLS[r(6)<0.75?2:(r(7)<0.6?0:3)],ph:r(8)*6.283};});
 let _FXEV=null;
 function fxEvents(){ // 由卡片和 fx.hits 生成事件表 [{t,k:'pulse'|'burst',w}]
  if(_FXEV)return _FXEV;const ev=[];
@@ -39,12 +40,12 @@ function mistFrame(t){
  g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.clearRect(0,0,540,960);g.globalCompositeOperation='lighter';
  const cx=270,cy=500;
  for(const b of _MB){
-  let x=b.bx+46*Math.sin(t*b.f*6.283+b.ph)+24*Math.sin(t*b.f*2.9+b.ph*1.7),y=b.by+60*Math.cos(t*b.f*5.1+b.ph*1.3);
-  const dx=x-cx,dy=y-cy,d=Math.hypot(dx,dy)+1,p=push*(150+d*0.35);x+=dx/d*p;y+=dy/d*p;
-  const R=b.R*(1+0.35*Math.max(0,push)-0.2*Math.max(0,-push)),al=Math.min(0.7,b.a*(1+glow*1.8)*amt*lv*2.1);
-  if(al<=0.004)continue;const gr=g.createRadialGradient(x,y,0,x,y,R),[r,gg,bb]=b.col;
-  gr.addColorStop(0,`rgba(${r},${gg},${bb},${al.toFixed(3)})`);gr.addColorStop(0.5,`rgba(${r},${gg},${bb},${(al*0.38).toFixed(3)})`);gr.addColorStop(1,`rgba(${r},${gg},${bb},0)`);
-  g.fillStyle=gr;g.beginPath();g.arc(x,y,R,0,6.283);g.fill();}
+  let x=b.bx+70*Math.sin(t*b.f*6.283+b.ph)+30*Math.sin(t*b.f*2.9+b.ph*1.7),y=b.by+34*Math.cos(t*b.f*5.1+b.ph*1.3);
+  const dx=x-cx,dy=y-cy,d=Math.hypot(dx,dy)+1,p=push*(90+d*0.25);x+=dx/d*p;y+=dy/d*p*0.6;
+  const R=b.R*(1+0.35*Math.max(0,push)-0.2*Math.max(0,-push)),al=Math.min(0.5,b.a*(1+glow*1.6)*amt*(0.45+0.55*lv)*2.0);
+  if(al<=0.004)continue;const [r,gg,bb]=b.col;g.save();g.translate(x,y);g.scale(b.sx,1);const gr=g.createRadialGradient(0,0,0,0,0,R);
+  gr.addColorStop(0,`rgba(${r},${gg},${bb},${al.toFixed(3)})`);gr.addColorStop(0.45,`rgba(${r},${gg},${bb},${(al*0.42).toFixed(3)})`);gr.addColorStop(1,`rgba(${r},${gg},${bb},0)`);
+  g.fillStyle=gr;g.beginPath();g.arc(0,0,R,0,6.283);g.fill();g.restore();}
  for(const m of _MD){ // 微尘：近的快远的慢，炸开时向外抛
   let x=m.bx+30*m.z*Math.sin(t*0.21*m.z+m.ph),y=((m.by-t*9*m.z)%960+960)%960;
   const dx=x-cx,dy=y-cy,d=Math.hypot(dx,dy)+1,p=push*(60+d*0.9)*m.z;x+=dx/d*p;y+=dy/d*p;

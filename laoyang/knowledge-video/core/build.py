@@ -34,6 +34,8 @@ if D.get("publish"):   # §2.6：lines.json → publish 生成 发布文案.md�
         f"## 短标题\n{_meta['short_title']}\n\n## 描述（含话题）\n{_meta['desc']}\n"
         + (f"\n## 置顶评论\n{_P['pin']}\n" if _P.get("pin") else ""))
 DEEP = D.get("style") == "deep"   # 深度拆解版（STANDARD_DEEP.md）：shell_deep.html + cards.js，卡片写在 lines.json → cards
+if DEEP and int(D.get("v", 1)) >= 3 and D.get("fx") is None:
+    D["fx"] = {"mist": 0.8}   # 深度 v3 默认带融合层（彩雾 + 文字出场）；不想要写 "fx": false
 
 # ---------- timeline（v2.1：章节首句起点吸附到 BGM 拍点；restBefore 句前多留一拍静止） ----------
 BEAT = D.get("beat"); REST = D.get("restBefore")
@@ -228,6 +230,17 @@ vo = np.zeros(N, np.float32)
 for k in keys:
     a = load(f"vo/{k}.mp3", L[k]["dur"]); i = int(tl[k][0] * SR); vo[i:i + len(a)] += a[:N - i]
 
+# 人声后期（深度 v3，voice.v>=3 或 lines.json "voPolish": true）：贴近「近讲口播」的听感——
+# 切掉轰隆的低频、压一点浑浊的中低频、提亮齿音以下的清晰度、轻压缩让轻声字不丢，最后去一点齿音。只动人声，不动配乐。
+if not REGRESS and D.get("voPolish", int((D.get("voice") or {}).get("v", 0)) >= 3) and np.abs(vo).max() > 0:
+    _raw = (np.clip(vo, -1, 1)).astype(np.float32).tobytes()
+    _af = ("highpass=f=80,equalizer=f=250:t=q:w=1.0:g=-2,equalizer=f=3600:t=q:w=1.1:g=2.5,equalizer=f=9000:t=q:w=0.9:g=1.5,"
+           "acompressor=threshold=-24dB:ratio=3:attack=6:release=130:makeup=2.5,deesser=i=0.35")
+    _p = subprocess.run(["ffmpeg", "-v", "error", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-", "-af", _af, "-f", "f32le", "-"], input=_raw, capture_output=True)
+    if _p.returncode == 0 and len(_p.stdout) >= len(_raw) - 4 * SR:
+        _y = np.frombuffer(_p.stdout, np.float32); vo = np.zeros(N, np.float32); vo[:min(N, len(_y))] = _y[:N]
+    else: print("提示： 人声后期没做成，用原始人声：", (_p.stderr or b"")[-200:].decode("utf-8", "ignore"))
+
 def pad(sec):
     """深度版默认配乐：程序合成的低调和声垫底（无旋律起伏、不卡拍），确定性、无版权问题。lines.json "bgm": {"synth": "pad"}"""
     n = int(sec * SR); tt = np.arange(n, dtype=np.float64) / SR; out = np.zeros(n)
@@ -383,6 +396,8 @@ if DEEP:
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
         "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})} if not DEEP else \
        {"anchors": A, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "series": D["series"], "cards": cdat, "seriesFs": int(min(44, 940 / max(1, cw(sl))))}
+if DEEP and int(D.get("v", 1)) >= 3 and D.get("stage", True):
+    data["stage"] = True
 if DEEP and D.get("fx"):
     data["fx"] = dict({"mist": 0.8}, **(D["fx"] if isinstance(D["fx"], dict) else {}))
     data["fx"]["hits"] = [round(A[x], 3) for x in data["fx"].get("hits", [])]
