@@ -44,6 +44,37 @@ def self_update():
     git("reset", "-q", "--hard", "origin/main", cwd=tools)
 
 
+def local_inbox():
+    """本地信箱 ~/laoyang-render/inbox/*.json：不经过 GitHub 的小任务（GitHub 连不上时也能跑）。
+    {"kind": "voice-lab", "spec": {...}}  → 配音对比实验，结果放 ~/laoyang-render/lab/<文件名>/
+    {"kind": "render-local", "episode": "<本机期目录>"} → 直接渲染本机已有的一期
+    只认这两种，跑的都是 tools/ 里的脚本；做完移到 inbox/done/。"""
+    inbox = os.path.join(CFG["WORK"], "inbox")
+    if not os.path.isdir(inbox):
+        return
+    core = os.path.join(CFG["TOOLS"], "laoyang", "knowledge-video", "core")
+    for fn in sorted(f for f in os.listdir(inbox) if f.endswith(".json")):
+        src = os.path.join(inbox, fn); name = fn[:-5]
+        try:
+            job = json.load(open(src, encoding="utf-8"))
+            os.makedirs(os.path.join(inbox, "done"), exist_ok=True)
+            os.replace(src, os.path.join(inbox, "done", fn))   # 先挪走，出错也不会反复重跑、反复花钱
+            log(f"本地任务 {name}（{job.get('kind')}）", WATCH_LOG)
+            env = dict(os.environ, LY_TTS_ENV=CFG.get("TTS_ENV", ""))
+            if job.get("kind") == "voice-lab":
+                out = os.path.join(CFG["WORK"], "lab", name); os.makedirs(out, exist_ok=True)
+                spec = os.path.join(out, "spec.json"); json.dump(job["spec"], open(spec, "w", encoding="utf-8"), ensure_ascii=False)
+                p = subprocess.run([sys.executable, os.path.join(core, "voice_lab.py"), spec, out], env=env, capture_output=True, text=True, timeout=3000)
+                open(os.path.join(out, "run.log"), "w", encoding="utf-8").write((p.stdout or "") + (p.stderr or ""))
+            elif job.get("kind") == "render-local":
+                p = subprocess.run([sys.executable, os.path.join(HERE, "render_job.py"), "--local", os.path.expanduser(job["episode"])], env=env)
+            else:
+                log(f"!! 不认识的本地任务类型：{job.get('kind')}", WATCH_LOG); continue
+            log(f"{'完成' if p.returncode == 0 else '失败'} 本地任务 {name}", WATCH_LOG)
+        except Exception as e:  # noqa: BLE001
+            log(f"!! 本地任务 {name}：{str(e)[:200]}", WATCH_LOG)
+
+
 def main():
     os.makedirs(os.path.dirname(WATCH_LOG), exist_ok=True)
     lockf = open(LOCK, "w")
@@ -51,7 +82,11 @@ def main():
         fcntl.flock(lockf, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
         return  # 上一轮还在出片，这一轮不打扰
-    self_update()
+    try:
+        self_update()
+    except Exception as e:  # noqa: BLE001  GitHub 连不上不影响本地任务
+        log(f"!! 更新 tools 失败：{str(e)[:120]}", WATCH_LOG)
+    local_inbox()
     try:
         jobs = remote_jobs()
     except Exception as e:  # noqa: BLE001
