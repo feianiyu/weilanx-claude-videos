@@ -136,15 +136,16 @@ const CARDS=(window.DATA.cards||[]).map((c,ci)=>{
 }).filter(Boolean);
 // 舞台居中（深度 v3，DATA.stage）：卡片内容原来顶对齐，竖屏中段大片空着；量出内容高度后整体下移到内容区的视觉中心（略偏上）
 let _STAGED=false;
+const SAFE_Z=0.94;
 function stageLayout(){if(_STAGED||!window.DATA.stage)return;_STAGED=true;document.body.classList.add('stage');
  CARDS.forEach(k=>{const el=k.el;if(k.c.type==='fxtext')return;
   const vis=el.style.visibility;el.style.visibility='hidden';el.style.display='block';
   const place=z=>{el.style.zoom=z;el.style.left=((1080-920*z)/2/z).toFixed(1)+'px';el.style.top=(400/z).toFixed(1)+'px';const r0=el.getBoundingClientRect();
    const all=[...el.querySelectorAll('*')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.height);
    return {r0,bottom:all.length?Math.max(...all.map(r=>r.bottom)):r0.top};};
-  let z=1.08,m=place(z);
+  let z=SAFE_Z,m=place(z);   // 视频号安全区：手机屏比 9:16 更长，播放器按高度铺满、左右各裁掉约 45px，所以整卡只能放大到 0.94（x 108–972），不能再放大到 1.08
   const lim=k.c.data&&k.c.data.src?1300:1380;   // 有出处行的卡，底边让开出处（y≈1318）
-  if(m.bottom>lim){z=Math.max(0.8,Math.min(1.08,z*(lim-400)/(m.bottom-400)));m=place(z);}   // 内容本来就高的卡：少放大一点，保证不压到出处和署名
+  if(m.bottom>lim){z=Math.max(0.8,Math.min(SAFE_Z,z*(lim-400)/(m.bottom-400)));m=place(z);}   // 内容本来就高的卡：少放大一点，保证不压到出处和署名
   if(['hook','punch'].includes(k.c.type)){const w=el.firstElementChild;if(w){const h=w.getBoundingClientRect().height;w.style.top=(Math.max(0,(910-h)*0.36)/z).toFixed(1)+'px';}}
   else{const off=Math.max(0,(lim-10-m.bottom)*0.5);el.style.top=((400+off)/z).toFixed(1)+'px';}
   el.style.visibility=vis;});}
