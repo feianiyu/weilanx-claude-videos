@@ -114,6 +114,21 @@ def level(x, target_db=-21.0):
     return x * min(g, 0.97 / (np.abs(x).max() + 1e-9))
 
 
+def speech_end(x, t_end, max_ext=1.4, head=0.35):
+    """服务端给的「最后一个字结束时间」常常偏早（尾字被吃掉的根源）。从 t_end 往后看真实波形：
+    只要后面还有声音（>= 说话时响度的 6%，连续 80ms 内有声就算没说完），就继续往后走，直到真正静下来。
+    返回「声音真正结束」的时间（秒），最多比 t_end 晚 max_ext 秒。"""
+    import numpy as np
+    h = int(0.01 * SR); n = len(x) // h
+    if n < 3: return t_end
+    r = np.sqrt((x[:n * h].reshape(n, h) ** 2).mean(1) + 1e-12)
+    thr = 0.06 * float(np.percentile(r, 90))
+    i = max(0, int((t_end - head) / 0.01)); lim = min(n, int((t_end + max_ext) / 0.01)); last = max(0, int(t_end / 0.01) - 1)
+    for j in range(i, lim):
+        if r[j] > thr: last = max(last, j)
+    return min(len(x) / SR, (last + 1) * 0.01)
+
+
 PUNCT = re.compile(r"[，。、？！：；“”‘’（）·,.?!:;\"'\s—…-]")
 
 
@@ -214,13 +229,16 @@ def run_v3(EP, L, keys_req):
         x, words = level(best["x"]), best["words"]
         encode(x, os.path.join(EP, "vo_raw", f"{grp[0]}_group.mp3"))
         per = assign(words, texts); dur = len(x) / SR
-        # 切点：组首 = 第一个字前 0.10s；句间 = 两句之间停顿的正中；组尾 = 最后一个字后 0.20s
+        # 切点：组首 = 第一个字前 0.12s；句间 = 上一句「真正说完」和下一句开口之间；组尾 = 真正说完 + 0.14s
+        # （不能直接信服务端的字结束时间：它常常偏早 0.2–0.5 秒，按它切会把句末的字切掉）
         starts = [w[0]["startTime"] if w else None for w in per]; ends = [w[-1]["endTime"] if w else None for w in per]
-        cuts = [max(0.0, (starts[0] or 0) - 0.10)]
+        cuts = [max(0.0, (starts[0] or 0) - 0.12)]
         for i in range(1, len(grp)):
             a_, b_ = ends[i - 1], starts[i]
-            cuts.append((a_ + b_) / 2 if a_ is not None and b_ is not None else cuts[-1])
-        cuts.append(min(dur, (ends[-1] or dur) + 0.20))
+            if a_ is None or b_ is None: cuts.append(cuts[-1]); continue
+            real = speech_end(x, a_)
+            cuts.append(real + 0.06 if b_ - real < 0.12 else (real + b_) / 2)
+        cuts.append(min(dur, speech_end(x, ends[-1] or dur) + 0.14))
         for i, k in enumerate(grp):
             c0, c1 = cuts[i], cuts[i + 1]; seg = x[int(c0 * SR):int(c1 * SR)].copy()
             fz = min(len(seg) // 4, int(0.012 * SR))

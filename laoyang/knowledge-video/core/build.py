@@ -23,6 +23,10 @@ if V2:
     _e, _w = lint_opening.lint(L, keys, D)
     for _x in _w: print("提示：", _x)
     if _e: sys.exit("深度 v2 稿子体检未通过：\n  " + "\n  ".join(_e))
+if not REGRESS and os.path.isdir("vo"):   # 句尾体检：切好的配音句尾还有声音 = 尾字被切（EP.15/16 事故）
+    sys.path.insert(0, CORE); import check_vo_tail
+    _bad = check_vo_tail.check(os.getcwd(), quiet=True)
+    if _bad: sys.exit("配音句尾体检未通过（尾字被切）：" + "，".join(f"{k}({v})" for k, v in _bad) + "。重配这些句子：python3 core/gen_vo_volc.py . " + " ".join(k for k, _ in _bad))
 if D.get("publish"):   # §2.6：lines.json → publish 生成 发布文案.md（给人看）+ publish_meta.json（发布台 meta.json 格式，出片机交付时拼成 发布_视频号/）
     _P = D["publish"]; _tags = " ".join(_P.get("tags", []))
     _meta = {"short_title": _P.get("title", ""), "desc": (_P.get("desc", "").strip() + " " + _tags).strip()}
