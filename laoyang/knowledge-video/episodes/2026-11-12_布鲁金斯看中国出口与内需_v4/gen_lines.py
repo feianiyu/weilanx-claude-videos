@@ -86,7 +86,7 @@ D = {
  "decision": "你的增长是靠卖得更多，还是卖得更贵：怎么看美国学者对中国出口与内需的判断",
  "series": {"title": "美国学者看中国出口与内需", "sub": "布鲁金斯学会播客"},
  "frame": {"seriesLine": "美国学者看中国出口与内需", "column": "LAOYANG CUBE / 宏观观察账", "ep": "EP.17"},
- "bgs": [{"file": "assets/bg.jpg", "url": "https://images.pexels.com/photos/16765239/pexels-photo-16765239.jpeg",
+ "bgs": [{"file": "assets/bg_16765239.jpg", "url": "https://images.pexels.com/photos/16765239/pexels-photo-16765239.jpeg",
           "note": "Pexels #16765239《Containers in a Harbor Seen From Above》Mineia Martins（Pexels License，免费商用）原图 8256×5504 横图，竖屏居中裁切，下原图不缩放", "dim": 1, "pos": "50% 50%"}],
  "voice": {"engine": "volc", "v": 3, "model": "expressive", "rate": 15, "takes": 2, "group": "line", "name": "老杨本人（火山引擎声音复刻 2.0 · 表现力增强版）"},
  "gapSec": 0.28, "secGap": 0.55,
