@@ -100,7 +100,7 @@ D = {
  "bgm": {"synth": "pad", "src": "程序合成和声垫底（无版权）"}, "bgmUnder": 19,
  "fx": {"hits": []},
  "retain": {"maxGap": 7},
- "cover": {"topic": "财政部顾问", "title": "美国财政部<br>新顾问是谁", "en": "Treasury Adviser Judy Shelton",
+ "cover": {"topic": "财政部顾问", "title": "美国财政部顾问<br>她是谁", "en": "Treasury Adviser Judy Shelton",
            "sub": "她写过《苏联即将崩溃》<br>如今要评估中国金融", "tag": "EP.18"},
  "publish": {"title": "美国财政部新顾问是谁", "dy_title": "美国财政部请来朱迪·谢尔顿，要评估中国金融，她是谁？",
              "desc": "美国财政部刚请了一位顾问，专门评估中国的金融状况。她1989年出版过一本书《苏联即将崩溃》，两年后苏联解体。她的主张是什么？是信号，还是政策？你的资金有多少暴露在美元和汇率上？",
