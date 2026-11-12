@@ -23,6 +23,9 @@ if V2:
     _e, _w = lint_opening.lint(L, keys, D)
     for _x in _w: print("提示：", _x)
     if _e: sys.exit("深度 v2 稿子体检未通过：\n  " + "\n  ".join(_e))
+    if int(D.get("v", 1)) >= 3 and not REGRESS:   # 留存六拍（STANDARD_RETENTION_SCRIPT.md）：只提示，不拦出片
+        import lint_retention
+        for _x in lint_retention.lint(L, keys, D): print("留存提示：", _x)
 if not REGRESS and os.path.isdir("vo"):   # 句尾体检：切好的配音句尾还有声音 = 尾字被切（EP.15/16 事故）
     sys.path.insert(0, CORE); import check_vo_tail
     _bad = check_vo_tail.check(os.getcwd(), quiet=True)
