@@ -61,15 +61,16 @@ def lint(L, keys, D):
     for i, t in enumerate(first):
         for rx, why in BAN:
             if re.search(rx, t): errs.append(f"第{i+1}句「{t[:24]}…」命中 {why}。开场必须直接给冲突/反常数字/具体场景，不许宣布「我要讲什么」。")
+    two = "".join(first)
+    OUTSIDE = re.search(r"(美国|华尔街|外资|海外|国外|西方|日本|欧洲|智库|兰德|高盛|摩根|布鲁金斯|荣鼎|财政部|美联储|国际货币基金|世界银行)", two) and re.search(r"中国|我们|国内", "".join(L[k]["sub"] for k in keys[:4]))   # 外部视角钩（EP.15 兰德：2 秒跳出 23.78%）
     n1 = len(re.sub(r"[，。？！、：；\s]", "", first[0]))
     if n1 > 30: errs.append(f"第1句 {n1} 字，太长（≤30 字，v2 语速下 ≈5 秒内必须抛出钩子）。")
-    if not any(re.search(h, first[0]) for h in HOOK): warns.append("第1句看不出钩子特征（数字 / 提问 / 「你」/ 转折反常）；再检查一遍。")
-    if not re.search(r"[？?]", "".join(first)) and not re.search(r"\d", "".join(first)): warns.append("前两句既没有问句也没有数字：先有一个观众答不上来的问题或一个说不通的数。")
+    if not OUTSIDE and not any(re.search(h, first[0]) for h in HOOK): warns.append("第1句看不出钩子特征（数字 / 提问 / 「你」/ 转折反常）；再检查一遍。")
+    if not OUTSIDE and not re.search(r"[？?]", "".join(first)) and not re.search(r"\d", "".join(first)): warns.append("前两句既没有问句也没有数字：先有一个观众答不上来的问题或一个说不通的数。")
     if re.search(FRAME_STRICT, first[0]): errs.append(f"第1句「{first[0][:24]}…」用了知识框架词（解读/新规/赛道/从哪里来……）＝报题目。第1句写老板的处境和代价，知识点放到第3句以后。")
     elif re.search(FRAME_SOFT, first[0]): warns.append(f"第1句「{first[0][:24]}…」有知识框架词（如何/模式/X个……），容易像课本开头；能改成处境句就改。")
-    two = "".join(first)
-    if not re.search(FEEL, two): warns.append("前两句没有感觉词（危险/白干/保不住/说不清/明明……却……，§2.6）：只有信息没有情绪，3 秒留不住人。")
-    if not re.search(WHO, two): warns.append("前两句没有「你/老板/我们」：观众代入不进去。")
+    if not OUTSIDE and not re.search(FEEL, two): warns.append("前两句没有感觉词（危险/白干/保不住/说不清/明明……却……，§2.6）：只有信息没有情绪，3 秒留不住人。")
+    if not OUTSIDE and not re.search(WHO, two): warns.append("前两句没有「你/老板/我们」：观众代入不进去。")
     pe, pw = lint_publish(D, first[0] if first else "")
     errs += pe; warns += pw
     if not (D.get("decision") or "").strip(): errs.append("缺 lines.json → decision（这期看完，企业家要重新想一想的那个具体决策，一句话；见选题测试）。")
