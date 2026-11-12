@@ -519,6 +519,11 @@ def main():
     if job.branch:
         job.step("报告推回 GitHub", lambda: push_report(job), fatal=False)
         v, text = write_report(job, failed)
+    try:
+        import triage
+        triage.write(job, text)   # 初筛.md：给 Claude 先读的一页摘要，失败不影响出片
+    except Exception as e:  # noqa: BLE001
+        log(f"初筛跳过：{e}")
     from notify import notify
     notify(job.name, v, text, job.out)
     print(text)
