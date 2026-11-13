@@ -2,6 +2,13 @@
 
 规则：外框结构变动 +1.0；同一版式内的尺寸 / 配置调整、新效果 / 新规则 / 新工具 +0.1；修 bug 不升号，只记一行。有意改了画面（`regress.py --update`）必须在这里写明。
 
+## 深度 v6 · 2026-11-12 · 数据图 + 连续转场 + 分镜联系表
+- 来源：老杨选了下一版迭代方向 1、2、3。
+- `core/storyboard.py`：分镜联系表，确认文案时一起发，出片前就看到全期画面顺序（云端占位构建，跑完还原）。
+- `core/morph.js`：粒子接力转场，上一张图散成光点飞到下一张图再长出来；`lines.json` 写 `morph: true` 开启，旧期画面不变。
+- `core/cards_data.js`：中国方块地图 `tilemap`、世界流向图 `flowmap`、气泡图 `bubble`、排名赛跑 `race`；`lint_visual` 识别表加 5 种内容关系。
+- 演示期 `episodes/_demo_v6_数据与转场/`；回归 46/46。
+
 ## 深度 v5 · 2026-11-12 · 逻辑图谱版
 - 来源（用户反馈）：每期表现方式单一、都一样；要按内容用更丰富的逻辑结构图表现数据和逻辑关系。统计最近 8 期：文字卡占 60%–83% 的有 5 期，逻辑图只用了 0–2 种。
 - 新增 `core/cards_logic.js`：13 种逻辑图卡（cycle 飞轮、tree 拆解树、funnel 漏斗、pyramid 金字塔、venn 交集、timeline 时间轴、iceberg 冰山、sankey 分流、donut 构成环、versus 新旧对照、ladder 阶梯、dots 单位图、forces 力场），全部跟着 step 长出来、支持 hot / dim。

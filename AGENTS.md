@@ -88,7 +88,7 @@
 
 ## 老杨魔方 · 知识分享版（独立管线，`laoyang/knowledge-video/`）
 
-- **深度拆解版（当前主力）按 `STANDARD_DEEP_V3.md` 做**：`lines.json` 写 `"v": 3`，配音走 v3（表现力增强版、按气口组、每句 `emo`），画面默认降饱和底图和留人套件；画面按 `STANDARD_DEEP_V5.md`（逻辑图谱版，2026-11-12 起新期默认）：先给每段标逻辑关系，再从识别表选图（飞轮、拆解树、漏斗、单位图、金字塔、时间轴、阶梯、交集、分流、构成环、冰山、新旧对照、力场，及 v4 的 `map` / `stack`），知识卡还是逻辑图按每张卡的 `rel`（内容关系）选，没有固定模板，`"layout": "v5"` 时 build 硬查选得对不对、单不单调；v1 / v2 标准是背景规则。选题是转述智库 / 机构报告时，写稿按 `STANDARD_REPORT_DIGEST.md`（智库报告摘要体）。
+- **深度拆解版（当前主力）按 `STANDARD_DEEP_V3.md` 做**：`lines.json` 写 `"v": 3`，配音走 v3（表现力增强版、按气口组、每句 `emo`），画面默认降饱和底图和留人套件；画面按 `STANDARD_DEEP_V5.md`（逻辑图谱版，2026-11-12 起新期默认）：先给每段标逻辑关系，再从识别表选图（飞轮、拆解树、漏斗、单位图、金字塔、时间轴、阶梯、交集、分流、构成环、冰山、新旧对照、力场，及 v4 的 `map` / `stack`），知识卡还是逻辑图按每张卡的 `rel`（内容关系）选，没有固定模板，`"layout": "v5"` 时 build 硬查选得对不对、单不单调；新期默认 `STANDARD_DEEP_V6.md`（`"layout": "v6", "morph": true`：粒子接力转场 + 方块地图 / 流向图 / 气泡图 / 排名赛跑，确认文案时用 `core/storyboard.py` 附分镜联系表）；v1 / v2 标准是背景规则。选题是转述智库 / 机构报告时，写稿按 `STANDARD_REPORT_DIGEST.md`（智库报告摘要体）。
 - **新接手先读 `laoyang/knowledge-video/PLAYBOOK.md`**（一期怎么做、故障表、交接约定、哪些事必须老杨决定）和 `ENVIRONMENT.md`（机器、密钥、缺了会怎样）。
 - **文案先过留存六拍**：任何主题都按 `STANDARD_RETENTION_SCRIPT.md` 写稿（入口卡四个空 → 钩、证、约、推、破、落），`core/lint_retention.py` 在 build 时给提示。
 - 不用 Remotion：每期 `episodes/<期>/` 三件套（lines.json / scenes.html / scenes.js）套进固定外壳 `core/shell.html`，Python 构建、Chromium 逐帧渲染。规则见 `STANDARD.md`，效果见 `EFFECTS.md`，迭代制度见 `ITERATION.md`。

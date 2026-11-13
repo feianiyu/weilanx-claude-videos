@@ -23,11 +23,12 @@ REL = {
  "层级": ["pyramid", "stack", "map"], "阶段": ["timeline", "ladder", "line"], "演进": ["ladder", "timeline", "stack"],
  "交集": ["venn", "matrix"], "表象本质": ["iceberg", "myth"], "新旧": ["versus", "shift", "map"], "拉扯": ["forces", "balance"],
  "取舍": ["balance", "forces", "matrix", "split"], "分类": ["matrix", "tree", "venn"], "传导": ["chain", "map", "flow", "link"],
- "组织": ["map", "stack", "tree"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
+ "组织": ["map", "stack", "tree"],
+ "地区分布": ["tilemap", "bars"], "流向": ["flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
 }
 TEXTY = {"text", "punch", "question", "shift", "list", "quote"}
 LOGIC = {"map", "chain", "matrix", "balance", "waterfall", "cycle", "tree", "funnel", "pyramid", "venn", "timeline", "iceberg",
-         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line"}
+         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line", "tilemap", "flowmap", "bubble", "race"}
 
 def _prev_episode(ep_dir):
     if not ep_dir: return None
@@ -74,4 +75,4 @@ def lint(D, ep_dir=None):
 
 if __name__ == "__main__":
     ep = sys.argv[1]; D = json.load(open(os.path.join(ep, "lines.json")))
-    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") == "v5" else 0)
+    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6") else 0)

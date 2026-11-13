@@ -173,5 +173,6 @@ function renderCards(t){
   if(typeof CARD_RENDER!=='undefined'&&CARD_RENDER[c.type])CARD_RENDER[c.type](k,t);
   if(k.zoom){const T0=tau(c,+k.zoom.dataset.zs),z=+k.zoom.dataset.z,q=io(cl((t-T0)/1.3));k.zoom.style.transform=`scale(${(1+(z-1)*q).toFixed(4)})`;}
  });
+ if(typeof MORPH_FRAME!=='undefined')MORPH_FRAME(t,CARDS);   // 深度 v6 粒子接力转场（morph.js）
  const se=document.getElementById('src');if(se.dataset.v!==src){se.dataset.v=src;se.textContent=src;}se.style.opacity=srcA.toFixed(3);
 }
