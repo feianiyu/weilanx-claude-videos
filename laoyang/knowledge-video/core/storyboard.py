@@ -16,7 +16,7 @@ TYPE_CN = {"hook": "钩子大字", "punch": "金句", "question": "提问", "tex
  "chain": "因果链", "flow": "流程线", "link": "两端流动", "routes": "多线路", "split": "分账条", "myth": "误解", "focus": "焦点", "index": "目录", "close": "收束",
  "map": "结构图", "stack": "层级柱", "cycle": "飞轮", "tree": "拆解树", "funnel": "漏斗", "pyramid": "金字塔", "venn": "交集", "timeline": "时间轴",
  "iceberg": "冰山", "sankey": "分流", "donut": "构成环", "versus": "新旧对照", "ladder": "阶梯", "dots": "单位图", "forces": "力场",
- "tilemap": "中国方块地图", "flowmap": "流向图", "bubble": "气泡图", "race": "排名赛跑"}
+ "tilemap": "中国方块地图", "flowmap": "流向图", "bubble": "气泡图", "race": "排名赛跑", "diverge": "分叉图", "pnbar": "正负条形"}
 
 pre = set(os.listdir(".")); had_vo = os.path.isdir("vo"); had_assets = os.path.isdir("assets"); keep = os.path.exists("lines.json") and json.load(open("lines.json"))
 # 1 占位构建（不改动真配音：只有没有 vo/ 时才生成占位）

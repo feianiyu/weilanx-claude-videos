@@ -89,3 +89,32 @@ function _dataTick(k,t){const c=k.c,d=c.data||{},el=k.el;
 }
 const W_RACE=760;
 ['tilemap','flowmap','bubble','race'].forEach(ty=>CARD_RENDER[ty]=(k,t)=>{LOGIC_FRAME(k,t);_dataTick(k,t);});
+
+Object.assign(CARD_EXT,{
+ // ⑱ 分叉图（K 型 / 分化）{title,trunk:{t,s},up:{t,n,items:[…],s,is,hot},down:{…},ask:{t,s}}
+ //   一根主干往右走，在中间分成往上、往下两枝；items 是两枝各自的成员（is = 它们出现的 step）
+ diverge:d=>{const W=920,H=720,y0=380,x0=40,xs=330,xe=880,yu=70,yd=690,U=d.up||{},Dn=d.down||{};
+  let g=LU(`<path class="dr" d="M${x0},${y0} L${xs},${y0}" stroke="#F4F1EA" stroke-width="14" stroke-linecap="round" fill="none"/>`+LT(x0+(xs-x0)/2,y0+52,(d.trunk||{}).t||'',{size:32,w:300,cls:'lgt lgbt'}),{s:_S(d.trunk,0),fx:'draw'});
+  g+=LU(`<path class="dr" d="M${xs},${y0} L${xe-20},${yu+18}" stroke="${U.hot!=null?'#F5A623':'#F4F1EA'}" stroke-width="14" stroke-linecap="round" fill="none" marker-end="url(#${U.hot!=null?'lgAo':'lgAw'})"/>`+
+   LT(xe,yu-28,U.t||'',{size:44,w:420,a:'end',cls:'lgt lgbt'+(U.hot!=null?' lgor':'')})+(U.n?LT(xe,yu+30,U.n,{size:26,w:330,a:'end',cls:'lgn'}):''),{s:_S(U,1),fx:'draw',hot:U.hot});
+  g+=LU(`<path class="dr" d="M${xs},${y0} L${xe-20},${yd-18}" stroke="${Dn.hot!=null?'#E8553A':'rgba(244,241,234,.55)'}" stroke-width="14" stroke-linecap="round" fill="none" marker-end="url(#${Dn.hot!=null?'lgAr':'lgAw'})"/>`+
+   LT(xe,yd+46,Dn.t||'',{size:44,w:420,a:'end',cls:'lgt lgbt'+(Dn.hot!=null?' lgred':'')})+(Dn.n?LT(xe,yd-40,Dn.n,{size:26,w:330,a:'end',cls:'lgn'}):''),{s:_S(Dn,2),fx:'draw'});
+  (U.items||[]).forEach((t,i)=>{g+=LU(LT(xe,215+i*52,t,{size:32,w:330,a:'end',cls:'lgt'}),{s:U.is??_S(U,1),fx:'fade',delay:i*0.15});});
+  (Dn.items||[]).forEach((t,i)=>{g+=LU(LT(xe,490+i*52,t,{size:32,w:330,a:'end',cls:'lgt'}),{s:Dn.is??_S(Dn,2),fx:'fade',delay:i*0.15});});
+  if(d.ask)g+=LU(`<rect x="${x0}" y="140" width="290" height="70" rx="10" fill="#F5A623"/>`+LT(x0+145,175,d.ask.t,{size:34,w:270,cls:'lgt lgdark'}),{s:d.ask.s,fx:'pop'});
+  return head(d)+_lgSvg(W,H,g);},
+
+ // ⑲ 正负条形图（有涨有跌）{title,unit,items:[{t,v,s,hot}],total:{t,v,s}}  v 带正负；0 轴的位置按数据自动放
+ pnbar:d=>{const W=920,I=d.items||[],T=d.total,all=[...I,...(T?[T]:[])],mn=Math.min(0,...all.map(x=>x.v)),mx=Math.max(0,...all.map(x=>x.v));
+  const L0=300,R0=W-190,rh=104,H=all.length*rh+(T?40:10),X=v=>L0+(v-mn)/(mx-mn||1)*(R0-L0),ax=X(0);
+  let g='';const row=(it,i,y,isT)=>{const x1=X(it.v),neg=it.v<0,hot=it.hot!=null||isT,col=hot?(neg?'#E8553A':'#F5A623'):(neg?'rgba(244,241,234,.38)':'rgba(244,241,234,.75)');
+   const lab=(it.v>0?'+':'')+it.v+(d.unit||'');
+   return LU(`<rect x="${Math.min(ax,x1).toFixed(1)}" y="${y-30}" width="${Math.max(4,Math.abs(x1-ax)).toFixed(1)}" height="60" rx="4" fill="${col}"/>`,{s:_S(it,i+1),fx:'grow',o:neg?'right center':'left center'})+
+    LU(LT(neg?ax+16:Math.max(ax,x1)+14,y,lab,{size:36,w:200,a:'start',cls:'lgt lgnum'+(hot?'':' lgnn')+(neg&&hot?' lgred':'')}),{s:_S(it,i+1),fx:'fade',delay:0.4})+
+    LU(LT(neg&&x1<L0+120?L0-24:L0-24,y,it.t,{size:32,w:270,a:'end',cls:'lgt lgbt'+(isT?' lgor':'')}),{s:_S(it,i+1),fx:'fade'});};
+  I.forEach((it,i)=>{g+=row(it,i,40+i*rh,false);});
+  if(T){const y=40+I.length*rh+30;g+=LU(`<line x1="20" y1="${y-62}" x2="${W-20}" y2="${y-62}" stroke="rgba(244,241,234,.3)" stroke-width="2" stroke-dasharray="8 8"/>`,{s:_S(T,I.length+1),fx:'fade'})+row(T,I.length,y,true);}
+  g=`<line x1="${ax}" y1="0" x2="${ax}" y2="${H}" stroke="rgba(244,241,234,.6)" stroke-width="3"/>`+g;
+  return head(d)+_lgSvg(W,H,g)+(d.src?'':'');},
+});
+['diverge','pnbar'].forEach(ty=>CARD_RENDER[ty]=LOGIC_FRAME);

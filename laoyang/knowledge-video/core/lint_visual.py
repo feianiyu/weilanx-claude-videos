@@ -24,11 +24,11 @@ REL = {
  "交集": ["venn", "matrix"], "表象本质": ["iceberg", "myth"], "新旧": ["versus", "shift", "map"], "拉扯": ["forces", "balance"],
  "取舍": ["balance", "forces", "matrix", "split"], "分类": ["matrix", "tree", "venn"], "传导": ["chain", "map", "flow", "link"],
  "组织": ["map", "stack", "tree"],
- "地区分布": ["tilemap", "bars"], "流向": ["flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
+ "分化": ["diverge", "pnbar", "versus", "bars"], "涨跌对比": ["pnbar", "bars", "duo"], "地区分布": ["tilemap", "bars"], "流向": ["flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
 }
 TEXTY = {"text", "punch", "question", "shift", "list", "quote"}
 LOGIC = {"map", "chain", "matrix", "balance", "waterfall", "cycle", "tree", "funnel", "pyramid", "venn", "timeline", "iceberg",
-         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line", "tilemap", "flowmap", "bubble", "race"}
+         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line", "tilemap", "flowmap", "bubble", "race", "diverge", "pnbar"}
 
 def _prev_episode(ep_dir):
     if not ep_dir: return None

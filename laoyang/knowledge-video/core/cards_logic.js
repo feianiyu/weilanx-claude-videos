@@ -185,7 +185,7 @@ function LOGIC_FRAME(k,t){if(!k._lg)k._lg=_lgInit(k);const c=k.c,M=k._lg;
   let op=1;
   if(u.fx==='fade'){op=p;u.el.style.transform=`translate(0px,${(16*(1-p)).toFixed(1)}px)`;}
   else if(u.fx==='pop'){const z=cl((t-T0)/0.28);op=z;u.el.style.transform=`scale(${(1+0.25*(1-eo(z))).toFixed(4)})`;}
-  else if(u.fx==='grow'){op=t>=T0?Math.min(1,p*2):0;const sc=(u.el.dataset.o||'').includes('center center')?`scale(${q.toFixed(4)})`:`scaleY(${q.toFixed(4)})`;u.el.style.transform=sc;}
+  else if(u.fx==='grow'){op=t>=T0?Math.min(1,p*2):0;const O=u.el.dataset.o||'',sc=O.includes('center center')?`scale(${q.toFixed(4)})`:/^(left|right)/.test(O)?`scaleX(${q.toFixed(4)})`:`scaleY(${q.toFixed(4)})`;u.el.style.transform=sc;}
   else if(u.fx==='draw'){op=t>=T0?1:0;u.dr.forEach(r=>{if(r.C)r.p.style.strokeDasharray=`${(r.L*q).toFixed(1)} ${r.C}`;else r.p.style.strokeDashoffset=(r.L*(1-q)).toFixed(1);});
    [...u.el.children].forEach(ch=>{if(!ch.classList.contains('dr'))ch.style.opacity=_lgE(t,T0+0.35,0.35).toFixed(3);});}
   u.el.classList.toggle('lhot',hot>0.5);
