@@ -2,6 +2,12 @@
 
 规则：外框结构变动 +1.0；同一版式内的尺寸 / 配置调整、新效果 / 新规则 / 新工具 +0.1；修 bug 不升号，只记一行。有意改了画面（`regress.py --update`）必须在这里写明。
 
+## 深度 v5 · 2026-11-12 · 逻辑图谱版
+- 来源（用户反馈）：每期表现方式单一、都一样；要按内容用更丰富的逻辑结构图表现数据和逻辑关系。统计最近 8 期：文字卡占 60%–83% 的有 5 期，逻辑图只用了 0–2 种。
+- 新增 `core/cards_logic.js`：13 种逻辑图卡（cycle 飞轮、tree 拆解树、funnel 漏斗、pyramid 金字塔、venn 交集、timeline 时间轴、iceberg 冰山、sankey 分流、donut 构成环、versus 新旧对照、ladder 阶梯、dots 单位图、forces 力场），全部跟着 step 长出来、支持 hot / dim。
+- 新增 `core/lint_visual.py` 画面多样性体检（`layout: v5` 时硬拦）；`STANDARD_DEEP_V5.md` 写「逻辑关系 → 图」识别表。
+- 演示期 `episodes/_demo_v5_逻辑图谱/`；回归 46/46 不变（旧期画面逐像素不变）。
+
 ## 2026-11-12 交接手册
 - 新增 `PLAYBOOK.md`（一期流程、本地构建检查、故障表、git 交接约定、必须老杨决定的事、空白会话验收）和 `ENVIRONMENT.md`（环境、密钥清单）。人工发布：自 11-12 起发布台各平台暂停。
 

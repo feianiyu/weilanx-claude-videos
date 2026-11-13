@@ -238,6 +238,31 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 .pc-lw{margin:40px auto 0;width:420px}.pc-ln{height:10px;background:var(--o);transform-origin:center}
 .pc-s{font-size:32px;color:var(--g);margin-top:30px;font-weight:700}
 #sub em.fw{font-style:normal;color:var(--o)}
+/* ===== 深度 v5 逻辑图谱卡（cards_logic.js，STANDARD_DEEP_V5.md）===== */
+.lgx{margin-top:22px;width:920px}.lgx svg{display:block;overflow:visible}
+.lgt{font-family:"NSC";font-weight:700;fill:#F4F1EA;paint-order:stroke;stroke:rgba(5,5,5,.55);stroke-width:6px}
+.lgbt{font-weight:900}.lgn{font-family:"NSC";font-weight:700;fill:#B9B3A8}
+.lgem{fill:#F5A623}.lgor{fill:#F5A623}.lgred{fill:#FF8A70}.lgdark{fill:#111;stroke:none;font-weight:900}
+.lgnum{fill:#F5A623;font-weight:900;stroke:none;font-variant-numeric:tabular-nums}
+.lgdate{fill:#F5A623;font-weight:900}.lgcol{font-weight:900;stroke:none}.lgold{fill:#9A958C}
+.lgbox{fill:rgba(10,10,10,.74);stroke:rgba(244,241,234,.62);stroke-width:2.5}
+.lgbox.k-hot{fill:#F5A623;stroke:#F5A623}.lgbox.k-hot~.lgt,.lgbox.k-hot~text{fill:#111;stroke:none}
+.lgleaf{fill:rgba(10,10,10,.6);stroke:rgba(244,241,234,.35);stroke-width:2}
+.lgfun{fill:rgba(244,241,234,.14);stroke:rgba(244,241,234,.55);stroke-width:2.5}
+.lgpyr{fill:rgba(244,241,234,.12);stroke:rgba(244,241,234,.6);stroke-width:2.5}
+.lgvc{fill:rgba(244,241,234,.07);stroke:rgba(244,241,234,.7);stroke-width:3}
+.lgtd{fill:#0A0A0A;stroke:#F5A623;stroke-width:5}
+.lgice{fill:rgba(225,240,250,.85);stroke:none}.lgdeep{fill:rgba(170,205,230,.22);stroke:rgba(180,220,245,.6);stroke-width:3}
+.lgsrc{fill:#F5A623}.lgrib{fill:rgba(244,241,234,.16);stroke:rgba(244,241,234,.38);stroke-width:2}.lgdst{fill:rgba(244,241,234,.7)}.lgsd{fill:#F5A623}
+.lgnew{fill:rgba(245,166,35,.12);stroke:#F5A623;stroke-width:2.5}
+.lgstep{fill:rgba(244,241,234,.13);stroke:rgba(244,241,234,.55);stroke-width:2.5}
+.lg-note{margin-top:26px;font-size:36px;font-weight:900;text-align:center;line-height:1.4}
+/* 讲到哪亮哪：data-hot 到时整组变橙 */
+.lhot .lgbox,.lhot .lgfun,.lhot .lgpyr,.lhot .lgstep,.lhot .lgleaf{fill:#F5A623;stroke:#F5A623}
+.lhot .lgbox~.lgt,.lhot .lgfun~.lgt,.lhot .lgpyr~.lgt,.lhot .lgstep~.lgt,.lhot .lgleaf~.lgt{fill:#111;stroke:none}
+.lhot .lgbox~.lgn,.lhot .lgpyr~.lgn{fill:#3a2a10}.lhot .lgstep~.lgnum{fill:#111}
+.lhot .lgrib{fill:rgba(245,166,35,.42);stroke:#F5A623}.lhot .lgdst{fill:#F5A623}.lhot>.lgt{fill:#F5A623}
+.lhot .lgarc{stroke:#F5A623}
 /*@EP_CSS*/
 </style></head>
 <body>

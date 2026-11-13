@@ -1,6 +1,6 @@
 # 做一期深度视频的操作手册（给接手的 AI）
 
-> 读法：先读本页，再按需读 `STANDARD_DEEP_V3.md` / `STANDARD_DEEP_V4.md`（画面和配音）、`STANDARD_RETENTION_SCRIPT.md`（文案）、`STANDARD_REPORT_DIGEST.md`（转述智库报告时）。
+> 读法：先读本页，再按需读 `STANDARD_DEEP_V3.md`（配音）/ `STANDARD_DEEP_V5.md`（**画面：先按逻辑关系选图**，含 v4 结构图）、`STANDARD_RETENTION_SCRIPT.md`（文案）、`STANDARD_REPORT_DIGEST.md`（转述智库报告时）。
 > 环境、密钥、机器见 `ENVIRONMENT.md`。出片机细节见 `../mac-render/README.md`。
 > 本页每一条规则都来自真实踩过的坑；「过关标准」都能用命令检查。2026-11-12 整理。
 
@@ -21,6 +21,7 @@
    - 文案要有：入口卡、全文表（拍 / 句 / 口播）、开环表、相对原稿删了什么、发布信息、风险。
 2. **老杨说“确认文案”后才开工。** 期号 = 已有最大号 + 1，目录 `episodes/<日期>_<短题>_v4/`。
 3. **复制上一期的 `gen_lines.py` 改写**（最新参考：`2026-11-12_建筑业新文艺复兴_v4`、`2026-11-12_双十一消费趋势_v4`）。它生成 `lines.json`：句子表 `(段, 台词, emo)` + 卡片表 + 元信息。
+3½. **先给每段标逻辑关系，再选图**（`STANDARD_DEEP_V5.md` §2 识别表）：`gen_lines.py` 每张卡上方写 `# 关系：xxx`；`lines.json` 写 `"layout": "v5"`。文字卡 ≤45%、逻辑图 ≥4 种，`core/lint_visual.py` 在 build 时硬检查。新图的样子看 `episodes/_demo_v5_逻辑图谱/`。
 4. **找一张新底图**（每期必须新图，不重复）：Pexels 原图链接（不带 `?w=`），竖屏裁切后高度要 ≥1962px。横图也行（居中裁切），但原图高度要够。
 5. **本地构建检查**（见第 2 节）。
 6. **清理并推两处**（见第 4 节）。
@@ -49,6 +50,7 @@ rm -rf $E/build $E/vo $E/assets && (cd $E && python3 gen_lines.py)   # 清理，
 
 | 症状 | 原因 | 改法 |
 |---|---|---|
+| 画面多样性体检未通过 | 文字卡太多 / 逻辑图种类太少 / 同类卡连排 | 按 V5 §2 把讲关系的段落换成对应的图；punch、question 各 ≤3 张 |
 | `anchor not found: vNN\|词\|s` | 卡片的 step 词不在那一句台词里。台词改了、卡片没同步最常见 | step 的词必须和台词逐字一致（去标点后）。**改任何台词，都同步搜一遍这句的 step** |
 | `Cannot read properties of undefined (reading 'map')` | `bignum` 卡缺 `parts` | `bignum` 必须有 `parts`，哪怕只有一项 |
 | 数字单位折行 | `unit` 太长（如“万亿元”） | 缩短单位，如“万亿” |
