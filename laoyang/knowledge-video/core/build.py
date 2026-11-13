@@ -451,9 +451,9 @@ if DEEP:
             shutil.copy(b["file"], "build/" + dst)   # 原样复制，不再压缩
         BGL.append({"src": dst, "t0": 0.0 if i == 0 else cstart[b["from"]], "dim": b.get("dim", 1), **({"pos": b["pos"]} if b.get("pos") else {})})
     data["bgs"] = BGL; dj = json.dumps(data, ensure_ascii=False)
-    if int(D.get("v", 1)) >= 3:   # 画面多样性（STANDARD_DEEP_V5 §5）：layout v5 硬拦，其余只提示
+    if int(D.get("v", 1)) >= 3:   # 画面体检（STANDARD_DEEP_V5 §5）：按内容选卡；layout v5 硬拦，其余只提示
         sys.path.insert(0, CORE); import lint_visual
-        _ve, _vw = lint_visual.lint(D)
+        _ve, _vw = lint_visual.lint(D, EP)
         for _x in _vw: print("画面体检：", _x)
         if _ve and D.get("layout") == "v5" and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
         for _x in _ve: print("画面提示：", _x)
