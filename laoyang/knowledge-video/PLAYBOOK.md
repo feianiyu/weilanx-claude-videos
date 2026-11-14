@@ -1,6 +1,6 @@
 # 做一期深度视频的操作手册（给接手的 AI）
 
-> 读法：先读本页，再按需读 `STANDARD_DEEP_V3.md`（配音）/ `STANDARD_DEEP_V5.md`（**画面：按内容关系选知识卡或逻辑图**）/ `STANDARD_DEEP_V6.md`（分镜联系表、粒子接力转场、数据图）、`STANDARD_RETENTION_SCRIPT.md`（文案）、`STANDARD_REPORT_DIGEST.md`（转述智库报告时）。
+> 读法：先读本页，再按需读 `STANDARD_DEEP_V3.md`（配音）/ `STANDARD_DEEP_V5.md`（**画面：按内容关系选知识卡或逻辑图**）/ `STANDARD_DEEP_V6.md`（分镜联系表、粒子接力转场、数据图） / `STANDARD_DEEP_V7.md`（**版式层 + 标注层：同一张图换摆法、加标注，2026-11-14 起新期默认**）、`STANDARD_RETENTION_SCRIPT.md`（文案）、`STANDARD_REPORT_DIGEST.md`（转述智库报告时）。
 > 环境、密钥、机器见 `ENVIRONMENT.md`。出片机细节见 `../mac-render/README.md`。
 > 本页每一条规则都来自真实踩过的坑；「过关标准」都能用命令检查。2026-11-12 整理。
 
@@ -22,7 +22,7 @@
    - **同时发分镜联系表**（v6）：先在本地建期目录、写好 `gen_lines.py`（含卡片和 `rel`），跑 `python3 core/storyboard.py episodes/<期>`，把 `build/分镜联系表.jpg` 和文案一起发给老杨。此时只在本地，不推仓库、不推渲染分支。老杨确认的是「文案 + 画面顺序」。
 2. **老杨说“确认文案”后才开工。** 期号 = 已有最大号 + 1，目录 `episodes/<日期>_<短题>_v4/`。
 3. **复制上一期的 `gen_lines.py` 改写**（最新参考：`2026-11-12_建筑业新文艺复兴_v4`、`2026-11-12_双十一消费趋势_v4`）。它生成 `lines.json`：句子表 `(段, 台词, emo)` + 卡片表 + 元信息。
-3½. **按内容选知识卡还是逻辑图，没有固定模板**（`STANDARD_DEEP_V5.md` §1–2）：每张卡写 `rel`（这一段讲的是什么：一个数 / 故事 / 循环 / 构成……），从候选里挑和前后不一样的；`lines.json` 写 `"layout": "v6", "morph": true`（v6：粒子接力转场；有地区、流向、排名、两维数据时用 V6 §3 的数据图）。`core/lint_visual.py` 在 build 时查 rel 和卡对不对、画面单不单调、和上一期撞不撞脸。新图的样子看 `episodes/_demo_v5_逻辑图谱/`。
+3½. **按内容选知识卡还是逻辑图，没有固定模板**（`STANDARD_DEEP_V5.md` §1–2）：每张卡写 `rel`（这一段讲的是什么：一个数 / 故事 / 循环 / 构成……），从候选里挑和前后不一样的；`lines.json` 写 `"layout": "v7", "morph": true`（v7 在 v6 上加版式和标注，见 `STANDARD_DEEP_V7.md`；v6：粒子接力转场；有地区、流向、排名、两维数据时用 V6 §3 的数据图）。`core/lint_visual.py` 在 build 时查 rel 和卡对不对、画面单不单调、和上一期撞不撞脸。新图的样子看 `episodes/_demo_v5_逻辑图谱/`。
 4. **找一张新底图**（每期必须新图，不重复）：Pexels 原图链接（不带 `?w=`），竖屏裁切后高度要 ≥1962px。横图也行（居中裁切），但原图高度要够。
 5. **本地构建检查**（见第 2 节）。
 6. **清理并推两处**（见第 4 节）。

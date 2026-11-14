@@ -125,10 +125,13 @@ const CARD={
 
 // ---------- 实例化 + 逐帧动画 ----------
 if(typeof CARD_EXT!=='undefined')Object.assign(CARD,CARD_EXT);   // 深度 v4 结构图卡（cards_map.js）
+let _prevEl=null;
 const CARDS=(window.DATA.cards||[]).map((c,ci)=>{
  const el=document.createElement('div');el.className='card c-'+c.type;el.dataset.id=c.id;
  if(!CARD[c.type]){console.error('unknown card type',c.type);return null;}
- el.innerHTML=CARD[c.type](c.data||{});document.getElementById('cards').appendChild(el);
+ const _ly=typeof LY_HAS!=='undefined'&&LY_HAS(c.data);   // 深度 v7 版式层 / 标注层（layers.js），不写就和 v6 一样
+ el.innerHTML=_ly?LY_WRAP(c,CARD,_prevEl):CARD[c.type](c.data||{});if(_ly&&c.data.lay)el.classList.add('lay-'+c.data.lay);
+ document.getElementById('cards').appendChild(el);_prevEl=el;
  const units=[...el.querySelectorAll('[data-s]')].map(u=>({el:u,s:+u.dataset.s,fx:u.dataset.fx||'',dir:u.dataset.dir||'x',delay:+(u.dataset.delay||0),
    cnt:u.querySelector('.cnt'),grow:[...u.querySelectorAll(':scope > [data-fx="grow"], :scope > * > [data-fx="grow"]')].filter(g=>!g.dataset.s)}));
  const zoom=el.querySelector('[data-zs]');
@@ -152,7 +155,7 @@ function stageLayout(){if(_STAGED||!window.DATA.stage)return;_STAGED=true;docume
 function tau(c,s){if(s<=0)return c.t0;const st=c.st||[];return st[s-1]!=null?st[s-1]:c.t0+0.5*s;}
 function fmtNum(v,dec){return dec>0?v.toFixed(dec):Math.round(v).toLocaleString('en-US').replace(/,/g,'');}
 function renderCards(t){
- stageLayout();let src='',srcA=0;
+ if(typeof LY_PRE!=='undefined')LY_PRE(CARDS);stageLayout();if(typeof LY_POST!=='undefined')LY_POST(CARDS);let src='',srcA=0;
  CARDS.forEach(k=>{const c=k.c;
   if(t<c.t0-0.01||t>c.t1+0.01){k.el.style.visibility='hidden';k.el.style.opacity=0;return;}
   const pin=c.first?1:eo(cl((t-c.t0)/0.4)),pout=c.last?1:1-cl((t-(c.t1-0.2))/0.2),a=Math.min(pin,pout);
@@ -170,7 +173,8 @@ function renderCards(t){
    else{u.el.style.opacity=p.toFixed(3);u.el.style.transform=u.s===0&&!u.cnt?'':`translateY(${(14*(1-p)).toFixed(1)}px)`;}
    if(u.cnt){const to=+u.cnt.dataset.to,dec=+u.cnt.dataset.dec,q=eo(cl((t-T0)/0.6));u.cnt.textContent=fmtNum(to*q,dec);}
    u.grow.forEach(g=>{g.style.transform=g.dataset.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;});});
-  if(typeof CARD_RENDER!=='undefined'&&CARD_RENDER[c.type])CARD_RENDER[c.type](k,t);
+  if(typeof CARD_RENDER!=='undefined'&&CARD_RENDER[c.type])CARD_RENDER[c.type](k._pa||k,t);
+  if(typeof LY_FRAME!=='undefined'&&(k._pb||k._ann||k._cam))LY_FRAME(k,t);
   if(k.zoom){const T0=tau(c,+k.zoom.dataset.zs),z=+k.zoom.dataset.z,q=io(cl((t-T0)/1.3));k.zoom.style.transform=`scale(${(1+(z-1)*q).toFixed(4)})`;}
  });
  if(typeof MORPH_FRAME!=='undefined')MORPH_FRAME(t,CARDS);   // 深度 v6 粒子接力转场（morph.js）
