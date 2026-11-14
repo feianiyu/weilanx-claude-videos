@@ -8,6 +8,8 @@ on:
     branches: [main]
     paths: ['laoyang/knowledge-video/**']
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   regress:
     runs-on: ubuntu-24.04
@@ -31,12 +33,13 @@ jobs:
         with:
           name: regress-diff
           path: laoyang/knowledge-video/**/build/diff_*.png
-      - name: 临时：在 CI 环境生成 v7 演示期基准图
-        if: always()
-        run: python laoyang/knowledge-video/core/regress.py --update || true
-      - name: 临时：上传 v7 基准图
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: golden-v7
-          path: laoyang/knowledge-video/regress/golden/_demo_v7_版式与标注/
+      - name: 临时：把 v7 基准图提交回本分支
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch --depth=1 origin ${{ github.head_ref }}
+          git checkout -B tmp-golden origin/${{ github.head_ref }}
+          python laoyang/knowledge-video/core/regress.py --update || true
+          git add laoyang/knowledge-video/regress/golden/_demo_v7_版式与标注/
+          git commit -m "v7 演示期基准图：在 CI 同一环境（playwright 1.56）重新生成" && git push origin HEAD:${{ github.head_ref }} || true
