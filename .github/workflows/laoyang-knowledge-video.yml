@@ -31,3 +31,12 @@ jobs:
         with:
           name: regress-diff
           path: laoyang/knowledge-video/**/build/diff_*.png
+      - name: 临时：在 CI 环境生成 v7 演示期基准图
+        if: always()
+        run: python laoyang/knowledge-video/core/regress.py --update || true
+      - name: 临时：上传 v7 基准图
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-v7
+          path: laoyang/knowledge-video/regress/golden/_demo_v7_版式与标注/
