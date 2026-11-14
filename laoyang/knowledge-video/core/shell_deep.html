@@ -271,6 +271,36 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 .lhot .lgfp{stroke:#F5A623}
 .lgnn{fill:#E6E1D7}
 /*@EP_CSS*/
+/* 深度 v7 版式层 + 标注层（layers.js）：只在卡片 data 写了 lay / ann / take / pair / table / notes / carry / focus 时出现 */
+.ly-tk{margin-top:34px;display:flex;flex-direction:column;gap:8px;border-left:8px solid var(--o);background:rgba(245,166,35,.10);padding:20px 26px;border-radius:0 12px 12px 0}
+.ly-tkl{font-size:22px;letter-spacing:4px;color:var(--o);font-weight:900}.ly-tk b{font-size:40px;line-height:1.35;font-weight:900;color:var(--w)}
+.stage .ly-tk b{font-size:44px}
+.ly-pair.v{display:flex;flex-direction:column;align-items:center}.ly-pair.v .ly-pa,.ly-pair.v .ly-pb{width:920px}
+.ly-pair.h{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between}.ly-pair.h .ly-pa,.ly-pair.h .ly-pb{width:920px}
+.ly-vs{display:flex;align-items:center;gap:18px;width:100%;margin:14px 0}.ly-vs i{flex:1;height:2px;background:rgba(244,241,234,.28)}
+.ly-vs span{font-size:30px;font-weight:900;color:#111;background:var(--o);padding:6px 22px;border-radius:30px;letter-spacing:2px}
+.ly-pair.h .ly-vs{flex-direction:column;width:auto;align-self:stretch;margin:0 6px}.ly-pair.h .ly-vs i{width:2px;height:auto;flex:1}
+.ly-tb{margin-top:30px;border-top:3px solid rgba(244,241,234,.5)}
+.ly-tr{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:16px;padding:14px 6px;border-bottom:1px solid rgba(244,241,234,.18);font-size:32px;font-weight:700;color:var(--w)}
+.ly-tr span:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}.ly-th{font-size:24px;color:var(--g);letter-spacing:2px;font-weight:900}.ly-tr.hot{color:var(--o)}
+.lay-note .big{text-align:center;font-size:190px}.stage .lay-note .big{font-size:260px}.lay-note .big-l{text-align:center}.lay-note .ey{text-align:center}
+.ly-notes{display:grid;grid-template-columns:1fr 1fr;gap:22px 30px;margin-top:40px}
+.ly-note{font-size:34px;font-weight:700;line-height:1.35;border-top:4px solid rgba(244,241,234,.45);padding-top:14px;color:var(--w)}.ly-note.hot{border-color:var(--o)}
+.ly-cr{margin-bottom:22px;padding-bottom:14px;border-bottom:2px dashed rgba(244,241,234,.25)}.ly-crl{font-size:22px;letter-spacing:3px;color:var(--g);font-weight:900;margin-bottom:6px}
+.ly-crs{zoom:.36;opacity:.5;pointer-events:none}
+.ly-crs .u,.ly-crs .lu{opacity:1!important;transform:none!important;clip-path:none!important}.ly-crs .ann{display:none}
+.ly-cam{position:relative;will-change:transform}.card.ly-clip{overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 70px,#000 calc(100% - 70px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 70px,#000 calc(100% - 70px),transparent 100%)}
+svg.ann{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+svg.ann .an-dr{fill:none;stroke-width:6;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
+svg.ann .an-dash{stroke-dasharray:18 12;stroke-dashoffset:0;stroke-width:4}
+svg.ann .an-tx{font-weight:900;font-family:inherit}
+.sm-g{display:grid;grid-template-columns:repeat(var(--mc),minmax(0,1fr));gap:24px;margin-top:30px;width:920px}
+.sm{border:2px solid rgba(244,241,234,.18);border-radius:14px;padding:20px 22px;background:rgba(10,10,10,.55)}.sm.hot{border-color:var(--o)}
+.sm-t{font-size:30px;font-weight:700;color:#D8D3C9;line-height:1.3}.sm-v{font-size:52px;font-weight:900;margin:6px 0 12px;white-space:nowrap;font-variant-numeric:tabular-nums}.sm.hot .sm-v{color:var(--o)}
+.sm-n{font-size:24px;color:var(--g);margin-top:10px}
+.sm-bar{height:16px;background:rgba(244,241,234,.15);border-radius:8px;overflow:hidden}.sm-fill{height:100%;background:var(--w);transform-origin:left center}.sm.hot .sm-fill{background:var(--o)}
+.sm-ring{width:150px;height:150px;display:block}.sm-rb{fill:none;stroke:rgba(244,241,234,.15);stroke-width:14}.sm-rf{fill:none;stroke:var(--w);stroke-width:14;stroke-linecap:round}.sm.hot .sm-rf{stroke:var(--o)}
+.sm-sp{width:100%;height:90px;display:block}.sm-sp polyline{fill:none;stroke:var(--w);stroke-width:5;stroke-linejoin:round}.sm-sp circle{fill:var(--w)}.sm.hot .sm-sp polyline{stroke:var(--o)}.sm.hot .sm-sp circle{fill:var(--o)}
 </style></head>
 <body>
 <div id="wrap"><div id="v">

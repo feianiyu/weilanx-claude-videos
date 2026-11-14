@@ -113,7 +113,7 @@ if DEEP:
                  "rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${Math.max(0,a)})`;};\n"
                  + "\n".join(open(f"{CORE}/{f}", encoding="utf-8").read() for f in ("fx.js", "fx_particles.js", "fx_text.js", "fx_mist.js"))
                  + "\n$('mist').style.display='block';$('fxo').style.display='block';\n")
-    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
+    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/layers.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
            .replace("/*@EP_CSS*/", ep_css).replace("__CUBE64__", svg_cube(64)).replace("__CUBE58__", svg_cube(58))
            .replace("__T1__", D["series"]["title"]).replace("__SERIES__", FR.get("seriesLine", D["series"]["title"]))
            .replace("__COLUMN__", FR.get("column", "LAOYANG CUBE")).replace("__EPNO__", FR.get("ep", "")))
@@ -457,7 +457,7 @@ if DEEP:
         sys.path.insert(0, CORE); import lint_visual
         _ve, _vw = lint_visual.lint(D, EP)
         for _x in _vw: print("画面体检：", _x)
-        if _ve and D.get("layout") in ("v5", "v6") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
+        if _ve and D.get("layout") in ("v5", "v6", "v7") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
         for _x in _ve: print("画面提示：", _x)
     if RETAIN:   # §2.7 体检：第 1 张是钩子大字卡；前 20% 画面每 ≤maxGap 秒变一次；后段有金句卡
         R_err = []

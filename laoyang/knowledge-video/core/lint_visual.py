@@ -14,9 +14,9 @@ REL = {
  # —— 知识卡擅长的：事实、证据、故事、观点 ——
  "钩子": ["hook"], "金句": ["punch"], "提问": ["question"], "评论区": ["question", "map", "cycle", "tree", "pyramid"],
  "出处": ["text", "quote", "focus"], "原文": ["quote", "text"], "故事": ["text", "focus", "timeline", "map"],
- "一个数": ["bignum", "dots", "duo"], "两个数": ["duo", "bars", "shift", "balance"], "口径变化": ["shift", "versus", "duo"],
- "几个发现": ["list", "index", "check", "tree"], "清单": ["list", "check"], "决策": ["check", "close", "list"],
- "排名": ["bars", "chart"], "趋势": ["line", "chart", "bars"], "误解": ["myth", "versus", "iceberg"],
+ "一个数": ["bignum", "dots", "duo"], "两个数": ["duo", "bars", "shift", "balance", "multi"], "口径变化": ["shift", "versus", "duo"],
+ "几个发现": ["list", "index", "check", "tree", "multi"], "清单": ["list", "check"], "决策": ["check", "close", "list"],
+ "排名": ["bars", "chart", "multi"], "趋势": ["line", "chart", "bars", "multi"], "误解": ["myth", "versus", "iceberg"],
  # —— 逻辑图擅长的：关系、机制、结构 ——
  "比例": ["dots", "donut", "bignum"], "构成": ["donut", "bignum", "sankey", "chart"], "分流": ["sankey", "split", "flow"],
  "筛选": ["funnel", "dots"], "账目变化": ["waterfall", "sankey"], "循环": ["cycle"], "拆解": ["tree", "map", "list"],
@@ -24,11 +24,11 @@ REL = {
  "交集": ["venn", "matrix"], "表象本质": ["iceberg", "myth"], "新旧": ["versus", "shift", "map"], "拉扯": ["forces", "balance"],
  "取舍": ["balance", "forces", "matrix", "split"], "分类": ["matrix", "tree", "venn"], "传导": ["chain", "map", "flow", "link"],
  "组织": ["map", "stack", "tree"],
- "分化": ["diverge", "pnbar", "versus", "bars"], "涨跌对比": ["pnbar", "bars", "duo"], "地区分布": ["tilemap", "bars"], "流向": ["flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
+ "分化": ["diverge", "pnbar", "versus", "bars"], "涨跌对比": ["pnbar", "bars", "duo", "multi"], "几项并列": ["multi", "bars", "list"], "地区分布": ["tilemap", "bars"], "流向": ["flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
 }
 TEXTY = {"text", "punch", "question", "shift", "list", "quote"}
 LOGIC = {"map", "chain", "matrix", "balance", "waterfall", "cycle", "tree", "funnel", "pyramid", "venn", "timeline", "iceberg",
-         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line", "tilemap", "flowmap", "bubble", "race", "diverge", "pnbar"}
+         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line", "tilemap", "flowmap", "bubble", "race", "diverge", "pnbar", "multi"}
 
 def _prev_episode(ep_dir):
     if not ep_dir: return None
@@ -64,6 +64,28 @@ def lint(D, ep_dir=None):
     if kinds < 5: E.append(f"全期只有 {kinds} 种画面，至少 5 种。")
     tx = sum(t in TEXTY for t in types) / n; lg = sorted({t for t in types if t in LOGIC})
     W.append(f"{n} 张卡、{kinds} 种画面；文字卡 {tx:.0%}，逻辑图 {len(lg)} 种（{'、'.join(lg) or '无'}）——比例由内容决定，这里只报告。")
+    # 2½ 版式层 + 标注层（深度 v7，STANDARD_DEEP_V7.md）：拼写错了拦；用得少、连着同一种只提示
+    LAYS = {"full", "take", "pair", "table", "multi", "focus", "note", "carry"}; ANNS = {"circle", "band", "tag", "callout", "delta", "bracket", "base"}
+    def lay_of(c):
+        d = c.get("data", {}); ls = [x for x, key in (("pair", "pair"), ("table", "table"), ("focus", "focus"), ("carry", "carry"), ("take", "take")) if d.get(key)]
+        if c["type"] == "multi": ls.append("multi")
+        if d.get("lay"): ls.append(d["lay"])
+        return ls or ["full"]
+    for c in C:
+        d = c.get("data", {})
+        if d.get("lay") and d["lay"] not in LAYS: E.append(f"{c['id']} 的版式「{d['lay']}」不认识（可用：{'、'.join(sorted(LAYS))}）。")
+        for a in d.get("ann", []):
+            if a.get("k") not in ANNS: E.append(f"{c['id']} 的标注「{a.get('k')}」不认识（可用：{'、'.join(sorted(ANNS))}）。")
+            if not a.get("on"): E.append(f"{c['id']} 有一条标注没写 on（标在哪几个字上）。")
+            if a.get("k") in ("delta", "bracket") and not a.get("to"): E.append(f"{c['id']} 的 {a.get('k')} 标注要写 to（到哪几个字）。")
+        if d.get("lay") == "note" and c["type"] != "bignum": W.append(f"{c['id']} 用了 note 版式，它是给 bignum 配的。")
+    if D.get("layout") == "v7":
+        lays = [lay_of(c) for c in C if c["type"] not in ("hook", "punch", "question")]
+        used = {x for ls in lays for x in ls}; ak = {a.get("k") for c in C for a in c.get("data", {}).get("ann", [])}
+        if len(used) < 4: W.append(f"版式只用了 {len(used)} 种（{'、'.join(sorted(used))}）：试试结论栏、上图下表、对比、镜头推近（V7 §2）。")
+        if len(ak) < 3: W.append(f"标注只用了 {len(ak)} 种：圈注、差额箭头、括号求和、结论框能让同一张图讲不同的事（V7 §3）。")
+        for i in range(len(lays) - 1):
+            if lays[i] == lays[i + 1] and lays[i] != ["full"]: W.append(f"连着两张都是「{'+'.join(lays[i])}」版式：换一种。")
     # 3 和上一期比
     pv = _prev_episode(ep_dir)
     if pv:
@@ -75,4 +97,4 @@ def lint(D, ep_dir=None):
 
 if __name__ == "__main__":
     ep = sys.argv[1]; D = json.load(open(os.path.join(ep, "lines.json")))
-    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6") else 0)
+    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6", "v7") else 0)
