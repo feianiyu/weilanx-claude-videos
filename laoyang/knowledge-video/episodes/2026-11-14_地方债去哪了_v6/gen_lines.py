@@ -127,7 +127,7 @@ cards = [
 ]
 
 D = {
- "_说明": "深度 v6 · EP.24。接 EP.15 爆款的续篇：兰德的账 × 官方的账。留存六拍 + 报告摘要体；按内容关系选卡 + 粒子接力转场；两张同色调夜景底图（深蓝 + 暖橙）。",
+ "_说明": "深度 v6 · EP.24。接 EP.15 爆款的续篇：兰德的账 × 官方的账。留存六拍 + 报告摘要体；按内容关系选卡 + 粒子接力转场；一张夜间立交底图（深蓝 + 暖橙）。",
  "v": 3, "style": "deep", "layout": "v6", "morph": True,
  "situation": "账上挂着地方政府和平台欠款、盼着化债带回款的老板",
  "tension": "兰德说至少 12 万亿美元，官方说平台少了 92%、隐性债两年少一半多，可法定债多了近 20 万亿",
@@ -137,11 +137,8 @@ D = {
  "frame": {"seriesLine": "地方债去哪了 · 两本账", "column": "LAOYANG CUBE / 宏观观察账", "ep": "EP.24"},
  "bgs": [
   {"file": "assets/bg_7994953.jpg", "url": "https://images.pexels.com/photos/7994953/pexels-photo-7994953.jpeg",
-   "note": "Pexels #7994953《Aerial Photography of Roads》Barry Tan（Pexels License，免费商用）：上海夜间立交航拍，深蓝底 + 暖色车流；原图 2992×3992 竖图，下原图不缩放；主色 #000000 #2f4f4f #778899 #d2b48c",
-   "dim": 1, "pos": "50% 50%"},
-  {"file": "assets/bg_2793440.jpg", "url": "https://images.pexels.com/photos/2793440/pexels-photo-2793440.jpeg",
-   "note": "Pexels #2793440《Drone Footage of a City》Rick Han（Pexels License，免费商用）：城市夜景航拍，蓝 + 暖黄灯光，与第一张同色调；原图 2816×3520，下原图不缩放；主色 #000000 #4682b4 #a0522d #e9967a",
-   "dim": 0.9, "pos": "50% 50%", "from": "k12"}],
+   "note": "Pexels #7994953《Aerial Photography of Roads》Barry Tan（Pexels License，免费商用）：上海夜间立交航拍，深蓝底 + 暖色车流；原图 2992×3992 竖图，下原图不缩放；主色 #000000 #2f4f4f #778899 #d2b48c；全片一张，色调统一（第二张 #2793440 中间有一块高亮青色建筑，像棺材形，已弃用）",
+   "dim": 0.85, "pos": "50% 50%"}],
  "voice": {"engine": "volc", "v": 3, "model": "expressive", "rate": 15, "takes": 2, "group": "line", "name": "老杨本人（火山引擎声音复刻 2.0 · 表现力增强版）"},
  "gapSec": 0.28, "secGap": 0.55,
  "bgm": {"synth": "pad", "src": "程序合成和声垫底（无版权）"}, "bgmUnder": 19,

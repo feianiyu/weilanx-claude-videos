@@ -1,4 +1,7 @@
-{"pipeline": "knowledge-video",
+{
+ "pipeline": "knowledge-video",
  "episode": "laoyang/knowledge-video/episodes/2026-11-14_地方债去哪了_v6",
- "voice": "auto", "publish_mb": 120,
- "note": "EP.24 地方债去哪了（接 EP.15 爆款），33 句、16 张卡、预计约 3 分钟。两张底图：Pexels #7994953 上海夜间立交（v01–v23）、#2793440 城市夜景（v24 起），请在联系表里确认底图效果和色调。重点听：v24 本质句语气、数字句 v09/v11/v14/v17/v25 的读法（万亿元、92%、5.94）。人工发布，不要提交发布台。"}
+ "voice": "auto",
+ "publish_mb": 120,
+ "note": "EP.24 地方债去哪了（接 EP.15 爆款），33 句、16 张卡、约 3 分钟。上次 v15 句尾被切，已改 emo 重配；全片只用一张底图 Pexels #7994953 上海夜间立交。重点听：v15 句尾、v24 本质句语气、数字句 v09/v11/v14/v17/v25。人工发布，不要提交发布台。"
+}
