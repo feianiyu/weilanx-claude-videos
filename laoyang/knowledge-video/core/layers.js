@@ -9,7 +9,7 @@
 //   pair   两张图对比           data.pair = {type, data, label}，data.pairDir = "v"（上下，默认）| "h"（左右）
 //   table  上图下表             data.table = {head:[..], rows:[[..] 或 {c:[..], s, hot}], s}
 //   multi  小图并列（卡片类型）  type:"multi"，data = {kind:"bar|ring|spark|num", cols, items:[{t, val, v, max, pts, s, hot}]}
-//   focus  镜头推近到局部        data.focus = {on:"要放大的那几个字", z:1.6, s, back}
+//   focus  镜头推近到局部        data.focus = {on:"要放大的那几个字", z:1.6, s, back, unit}（unit:true 对准那几个字所在的整行 / 整块）
 //   note   全屏数字 + 注释       data.lay = "note"（配 bignum），data.notes = [{t, s}]
 //   carry  跨卡延续             data.carry = true 或 {t:"接上一张"}：顶部留一张上一张卡的缩略图
 // 标注层（data.ann = [...]，每条 {k, on, to, t, s, c, side}，on / to 写卡片上看得见的那几个字）：
@@ -101,7 +101,7 @@ function LY_POST(K){if(_LY_POST)return;_LY_POST=true;
    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','ann');svg.setAttribute('width','1');svg.setAttribute('height','1');
    svg.innerHTML=defs+d.ann.map(a=>_lyAnn(k,host,a)).join('');host.appendChild(svg);
    k._ann=[...svg.querySelectorAll('g.an')].map(g=>({g,s:+g.dataset.s,dr:[...g.querySelectorAll('.an-dr')],band:[...g.querySelectorAll('.an-band')],lb:g.querySelector('.an-lb')}));}
-  if(d.focus){const R=_lyRect(k,host,d.focus.on);if(R){k._cam={el:host,cx:R.cx,cy:R.cy,z:d.focus.z||1.6,s:d.focus.s==null?1:d.focus.s,back:d.focus.back};host.style.transformOrigin=`${R.cx.toFixed(1)}px ${R.cy.toFixed(1)}px`;el.classList.add('ly-clip');}}
+  if(d.focus){const R=_lyRect(k,host,d.focus.on,d.focus.unit);if(R){k._cam={el:host,cx:R.cx,cy:R.cy,z:d.focus.z||1.6,s:d.focus.s==null?1:d.focus.s,back:d.focus.back};host.style.transformOrigin=`${R.cx.toFixed(1)}px ${R.cy.toFixed(1)}px`;el.classList.add('ly-clip');}}
   el.style.visibility=vis;});}
 // ---------- 每帧 ----------
 function LY_FRAME(k,t){const c=k.c;

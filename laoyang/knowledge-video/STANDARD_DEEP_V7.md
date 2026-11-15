@@ -28,7 +28,7 @@
 | pair 两图对比 | `pair: {type, data, label}`，`pairDir: "v"`（上下，默认）/ `"h"`（左右） | 一边涨一边跌、前后两个时期、两本账。两半各是一张完整的卡，共用这张卡的 steps |
 | table 上图下表 | `table: {head, rows, s}`，行写 `[..]` 或 `{c:[..], s, hot}` | 图讲结论，表给明细（方案构成、几年的数） |
 | multi 小图并列 | 卡片类型 `"type": "multi"`，`kind: bar / ring / spark / num`，`cols`，`items: [{t, val, v, max, pts, n, s, hot}]` | 几项同类数字并排比，一眼看出谁大；rel 用「几项并列」等 |
-| focus 镜头推近 | `focus: {on, z, s, back}` | 讲到某一块时把镜头推过去（上下边缘自动渐隐）；`back` = 第几个 step 拉回来 |
+| focus 镜头推近 | `focus: {on, z, s, back, unit}`（`unit:true` 对准那几个字所在的整行，字在行尾时用，免得镜头横移太多） | 讲到某一块时把镜头推过去（上下边缘自动渐隐）；`back` = 第几个 step 拉回来 |
 | note 全屏数字 + 注释 | `lay: "note"` + `notes: [{t, s, hot}]`（配 `bignum`，`parts` 可写 `[]`） | 一个大数字，旁边 2–4 条注释说它的来历 |
 | carry 跨卡延续 | `carry: true` 或 `{t: "接上一张 · …"}` | 这张接着上一张讲（补口径、补限制），顶部留上一张的缩略图，观众不丢线 |
 
