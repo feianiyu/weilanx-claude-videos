@@ -174,9 +174,7 @@ SCENES.c6={
 
 // ================= c7 片尾：报名页 =================
 SCENES.c7={
- canvas(t,a){dust(t,a,46,71);
-  const p=1+0.0*t;const tq=T('v19|不见不散|s');[[320,920],[760,920]].forEach(([x,y],i)=>{impactRing(t,tq+i*0.12,x,y,230,230,a,AU);});},
+ canvas(t,a){dust(t,a,46,71);impactRing(t,S.c7.start+0.3,540,640,520,200,a,AU);},
  dom(t,a){const t0=S.c7.start-0.1;
-  [['e1',0,14],['e2',0.15],['e3',0.3,10],['e5',0.45],['q1',0.8,8],['q2',0.95,8],['e6',1.1],['h1',1.25],['h2',1.4]].forEach(([id,d,b])=>show(id,win(t,t0+d,undefined,0.5),26,b||0));
-  const tq=T('v19|不见不散|s');['q1','q2'].forEach((id,i)=>{$(id).style.scale=(1+0.06*Math.exp(-sq((t-tq-i*0.12-0.1)*5))).toFixed(3);});}
+  [['e3',0,12],['e4',0.2,8],['e5',0.4],['h1',0.6],['h2',0.8]].forEach(([id,d,b])=>show(id,win(t,t0+d,undefined,0.5),26,b||0));}
 };
