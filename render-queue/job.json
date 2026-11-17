@@ -1,4 +1,7 @@
-{"pipeline": "knowledge-video",
+{
+ "pipeline": "knowledge-video",
  "episode": "laoyang/knowledge-video/episodes/2026-11-16_一人公司_v7",
- "voice": "auto", "publish_mb": 120,
- "note": "EP.27 AI一人公司估值18亿 靠谱吗？深度 v7 长版 43 句、20 张卡、约 4.5 分钟。底图同 EP.14：Pexels #34222005。重点听：v05 Polsia / 本·塞拉、v06 卡兰尼克、v24 Trustpilot、v28 金句语气，数字句 v01/v03/v11/v16/v20/v22。人工发布，不要提交发布台。"}
+ "voice": "auto",
+ "publish_mb": 120,
+ "note": "EP.27 重出片：换底图为机房走廊 Pexels #4508751（老杨从四张候选里选 D），配音沿用缓存。人工发布，不要提交发布台。"
+}

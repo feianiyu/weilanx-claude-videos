@@ -19,9 +19,9 @@
  },
  "bgs": [
   {
-   "file": "assets/bg.jpg",
-   "url": "https://images.pexels.com/photos/34222005/pexels-photo-34222005.jpeg",
-   "note": "Pexels #34222005《Automated Factory Conveyor System in Operation》Freek Wolsink（Pexels License，免费商用）：自动化产线；与 EP.14 纯管理岗同一张",
+   "file": "assets/bg_4508751.jpg",
+   "url": "https://images.pexels.com/photos/4508751/pexels-photo-4508751.jpeg",
+   "note": "Pexels #4508751《Server Racks on Data Center》Brett Sayles（Pexels License，免费商用）：机房走廊，蓝色单色调、纵深线条强，贴 AI 主题；原图 5568×3712 横图居中裁切；老杨 11-17 从四张候选里选定（§4.z½）",
    "dim": 1,
    "pos": "50% 50%"
   }
