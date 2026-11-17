@@ -33,28 +33,15 @@ function dust(t,a,n,seed,col){if(a<=0)return;for(let i=0;i<n;i++){const s=seed+i
  const y=1750-((t*(14+22*rnd(s+2))+rnd(s+3)*1700)%1700);const tw=0.5+0.5*Math.sin(t*2.1+rnd(s+4)*6.28);dot(x,y,0.9+1.6*rnd(s+5),col||(i%3?PL:AU),a*(0.25+0.45*tw));}}
 
 // ---------- 底图：转速 / 亮度 / 饱和 ----------
-const tReveal=T('v08|向新生长|s');
+const tReveal=T('v07|向新生长|s');
 HOOKS.bg=t=>{const S3=S.c3.start;
  const b=keys(t,[[0,1.0],[S.c2.start-0.3,0.95],[S.c2.start+0.4,0.55],[S3,0.5],[tReveal-0.2,0.6],[tReveal+0.5,1.35],[S.c4.start,1.0],[S.c6.start-0.2,1.0],[S.c6.start+0.5,0.38],[S.c7.start,0.38],[S.c7.start+0.8,0.85]]);
  const s=keys(t,[[S.c2.start,1.0],[S.c2.start+0.5,0.45],[tReveal-0.2,0.6],[tReveal+0.6,1.15],[S.c4.start+1,1.0]]);
  const rot=t*2.2+40*eo(cl((t-tReveal)/3.0))-6*eo(cl((t-S.c2.start)/2));
  const z=1+0.08*Math.sin(Math.PI*cl((t-tReveal+0.3)/2.2));return {rot,b,s,z};};
 
-// ================= c0 冷开场 =================
-SCENES.c0={
- canvas(t,a){dust(t,a,40,11);
-  // 远处一层淡晶格，慢慢旋入
-  X.save();X.translate(540,930);X.rotate(-0.06+0.02*t);X.scale(1.35,1.35);X.translate(-540,-930);
-  LAT.forEach((p,k)=>{const al=0.10*a*(0.5+0.5*Math.sin(t*1.3+k*0.7));strokeTri(p,PL,1.2,al,1);});X.restore();
-  const e0=S.c0.end;
-  showText('q1',{lines:[[['看见了，也行动了，',null]]],size:68,cy:740},t,-2,e0-0.55,'逐字','吹散',a,0.3);
-  showText('q2',{lines:[[['为什么还是',null],['没改变','#F7C04A'],['？',null]]],size:92,cy:900},t,T('v01|为什么|s')-0.08,e0-0.5,'碎裂','吹散',a,0.45);
-  impactRing(t,T('v01|没改变|s'),540,900,420,120,a,AU);},
- dom(t,a){show('c0k',1,0);}
-};
-
 // ================= c1 十四年 =================
-const Y0=T('v02|二零一三|s'),Y1=T('v04|断过|e');
+const Y0=T('v01|二零一三|s'),Y1=T('v03|缺席|e');
 const yT=y=>lerp(Y0,Y1-0.4,y/(NY-1)), T23=yT(10);
 const CURVE=(()=>{const out=[];for(let i=0;i<=60;i++){const u=i/60;out.push([130+u*820,640-320*(1-Math.exp(-3.6*u))/(1-Math.exp(-3.6))+18*Math.max(0,u-0.8)/0.2]);}return out;})();
 function latGrow(t,a,dim){GROW.forEach((p,k)=>{const y=Math.floor(k/PER),ta=yT(y)+(k%PER)*0.05;const q=cl((t-ta)/0.45);if(q<=0)return;
@@ -63,27 +50,30 @@ function latGrow(t,a,dim){GROW.forEach((p,k)=>{const y=Math.floor(k/PER),ta=yT(y
   if(up&&y>=10)fillTri(p,AU,a*dim*0.12);});}
 SCENES.c1={
  canvas(t,a){dust(t,a,34,21);
-  const dim=keys(t,[[T('v03|高速|s')-0.3,1],[T('v03|高速|s'),0.32],[T('v04|一年|s')-0.3,0.32],[T('v04|一年|s'),0.95],[T('v05|设计企业|s')-0.4,0.95],[T('v05|设计企业|s'),0.3]]);
+  // 开场：远处一层淡晶格慢慢旋入，年份开始长时退去
+  const fa=a*(1-cl((t-Y0-1.2)/1.5));if(fa>0){X.save();X.translate(540,930);X.rotate(-0.06+0.02*t);X.scale(1.35-0.1*cl(t/3),1.35-0.1*cl(t/3));X.translate(-540,-930);
+   LAT.forEach((p,k)=>{strokeTri(p,PL,1.2,0.12*fa*(0.5+0.5*Math.sin(t*1.3+k*0.7)),1);});X.restore();}
+  const dim=keys(t,[[T('v02|高速|s')-0.3,1],[T('v02|高速|s'),0.32],[T('v03|从未缺席|s')-0.3,0.32],[T('v03|从未缺席|s'),0.95],[T('v04|设计企业|s')-0.4,0.95],[T('v04|设计企业|s'),0.3]]);
   latGrow(t,a,dim);
   // 2023 升级：一圈光
   impactRing(t,T23,LCX,LCY,520,300,a,AU);
   // 行业曲线
-  const c0=T('v03|高速|s')-0.2,c1=T('v03|放缓|e'),cA=win(t,c0,T('v05|同一个问题|s')-0.3,0.3,0.5);
+  const c0=T('v02|高速|s')-0.2,c1=T('v02|放缓|e'),cA=win(t,c0,T('v04|同一个问题|s')-0.3,0.3,0.5);
   if(cA>0){const q=eo(cl((t-c0)/(c1-c0)));const pts=partial(CURVE,q);gline(pts,AU,3.2,a*cA);const hd=pts[pts.length-1];dot(hd[0],hd[1],5,'#FFF4D6',a*cA);
    line([[130,660],[950,660]],PL,1.5,0.35*a*cA,false,[6,10]);}
   // 同一个问题
-  const qT=T('v05|设计企业|s')-0.15;
+  const qT=T('v04|设计企业|s')-0.15;
   showText('c1q',{lines:[[['设计企业',null],['该怎么认识自己',null]],[['往哪里走？','#F7C04A']]],size:66,cy:470},t,qT,S.c1.end-1.0,'逐字','雾散',a,0.35);},
- dom(t,a){const c0=T('v03|高速|s')-0.2,cE=T('v05|同一个问题|s')-0.3;
-  show('cvA',win(t,c0+0.2,cE),20);show('cvB',win(t,T('v03|放缓|s'),cE),20);
-  show('cvC',win(t,T('v03|增量|s')-0.1,cE),20,6);setO('cvArrow',win(t,T('v03|存量压力|s')-0.2,cE));show('cvD',win(t,T('v03|存量压力|s')-0.1,cE),20,6,-30);
+ dom(t,a){const c0=T('v02|高速|s')-0.2,cE=T('v04|同一个问题|s')-0.3;
+  show('cvA',win(t,c0+0.2,cE),20);show('cvB',win(t,T('v02|放缓|s'),cE),20);
+  show('cvC',win(t,T('v02|增量|s')-0.1,cE),20,6);setO('cvArrow',win(t,T('v02|存量压力|s')-0.2,cE));show('cvD',win(t,T('v02|存量压力|s')-0.1,cE),20,6,-30);
   const yr=$('yr');const n=Math.max(0,Math.min(NY-1,Math.floor((t-Y0)/((Y1-0.4-Y0)/(NY-1))+1e-6)));yr.textContent=String(2013+n);
   show('yr',win(t,Y0-0.25,S.c1.end-0.6),20,8);yr.style.scale=(1+0.08*Math.exp(-sq((t-T23)*6))).toFixed(3);
-  show('ylab1',win(t,T('v02|思翔|s')-0.1,T23-0.3),16);show('ylab2',win(t,T23,T('v04|一年|s')-0.2),16);show('ylab3',win(t,T('v04|一年|s'),S.c1.end-0.6),16);}
+  show('ylab1',win(t,T('v01|思翔|s')-0.1,T23-0.3),16);show('ylab2',win(t,T23,T('v03|从未缺席|s')-0.2),16);show('ylab3',win(t,T('v03|从未缺席|s'),S.c1.end-0.6),16);}
 };
 
 // ================= c2 困住 =================
-const tShr=T('v06|收缩|s'),tNo=T('v07|没变|s');
+const tShr=T('v05|收缩|s'),tNo=T('v06|没改变|s');
 SCENES.c2={
  canvas(t,a,f){const s0=S.c2.start;const sc=1-0.1*eo(cl((t-tShr)/0.5));const wq=eo(cl((t-s0)/1.2));
   X.save();X.translate(LCX,LCY);X.scale(sc,sc);X.translate(-LCX,-LCY);
@@ -95,8 +85,8 @@ SCENES.c2={
    const x=LCX+bx*0.9,y=LCY+by*0.82;const red=cl((t-tNo)/0.3);dot(x,y,3.2,red>0?RD:PL,a*(0.55+0.35*Math.sin(t*3+i)));}
   X.restore();
   impactRing(t,tShr,LCX,LCY,480,380,a,'#7C82A8');impactRing(t,tNo,LCX,LCY,520,420,a,RD);},
- dom(t,a,f){show('c2h',win(t,S.c2.start+0.1,T('v07|看见了|s')-0.2),24,8);
-  show('ck1',win(t,T('v07|看见了|s')-0.1),24,6);show('ck2',win(t,T('v07|也行动了|s')-0.05),24,6);
+ dom(t,a,f){show('c2h',win(t,S.c2.start+0.1,T('v06|看见了|s')-0.2),24,8);
+  show('ck1',win(t,T('v06|看见了|s')-0.1),24,6);show('ck2',win(t,T('v06|也行动了|s')-0.05),24,6);
   const e=show('ck3',win(t,tNo-0.12,undefined,0.2),30,10);glitchEl(e,t>=tNo&&t<tNo+0.4?1-(t-tNo)/0.4:0,f);}
 };
 
@@ -121,7 +111,7 @@ SCENES.c3={
   // 迸出的彩色粒子
   if(t>=tReveal&&t<tReveal+2.2){const q=(t-tReveal)/2.2;for(let i=0;i<90;i++){const an=rnd(i*3.1)*6.283,sp=200+500*rnd(i*1.7);
    dot(540+Math.cos(an)*sp*eo(q),790+Math.sin(an)*sp*eo(q)*0.6-80*q,1.6+1.4*rnd(i),PAL[i%6],a*(1-q));}}
-  showText('rd',{lines:[[['重新定义设计企业的',null]],[['价值、边界与未来','#F7C04A']]],size:58,cy:1230},t,T('v09|重新定义|s')-0.1,1e9,'光扫','光扫',a,0.3);},
+  showText('rd',{lines:[[['重新定义设计企业的',null]],[['价值、边界与未来','#F7C04A']]],size:58,cy:1230},t,T('v08|重新定义|s')-0.1,1e9,'光扫','光扫',a,0.3);},
  dom(t,a){show('c3y',win(t,S.c3.start+0.1,tReveal-0.25,0.4,0.3),20,10);
   const q=eo(cl((t-tReveal+0.08)/0.9)),e=$('xxsz');e.style.opacity=q.toFixed(3);
   e.style.transform=`translateY(${(Math.sin(t*1.1)*4).toFixed(1)}px) scale(${(1.28-0.28*q).toFixed(4)})`;e.style.filter=q<0.99?`blur(${(18*(1-q)).toFixed(1)}px)`:'drop-shadow(0 0 22px rgba(247,192,74,.25))';}
@@ -134,10 +124,10 @@ SCENES.c4={
   // 时间轴竖线：卡片出现时往下长
   const q=eo(cl((t-KS[0]+0.2)/(KS[2]-KS[0]+0.6)));gline(partial([[70,735],[70,1309]],q),AU,2.4,a*0.8);
   KS.forEach((k,i)=>{const p=eo(cl((t-k)/0.3));if(p>0)dot(70,824+198*i,6*p,PAL[i*2],a);});
-  impactRing(t,T('v10|十一月|s'),540,440,460,110,a,AU);},
+  impactRing(t,T('v09|十一月|s'),540,440,460,110,a,AU);},
  dom(t,a){show('c4logo',win(t,S.c4.start+0.05),16,6);
-  const d=show('dt',win(t,T('v10|十一月|s')-0.12,undefined,0.35),0,14);d.style.scale=(1.18-0.18*eo(cl((t-T('v10|十一月|s')+0.12)/0.35))).toFixed(3);
-  show('m1',win(t,T('v10|上海|s')-0.1),18,6);show('m2',win(t,T('v10|一天半|s')-0.1),18,6);show('m3',win(t,T('v10|三场|s')-0.1),18,6);
+  const d=show('dt',win(t,T('v09|十一月|s')-0.12,undefined,0.35),0,14);d.style.scale=(1.18-0.18*eo(cl((t-T('v09|十一月|s')+0.12)/0.35))).toFixed(3);
+  show('m1',win(t,T('v09|上海|s')-0.1),18,6);show('m2',win(t,T('v09|一天半|s')-0.1),18,6);show('m3',win(t,T('v09|三场|s')-0.1),18,6);
   ['k1','k2','k3'].forEach((id,i)=>{const e=show(id,win(t,KS[i]-0.12,undefined,0.4),0,10,160);const on=t>=KS[i]-0.1&&t<KE[i];
    e.style.boxShadow=on?`0 0 0 2px ${PAL[i*2]},0 0 34px ${PAL[i*2]}66,0 14px 40px rgba(0,0,30,.45)`:'0 14px 40px rgba(0,0,30,.45)';});}
 };
@@ -172,7 +162,7 @@ SCENES.c5={
 const tG1=T('v18|不是做错了|s'),tG2=T('v18|而是|s'),tCage=T('v18|困住了|s');
 SCENES.c6={
  canvas(t,a){dust(t,a,20,61,PL);
-  showText('g1',{lines:[[['不是做错了，',null]]],size:78,cy:700},t,tG1-0.1,1e9,'逐字','逐字',a,0.3);
+  showText('g1',{lines:[[['设计企业',PL]],[['不是做错了，',null]]],size:78,cy:640},t,tG1-0.1,1e9,'逐字','逐字',a,0.3);
   showText('g2',{lines:[[['而是被「',null],['过去做对的事','#F7C04A'],['」',null]],[['困住了',null]]],size:78,cy:930},t,tG2-0.1,1e9,'雾化','雾散',a,0.35);
   // 金色栅栏落下，把「过去做对的事」关住
   const x0=150,x1=930,y0=840,y1=1050;for(let i=0;i<11;i++){const x=lerp(x0,x1,i/10),q=eo(cl((t-tCage-0.03*Math.abs(i-5))/0.22));if(q<=0)continue;
@@ -185,9 +175,8 @@ SCENES.c6={
 // ================= c7 片尾：报名页 =================
 SCENES.c7={
  canvas(t,a){dust(t,a,46,71);
-  const p=1+0.0*t;const tq=T('v21|报名|s');[[320,890],[760,890]].forEach(([x,y],i)=>{impactRing(t,tq+i*0.12,x,y,230,230,a,AU);});},
+  const p=1+0.0*t;const tq=T('v19|不见不散|s');[[320,920],[760,920]].forEach(([x,y],i)=>{impactRing(t,tq+i*0.12,x,y,230,230,a,AU);});},
  dom(t,a){const t0=S.c7.start-0.1;
-  [['e1',0,14],['e2',0.15],['e3',0.3,10],['e4',0.45],['e5',0.6],['q1',0.8,8],['q2',0.95,8],['e6',1.1],['h1',1.25],['h2',1.4]].forEach(([id,d,b])=>show(id,win(t,t0+d,undefined,0.5),26,b||0));
-  show('e7',win(t,T('v20|不设直播|s')-0.1),16,6);
-  const tq=T('v21|报名|s');['q1','q2'].forEach((id,i)=>{$(id).style.scale=(1+0.06*Math.exp(-sq((t-tq-i*0.12-0.1)*5))).toFixed(3);});}
+  [['e1',0,14],['e2',0.15],['e3',0.3,10],['e5',0.45],['q1',0.8,8],['q2',0.95,8],['e6',1.1],['h1',1.25],['h2',1.4]].forEach(([id,d,b])=>show(id,win(t,t0+d,undefined,0.5),26,b||0));
+  const tq=T('v19|不见不散|s');['q1','q2'].forEach((id,i)=>{$(id).style.scale=(1+0.06*Math.exp(-sq((t-tq-i*0.12-0.1)*5))).toFixed(3);});}
 };
