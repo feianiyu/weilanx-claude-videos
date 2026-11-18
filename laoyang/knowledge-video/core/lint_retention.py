@@ -8,6 +8,9 @@ from lint_opening import FEEL_SUB, WHO
 
 CPS = 5.0          # 实测：EP.14 4.9、EP.15 5.4、EP.18 4.8 字/秒（去标点，含句间停顿）
 PULL_GAP = 30.0    # 两次「拉一把」之间最多隔多少秒
+PAYOFF_SEC = 60.0  # 干货最晚从第几秒开始（EP.26 平均播放 53 秒，v1.2）
+SHAPE = r"[一二两三四五六七八九十几\d]\s*(类|件事|条|种|个信号|步|个问题|个变化|个坑|个办法|招)"
+CHOICE = r"[A-DＡ-Ｄ][^A-Za-z]|还是|选哪|哪一类|哪一个|哪一条|打字母|打数字"
 TURN = r"但|可是|可(?=[^以能见])|却|不过|其实|反而|偏偏|问题是|问题在|关键是|真正|没想到|然而|更[^，。]{0,6}的是"
 ASK = r"[？?]|到底|为什么|凭什么|怎么会|怎么办|谁来|哪一"
 PROMISE = ASK + r"|建议|结论|判断|怎么看|怎么研究|怎么应对|答案|警告|预言"
@@ -64,6 +67,18 @@ def lint(L, keys, D):
     tail = [i for i in range(len(subs)) if pos[i] >= 0.8]
     if not any(re.search(WHO + "|企业|公司", subs[i]) for i in tail): W.append("最后 20% 没有「你 / 老板 / 企业」：缺决策桥接。")
     if subs and not re.search(r"[？?]", subs[-1]): W.append("最后一句不是问句：结尾留一个能用一个词或一个数回答的评论区问题。")
+    # 11b 评论区选择题（v1.2：EP.15、EP.26 开放式结尾评论率都只有 0.02%）
+    if subs and not re.search(CHOICE, subs[-1]): W.append("最后一句不是选择题：写成「A … B … C …，评论区打字母」或「X 还是 Y？」，答一个字母比写一句话容易得多。")
+    # 14 答案先行（v1.2：EP.26 平均只看 53 秒，「谁会多交」要到约 3 分钟才出来）
+    first15 = "".join(subs[i] for i in head)
+    if not re.search(SHAPE, first15): W.append("前 15 秒没有点出答案的形状（「三类人」「四件事」「两个信号」这种带数量的预告）：观众要先知道清单有几条，才会等。")
+    pk = D.get("payoff")
+    if not pk: W.append("没填 payoff（干货从第几句开始，比如对号入座的名单、给老板的几条）：填进 lines.json，体检才能算它出现得够不够早。")
+    elif pk in keys:
+        j = keys.index(pk)
+        if t0[j] > PAYOFF_SEC: W.append(f"干货（payoff {pk}）在{at(j)}才开始：要在 {PAYOFF_SEC:.0f} 秒内开始给第一条。背景压到一两句，当证据用，或者挪到干货后面。")
+        bg = [i for i in range(len(subs)) if t0[i] >= 15 and i < j]
+        if len(bg) > 8: W.append(f"开场之后、干货之前有 {len(bg)} 句铺垫（第{bg[0]+1}–{bg[-1]+1}句）：超过 8 句，平均播放时长内观众拿不到干货。")
     # 12 口语
     for i, t in enumerate(subs):
         m = re.search(AI_WORDS, t)
