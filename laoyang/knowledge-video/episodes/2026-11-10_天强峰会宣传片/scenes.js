@@ -69,11 +69,11 @@ SCENES.c1={
   show('cvC',win(t,T('v02|增量|s')-0.1,cE),20,6);setO('cvArrow',win(t,T('v02|存量压力|s')-0.2,cE));show('cvD',win(t,T('v02|存量压力|s')-0.1,cE),20,6,-30);
   const yr=$('yr');const n=Math.max(0,Math.min(NY-1,Math.floor((t-Y0)/((Y1-0.4-Y0)/(NY-1))+1e-6)));yr.textContent=String(2013+n);
   show('yr',win(t,Y0-0.25,S.c1.end-0.6),20,8);yr.style.scale=(1+0.08*Math.exp(-sq((t-T23)*6))).toFixed(3);
-  show('ylab1',win(t,T('v01|思翔|s')-0.1,T23-0.3),16);show('ylab2',win(t,T23,T('v03|从未缺席|s')-0.2),16);show('ylab3',win(t,T('v03|从未缺席|s'),S.c1.end-0.6),16);}
+  show('ylab1',win(t,T('v01|第一届|s')-0.1,T23-0.3),16);show('ylab2',win(t,T23,T('v03|从未缺席|s')-0.2),16);show('ylab3',win(t,T('v03|从未缺席|s'),S.c1.end-0.6),16);}
 };
 
 // ================= c2 困住 =================
-const tShr=T('v05|收缩|s'),tNo=T('v06|没改变|s');
+const tShr=T('v05|承压|s'),tNo=T('v06|没改变|s');
 SCENES.c2={
  canvas(t,a,f){const s0=S.c2.start;const sc=1-0.1*eo(cl((t-tShr)/0.5));const wq=eo(cl((t-s0)/1.2));
   X.save();X.translate(LCX,LCY);X.scale(sc,sc);X.translate(-LCX,-LCY);
