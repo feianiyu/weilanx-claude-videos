@@ -12,7 +12,7 @@ from difflib import SequenceMatcher
 # 内容关系 → 合适的卡（前面的更推荐）。知识卡和逻辑图并列，按内容挑。
 REL = {
  # —— 知识卡擅长的：事实、证据、故事、观点 ——
- "钩子": ["hook"], "金句": ["punch"], "提问": ["question"], "评论区": ["question", "map", "cycle", "tree", "pyramid"],
+ "钩子": ["hook"], "章节": ["fxtext"], "核心观点": ["fxtext", "punch"], "金句": ["punch"], "提问": ["question"], "评论区": ["question", "map", "cycle", "tree", "pyramid"],
  "出处": ["text", "quote", "focus"], "原文": ["quote", "text"], "故事": ["text", "focus", "timeline", "map"],
  "一个数": ["bignum", "dots", "duo"], "两个数": ["duo", "bars", "shift", "balance", "multi"], "口径变化": ["shift", "versus", "duo"],
  "几个发现": ["list", "index", "check", "tree", "multi"], "清单": ["list", "check"], "决策": ["check", "close", "list"],
