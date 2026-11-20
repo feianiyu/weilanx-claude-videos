@@ -76,6 +76,7 @@ for r in rows:
     if not r["keep"] and r["n"] >= 4 and r["cps"] < lo * M:
         k = min(P["max"], P["target"] * M / r["cps"]) if r["t0"] >= P["open_sec"] else min(P["open_max"], M / r["cps"])
         k = max(1.0, round(k, 3))
+    r["after"] = r["cps"] * k
     log.append({"k": r["k"], "cps": round(r["cps"], 2), "k_tempo": k, "keep": r["keep"]})
     if k > 1.0: done.append(f"{r['k']}×{k:.2f}")
     if DRY: continue
@@ -95,7 +96,7 @@ for r in rows:
 if not DRY:
     json.dump(D, open(LP, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     json.dump({"median_cps": round(M, 2), "conf": P, "lines": log}, open(os.path.join(VO, "_pace.json"), "w"), ensure_ascii=False, indent=1)
-open_c = [r["cps"] for r in rows if r["t0"] < P["open_sec"] and r["n"] >= 6]
-msg = (f"中位 {M:.2f} 字/秒；开场 {statistics.mean(open_c):.2f} 字/秒；" if open_c else f"中位 {M:.2f} 字/秒；") + \
+open_c = [r for r in rows if r["t0"] < P["open_sec"] and r["n"] >= 6]
+msg = (f"中位 {M:.2f} 字/秒；开场 {statistics.mean(r['cps'] for r in open_c):.2f} → {statistics.mean(r['after'] for r in open_c):.2f} 字/秒；" if open_c else f"中位 {M:.2f} 字/秒；") + \
       (f"提速 {len(done)} 句（{'、'.join(done[:12])}{'…' if len(done) > 12 else ''}）" if done else "不用调")
 print("语速统一：" + msg)
