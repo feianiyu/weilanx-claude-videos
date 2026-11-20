@@ -6,6 +6,8 @@ EP = os.path.abspath(sys.argv[1]); os.chdir(EP); D = json.load(open("lines.json"
 items = []
 if D.get("bgUrl"): items.append((D.get("bg", "assets/bg.jpg"), D["bgUrl"]))
 items += [(b["file"], b["url"]) for b in D.get("bgs", []) if b.get("url")]   # 深度版：多张高清底图（下原图，不要带 ?w= 缩略参数）
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import media
+items += media.urls(D)   # 深度 v8：photo / clip 卡和 bleed 的素材库原链接（Pexels 图片、视频）
 if isinstance(D.get("bgm"), dict) and D["bgm"].get("url"): items.append((D["bgm"]["file"], D["bgm"]["url"]))
 items += [(c["file"], c["url"]) for c in D.get("sfxlib", {}).values() if c.get("url")]
 for f, u in items:

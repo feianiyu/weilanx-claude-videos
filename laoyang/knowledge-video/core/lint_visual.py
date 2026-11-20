@@ -24,6 +24,9 @@ REL = {
  "交集": ["venn", "matrix"], "表象本质": ["iceberg", "myth"], "新旧": ["versus", "shift", "map"], "拉扯": ["forces", "balance"],
  "取舍": ["balance", "forces", "matrix", "split"], "分类": ["matrix", "tree", "venn"], "传导": ["chain", "map", "flow", "link"],
  "组织": ["map", "stack", "tree"],
+ # —— 媒体层（深度 v8）：代码画不出来的东西 ——
+ "现场": ["photo", "clip"], "原件": ["photo"], "场景": ["clip", "photo"], "历史画面": ["photo", "clip"], "实物": ["photo"],
+ "算一算": ["play", "waterfall"], "互动": ["play"],
  "分化": ["diverge", "pnbar", "versus", "bars"], "涨跌对比": ["pnbar", "bars", "duo", "multi"], "几项并列": ["multi", "bars", "list"], "地区分布": ["tilemap", "bars"], "流向": ["flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
 }
 TEXTY = {"text", "punch", "question", "shift", "list", "quote"}
@@ -79,13 +82,37 @@ def lint(D, ep_dir=None):
             if not a.get("on"): E.append(f"{c['id']} 有一条标注没写 on（标在哪几个字上）。")
             if a.get("k") in ("delta", "bracket") and not a.get("to"): E.append(f"{c['id']} 的 {a.get('k')} 标注要写 to（到哪几个字）。")
         if d.get("lay") == "note" and c["type"] != "bignum": W.append(f"{c['id']} 用了 note 版式，它是给 bignum 配的。")
-    if D.get("layout") == "v7":
+    if D.get("layout") in ("v7", "v8"):
         lays = [lay_of(c) for c in C if c["type"] not in ("hook", "punch", "question")]
         used = {x for ls in lays for x in ls}; ak = {a.get("k") for c in C for a in c.get("data", {}).get("ann", [])}
         if len(used) < 4: W.append(f"版式只用了 {len(used)} 种（{'、'.join(sorted(used))}）：试试结论栏、上图下表、对比、镜头推近（V7 §2）。")
         if len(ak) < 3: W.append(f"标注只用了 {len(ak)} 种：圈注、差额箭头、括号求和、结论框能让同一张图讲不同的事（V7 §3）。")
         for i in range(len(lays) - 1):
             if lays[i] == lays[i + 1] and lays[i] != ["full"]: W.append(f"连着两张都是「{'+'.join(lays[i])}」版式：换一种。")
+    # 2¾ 媒体层（深度 v8，STANDARD_DEEP_V8.md）
+    MED = {"photo", "clip"}
+    for c in C:
+        d = c.get("data", {}); m = d.get("media") if isinstance(d.get("media"), dict) else d
+        for role, mm in (("卡", m if c["type"] in MED else None), ("整屏底图", d.get("bleed"))):
+            if not mm: continue
+            if not (mm.get("file") or mm.get("url") or mm.get("gen")): E.append(f"{c['id']} 的{role}媒体没写来源：file / url / gen 至少一个。")
+            if mm.get("url") and not mm.get("gen") and not mm.get("credit"): E.append(f"{c['id']} 的{role}媒体来自素材库，要写 credit（出处 / 作者），会自动进出处行。")
+            if mm.get("gen") and mm.get("label") and "AI" not in mm["label"]: E.append(f"{c['id']} 是 AI 生成的，角标必须带「AI」（平台要求显式标识）。")
+            if mm.get("gen") and not (mm["gen"].get("prompt")): E.append(f"{c['id']} 的 gen 没写 prompt。")
+        if c["type"] == "play":
+            if not d.get("inputs") or not d.get("outputs"): E.append(f"{c['id']} 试玩卡要有 inputs（滑杆）和 outputs（结果）。")
+            if not any(k for x in d.get("inputs", []) for k in x.get("keys", [])): E.append(f"{c['id']} 试玩卡没写 keys：片里那只手要拖到哪几个值、在哪个 step。")
+            if not d.get("cta"): W.append(f"{c['id']} 试玩卡没写 cta（告诉观众去哪玩）。")
+            if sum(len(x.get("keys", [])) for x in d.get("inputs", [])) < 2: W.append(f"{c['id']} 试玩卡只拖一下：至少 2 个 key，拖两下才看得出关系（V8 §2.4）。")
+    if sum(c["type"] == "play" for c in C) > 1: W.append("一期最多 1 张试玩卡（V8 §2.4）。")
+    mt = [c["type"] in MED or c["type"] == "play" for c in C]
+    for i in range(len(mt) - 2):
+        if all(mt[i:i + 3]): E.append(f"媒体卡连排 3 张（{C[i]['id']} 起）：图片和镜头是用来换气的，中间要回到逻辑图。")
+    if D.get("layout") == "v8":
+        nm = sum(c["type"] in MED for c in C); nb = sum(bool(c.get("data", {}).get("bleed")) for c in C); npl = sum(c["type"] == "play" for c in C)
+        W.append(f"媒体层：图片 / 镜头卡 {nm} 张，整屏动态底图 {nb} 处，试玩卡 {npl} 张。")
+        if nm + nb == 0: W.append("v8 期数一张图片 / 镜头都没有：至少给钩子一个 bleed 动态底图，或给故事段一张现场图（V8 §2）。")
+        if C and C[0]["type"] == "hook" and not C[0].get("data", {}).get("bleed"): W.append("钩子卡没有 bleed：开场 3 秒是流失最多的地方，给它一段动态底图（V8 §2.4）。")
     # 3 和上一期比
     pv = _prev_episode(ep_dir)
     if pv:
@@ -97,4 +124,4 @@ def lint(D, ep_dir=None):
 
 if __name__ == "__main__":
     ep = sys.argv[1]; D = json.load(open(os.path.join(ep, "lines.json")))
-    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6", "v7") else 0)
+    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6", "v7", "v8") else 0)

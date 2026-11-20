@@ -352,6 +352,7 @@ function render(t){
  const tt=f/30;let si=-1;for(let i=0;i<D.subs.length;i++){const s=D.subs[i];if(tt>=s.s-0.05&&tt<s.e+0.2){si=i;break;}}
  if(si!==lastSub){if(si>=0){const s=D.subs[si];subEl.innerHTML=s.lines.map(x=>{x=x.replace(/&/g,'&amp;').replace(/</g,'&lt;');return D.subHi?x.replace(SUBHI,'<em class="fw">$&</em>'):x;}).join('<br>');subEl.style.fontSize=Math.min(50,s.fs)+'px';}else subEl.innerHTML='';lastSub=si;}
  subEl.style.opacity=si>=0?cl((tt-D.subs[si].s+0.05)/0.12):0;
+ if(typeof MEDIA_WAIT!=='undefined')return MEDIA_WAIT();   // 深度 v8：图片 / 视频帧没解码完时返回 Promise，截图前等它
 }
 window.render=render;window.DUR=D.dur;
 render(0);

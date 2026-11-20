@@ -113,7 +113,7 @@ if DEEP:
                  "rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${Math.max(0,a)})`;};\n"
                  + "\n".join(open(f"{CORE}/{f}", encoding="utf-8").read() for f in ("fx.js", "fx_particles.js", "fx_text.js", "fx_mist.js"))
                  + "\n$('mist').style.display='block';$('fxo').style.display='block';\n")
-    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/layers.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
+    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/layers.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/media.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
            .replace("/*@EP_CSS*/", ep_css).replace("__CUBE64__", svg_cube(64)).replace("__CUBE58__", svg_cube(58))
            .replace("__T1__", D["series"]["title"]).replace("__SERIES__", FR.get("seriesLine", D["series"]["title"]))
            .replace("__COLUMN__", FR.get("column", "LAOYANG CUBE")).replace("__EPNO__", FR.get("ep", "")))
@@ -399,6 +399,14 @@ if DEEP:
         for j, x in enumerate(c["st"]):
             if not (c["t0"] - 0.01 <= x <= c["t1"]): print(f"!! 卡 {c['id']} 第 {j+1} 个 step 在卡片时间外：{x} 不在 {c['t0']}–{c['t1']}")
         print(f"CARD {c['id']:<6} {c['type']:<9} {c['t0']:7.2f}–{c['t1']:7.2f}  {c['t1']-c['t0']:5.1f}s  steps {len(c['st'])}")
+    # 深度 v8 媒体层（STANDARD_DEEP_V8.md）：photo / clip 卡、data.bleed 整屏动态底图、play 试玩卡
+    sys.path.insert(0, CORE); import media as _media
+    HAS_MEDIA, _mw, _mmiss = _media.prep(cdat, D, REGRESS, DUR)
+    for _x in _mw: print("媒体提示：", _x)
+    if _mmiss: print(f"!! 有 {len(_mmiss)} 个媒体缺失（画面用占位）。Mac 上先跑：python3 core/fetch_assets.py {sys.argv[1]}；AI 生成的跑 python3 core/gen_media.py {sys.argv[1]}")
+    if any(c["type"] == "play" for c in cdat):
+        import game as _game
+        for _p in _game.export(D, EP): print("小游戏：", os.path.relpath(_p, EP))
     sl = D.get("frame", {}).get("seriesLine", D["series"]["title"])
 data = {"anchors": A, "secs": secs, "subs": subs, "dur": DUR, "wave": wave_s, "tl": tl, "beat": BEAT, "series": D["series"], "sfx": sfx,
         "progress": D["progress"], "transitions": D.get("transitions", {}), "rest": REST_D, "lastLine": keys[-1], "endNext": D.get("endNext", ""), "heads": HEADS, **({"endFollow": D["endFollow"]} if "endFollow" in D else {})} if not DEEP else \
@@ -407,6 +415,8 @@ if DEEP and int(D.get("v", 1)) >= 3 and D.get("stage", True):
     data["stage"] = True
 if DEEP and D.get("morph"):
     data["morph"] = True   # 深度 v6 粒子接力转场（morph.js）
+if DEEP and HAS_MEDIA:
+    data["media"] = True   # 深度 v8 媒体层（media.js）
 if DEEP and int(D.get("v", 1)) >= 3:
     data["look"] = D.get("look", "muted")   # 底图观感：muted = 彩色照片降饱和、轻压暗（老杨 11-11 定）；mono = 纯黑白；dark = v2 的重压暗
 if DEEP and D.get("fx"):
@@ -457,7 +467,7 @@ if DEEP:
         sys.path.insert(0, CORE); import lint_visual
         _ve, _vw = lint_visual.lint(D, EP)
         for _x in _vw: print("画面体检：", _x)
-        if _ve and D.get("layout") in ("v5", "v6", "v7") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
+        if _ve and D.get("layout") in ("v5", "v6", "v7", "v8") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
         for _x in _ve: print("画面提示：", _x)
     if RETAIN:   # §2.7 体检：第 1 张是钩子大字卡；前 20% 画面每 ≤maxGap 秒变一次；后段有金句卡
         R_err = []

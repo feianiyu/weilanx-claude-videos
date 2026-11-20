@@ -18,7 +18,7 @@ function _mBoxes(k){   // 一张卡上「画了东西的地方」：屏幕坐标
   [...svg.querySelectorAll('.lu, .mpn, .lgtile')].forEach(u=>{if(u.closest('.lgbw'))return;let b;try{b=u.getBBox();}catch(e){return;}
    if(!b.width&&!b.height)return;const w=u.dataset&&u.dataset.hot!=null?3:1;
    out.push([R.left+b.x*sx,R.top+b.y*sy,Math.max(4,b.width*sx),Math.max(4,b.height*sy),w*Math.sqrt(Math.max(16,b.width*b.height*sx*sy))]);});}
- if(!out.length){const sel=['.big','.hk','.pc-t','.q-box','.bars','.chain','.bl-w','.mx','.wf','.ln-svg','.cols','.ls','.sh-box','.ti'];
+ if(!out.length){const sel=['.md-box','.pl-box','.big','.hk','.pc-t','.q-box','.bars','.chain','.bl-w','.mx','.wf','.ln-svg','.cols','.ls','.sh-box','.ti'];
   for(const s of sel){const e=el.querySelector(s);if(e){const r=e.getBoundingClientRect();if(r.width&&r.height){out.push([r.left,r.top,r.width,r.height,1]);break;}}}}
  if(!out.length){const r=el.getBoundingClientRect();out.push([r.left+r.width*0.2,r.top+r.height*0.3,r.width*0.6,r.height*0.3,1]);}
  el.style.transform=saveT;el.style.visibility=saveV;return out;}

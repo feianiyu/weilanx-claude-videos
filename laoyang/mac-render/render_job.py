@@ -246,6 +246,8 @@ def kv_assets(job: Job):
     D = json.load(open(os.path.join(job.ep, "lines.json"), encoding="utf-8"))
     bgm = D["bgm"].get("file") if isinstance(D.get("bgm"), dict) else None   # 深度版 bgm 可以是 {"synth":"pad"}，没有文件
     files = [D.get("bg", "assets/bg.jpg")] + [b["file"] for b in D.get("bgs", [])] + ([bgm] if bgm else []) + [c["file"] for c in D.get("sfxlib", {}).values()]
+    sys.path.insert(0, kv_core()); import media   # 深度 v8：图片 / 视频镜头素材也要验一遍
+    files += [f for f, _ in media.urls(D)]
     broken = []
     for f in files:
         p = os.path.join(job.ep, f)
@@ -259,6 +261,19 @@ def kv_assets(job: Job):
     if broken or fails:
         job.warn.append(f"素材没下全：{len(fails)} 个下载失败，{len(broken)} 个文件损坏已删（{', '.join(broken)[:120]}）——成片里对应的声音会是静音")
     return f"失败 {len(fails)}，损坏 {len(broken)}"
+
+
+def kv_gen_media(job: Job):
+    """深度 v8：lines.json 里写了 gen 的图片 / 视频镜头，用火山方舟生成（有缓存）。没有 ARK_API_KEY 就跳过，成片里是占位画面。"""
+    sys.path.insert(0, kv_core()); import media
+    D = json.load(open(os.path.join(job.ep, "lines.json"), encoding="utf-8"))
+    if not media.gens(D):
+        return "这期没有 AI 生成画面"
+    out = job.sh([py(), os.path.join(kv_core(), "gen_media.py"), job.ep], timeout=3600)
+    last = [ln for ln in out.splitlines() if ln.startswith("AI 生成媒体")]
+    if any(ln.startswith(("失败", "跳过")) for ln in out.splitlines()):
+        job.warn.append("有 AI 生成画面没生成出来，成片里是占位画面：" + "；".join(ln for ln in out.splitlines() if ln.startswith(("失败", "跳过")))[:200])
+    return last[-1] if last else "已跑"
 
 
 def kv_beat(job: Job):
@@ -361,6 +376,7 @@ def run_knowledge_video(job: Job, selftest=False):
         job.step("多音字抽查（本机 whisper）", lambda: kv_whisper(job), fatal=False)
         job.step("语速统一", lambda: kv_pace(job), fatal=False)
     job.step("下载底图、配乐、音效", lambda: kv_assets(job))
+    job.step("AI 生成画面（深度 v8）", lambda: kv_gen_media(job), fatal=False)
     job.step("测拍", lambda: kv_beat(job), fatal=False)
     job.step("构建", lambda: job.sh([py(), os.path.join(core, "build.py"), job.ep], timeout=900) and "")
     job.step("逐秒质检", lambda: kv_qc_frames(job))
@@ -401,6 +417,10 @@ def deliver(job: Job):
     for f in sorted(os.listdir(out_dir)) if os.path.isdir(out_dir) else []:
         if f.endswith((".mp4", ".png")):
             shutil.copy2(os.path.join(out_dir, f), os.path.join(job.out, f))
+            got.append(f)
+    for f in sorted(os.listdir(os.path.join(job.ep, "build"))) if os.path.isdir(os.path.join(job.ep, "build")) else []:
+        if f.startswith("小游戏_") and f.endswith(".html"):   # 深度 v8：试玩卡导出的 H5 小游戏
+            shutil.copy2(os.path.join(job.ep, "build", f), os.path.join(job.out, f))
             got.append(f)
     for f in ("发布文案.md", "FACTS.md", "CREDITS.md"):
         p = os.path.join(job.ep, f)
