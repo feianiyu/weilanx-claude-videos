@@ -1,6 +1,6 @@
 # 做一期深度视频的操作手册（给接手的 AI）
 
-> 读法：先读本页，再按需读 `STANDARD_DEEP_V3.md`（配音）/ `STANDARD_DEEP_V5.md`（**画面：按内容关系选知识卡或逻辑图**）/ `STANDARD_DEEP_V6.md`（分镜联系表、粒子接力转场、数据图） / `STANDARD_DEEP_V7.md`（**版式层 + 标注层：同一张图换摆法、加标注，2026-11-14 起新期默认**）、`STANDARD_RETENTION_SCRIPT.md`（文案）、`STANDARD_REPORT_DIGEST.md`（转述智库报告时）。
+> 读法：先读本页，再按需读 `STANDARD_DEEP_V3.md`（配音）/ `STANDARD_DEEP_V5.md`（**画面：按内容关系选知识卡或逻辑图**）/ `STANDARD_DEEP_V6.md`（分镜联系表、粒子接力转场、数据图） / `STANDARD_DEEP_V7.md`（**版式层 + 标注层：同一张图换摆法、加标注，2026-11-14 起新期默认**）、`STANDARD_RETENTION_SCRIPT.md`（文案）、`STANDARD_REPORT_DIGEST.md`（转述智库报告时）、`STANDARD_DEEP_LONG.md`（**5 分钟以上的深度长视频：开场直给、分章、语速统一**）。
 > 环境、密钥、机器见 `ENVIRONMENT.md`。出片机细节见 `../mac-render/README.md`。
 > 本页每一条规则都来自真实踩过的坑；「过关标准」都能用命令检查。2026-11-12 整理。
 

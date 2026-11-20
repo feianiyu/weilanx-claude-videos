@@ -339,6 +339,15 @@ def publish_version(job: Job):
     return f"{size:.1f}MB → {os.path.getsize(src) / 1e6:.1f}MB（已替换原成片，只保留一个）"
 
 
+def kv_pace(job: Job):
+    """语速统一（深度长视频 v1）：比全片中位语速慢太多的句子、比中位慢的开场句，不变调提速到接近中位（单句最多 1.15 倍）。"""
+    out = job.sh([py(), os.path.join(kv_core(), "pace.py"), job.ep, "--fresh"], timeout=600)
+    line = [x for x in out.strip().splitlines() if x.startswith("语速统一")]
+    msg = line[-1].replace("语速统一：", "") if line else "已跑"
+    job.facts["语速"] = msg
+    return msg
+
+
 def run_knowledge_video(job: Job, selftest=False):
     core = kv_core()
     if selftest:
@@ -350,6 +359,7 @@ def run_knowledge_video(job: Job, selftest=False):
     fake = job.job.get("voice") == "fake"   # 静音占位：whisper 会对着静音「幻听」，响度也量不出来，这两项跳过
     if not fake:
         job.step("多音字抽查（本机 whisper）", lambda: kv_whisper(job), fatal=False)
+        job.step("语速统一", lambda: kv_pace(job), fatal=False)
     job.step("下载底图、配乐、音效", lambda: kv_assets(job))
     job.step("测拍", lambda: kv_beat(job), fatal=False)
     job.step("构建", lambda: job.sh([py(), os.path.join(core, "build.py"), job.ep], timeout=900) and "")

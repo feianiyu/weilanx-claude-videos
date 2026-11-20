@@ -8,6 +8,7 @@ from lint_opening import FEEL_SUB, WHO
 
 CPS = 5.0          # 实测：EP.14 4.9、EP.15 5.4、EP.18 4.8 字/秒（去标点，含句间停顿）
 PULL_GAP = 30.0    # 两次「拉一把」之间最多隔多少秒
+LONG_SEC = 300.0   # 超过这个秒数按深度长视频再查一遍（STANDARD_DEEP_LONG.md）
 PAYOFF_SEC = 60.0  # 干货最晚从第几秒开始（EP.26 平均播放 53 秒，v1.2）
 SHAPE = r"[一二两三四五六七八九十几\d]\s*(类|档|层|件事|条|种|个信号|步|个问题|个变化|个坑|个办法|招)"
 CHOICE = r"[A-DＡ-Ｄ][^A-Za-z]|还是|选哪|哪一类|哪一个|哪一条|打字母|打数字"
@@ -93,6 +94,22 @@ def lint(L, keys, D):
         if not any(re.search(r"后面|接下来|最后|等一下|先说|再说|一会儿", subs[i]) for i in midp): W.append(f"估算时长约 {dur:.0f} 秒：中段（35%–65%）要再预告一次答案，别让观众自己拖进度条。")
         first90 = "".join(subs[i] for i in range(len(subs)) if t0[i] < 90)
         if len(re.findall(NUM, first90)) < 2: W.append("前 90 秒里带数字的句子太少：平均播放时长只有一分多钟，这段要讲完第一个完整的发现。")
+    # 15 深度长视频（v1，2026-11-20，EP.29 老杨反馈：开场慢、7 分钟沉闷）——超过 300 秒才查
+    if dur > LONG_SEC:
+        src = D.get("source") or {}
+        who = src.get("who") if isinstance(src, dict) else None
+        if who and not any(who in subs[i] for i in head[:2]): W.append(f"长片解读开场：前两句没点出「{who}」。第一句就说清谁、写了 / 说了什么，第二句给核心观点（STANDARD_DEEP_LONG §2）。")
+        cards = D.get("cards") or []
+        chap = [c for c in cards if c.get("rel") == "章节"]
+        if len(chap) < 3: W.append(f"长片只有 {len(chap)} 张章节卡：{dur / 60:.0f} 分钟要分 3–5 章，每章用一张 fxtext 章节卡开头，观众知道自己在第几章、还剩几章（§3）。")
+        ci = {c["at"] for c in chap}
+        for c in chap:
+            j = keys.index(c["at"]) if c["at"] in keys else -1
+            if j > 0 and not re.search(r"[？?]|下一|接下来|更关键|最后|还有|而且更", subs[j - 1]): W.append(f"章节卡 {c['id']} 前一句没有「钩下一章」（预告 / 问句）：章与章之间最容易流失（§3）。")
+        short = [i + 1 for i in range(len(subs)) if n[i] < 8 and t0[i] < dur * 0.3]
+        if len(short) > 2: W.append(f"前 30% 有 {len(short)} 句不到 8 个字（第{'、'.join(map(str, short[:6]))}句）：碎句加停顿会显得慢，并到相邻句里（§4）。")
+        pause = [i + 1 for i in range(len(subs)) if t0[i] < 20 and re.search(r"一顿|(?<!不)放慢|留白", str(L[keys[i]].get('emo', '')))]
+        if pause: W.append(f"开场 20 秒内第{'、'.join(map(str, pause))}句的语气写了放慢 / 一顿：开场要利落，慢读留给本质句（§4）。")
     return W
 
 if __name__ == "__main__":
