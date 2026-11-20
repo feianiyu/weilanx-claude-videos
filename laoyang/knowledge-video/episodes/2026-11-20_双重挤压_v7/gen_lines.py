@@ -160,7 +160,7 @@ D = {
  "gapSec": 0.28, "secGap": 0.55,
  "bgm": {"synth": "pad", "src": "程序合成和声垫底（无版权）"}, "bgmUnder": 19,
  "fx": {"hits": [], "mist": 0.5}, "retain": {"maxGap": 7},
- "cover": {"topic": "冰火两重天", "title": "邢自强：<br>中国经济的双重挤压", "en": "Two economies, one squeeze",
+ "cover": {"topic": "双重挤压", "title": "邢自强：<br>中国经济<br>双重挤压", "en": "Two economies, one squeeze",
            "sub": "出口火热，家里偏冷<br>中下游两头挤", "tag": "EP.31", "tag2": "企业经营"},
  "publish": {"title": "邢自强：中国经济的双重挤压",
              "dy_title": "摩根士丹利邢自强：中国经济冰火两重天。出口前10个月涨17.6%，消费10月只涨0.4%，中下游企业被成本和需求两头挤。2027年财政会断崖吗？出口强到底帮了谁？",
