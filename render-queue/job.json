@@ -1,4 +1,7 @@
-{"pipeline": "knowledge-video",
+{
+ "pipeline": "knowledge-video",
  "episode": "laoyang/knowledge-video/episodes/2026-11-19_过冬还是换季_v7",
- "voice": "auto", "publish_mb": 120,
- "note": "EP.29 祝波善：设计行业不是过冬是换季。照老杨原稿篇幅的长版，95 句、33 张卡、约 7.5–8 分钟。底图 Pexels #40706924 暮色秋林（老杨选定）。重点听：v06/v24 祝波善、v09/v92「过冬」「换季」、v46「创变难于创业」、v60 BIM、v88 金句语气、v95 字母 A/B/C。人工发布，不要提交发布台。"}
+ "voice": "auto",
+ "publish_mb": 120,
+ "note": "EP.29 v2（深度长视频 v1 第一期）：开场直给、粒子核心句、四章章节卡、配音后语速统一。约 30 句新配。重点听：v01 天强公司创始人祝波善、v02「换季」、章节句 v06/v24/v47/v62、v80 金句。人工发布，不要提交发布台。"
+}
