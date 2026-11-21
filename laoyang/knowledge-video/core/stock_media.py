@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""深度 v8：按关键词从 Pexels 免费素材库自动找图 / 找视频镜头，下载到媒体的 file 位置（不花钱）。
+"""深度 v8：按关键词从免费素材库（Pixabay 优先，Pexels 备用）自动找图 / 找视频镜头，下载到媒体的 file 位置（不花钱）。
+2026-11-21：Pexels 暂停发放新 API Key，改为优先用 Pixabay（PIXABAY_API_KEY，登录 pixabay.com/api/docs 页面就能看到；支持中文关键词）。
   python3 core/stock_media.py <期目录> [--dry]
 卡片里写（photo / clip 的 data 里，或 data.bleed 里）：
   "stock": {"q": "container port night aerial", "kind": "video", "pick": 0}
@@ -23,7 +24,8 @@ def env():
         if p and os.path.isfile(p):
             for ln in open(p, encoding="utf-8"):
                 if "=" in ln and not ln.lstrip().startswith("#"): k, v = ln.split("=", 1); e.setdefault(k.strip(), v.strip())
-    if os.environ.get("PEXELS_API_KEY"): e["PEXELS_API_KEY"] = os.environ["PEXELS_API_KEY"]
+    for k in ("PEXELS_API_KEY", "PIXABAY_API_KEY"):
+        if os.environ.get(k): e[k] = os.environ[k]
     return e
 
 def api(url, key):
@@ -43,21 +45,50 @@ def best_file(files, orient):
     ok = sorted([f for f in mp4 if min(f["width"], f["height"]) >= 1080], key=lambda f: f["width"] * f["height"])
     return ok[0] if ok else max(mp4, key=lambda f: f["width"] * f["height"])
 
+def pixabay(st, kind, orient, pick, key):
+    """Pixabay：视频没有横竖筛选，自己按宽高挑；中文关键词自动用 lang=zh"""
+    q = st["q"]; lang = "zh" if any("\u4e00" <= ch <= "\u9fff" for ch in q) else "en"
+    base = "https://pixabay.com/api/videos/" if kind == "video" else "https://pixabay.com/api/"
+    url = f"{base}?key={key}&q={urllib.parse.quote(q)}&lang={lang}&per_page=30&safesearch=true"
+    if kind != "video": url += "&image_type=photo&orientation=" + ("vertical" if orient == "portrait" else "horizontal")
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "laoyang-render/1.0"}), timeout=60) as r: hits = json.loads(r.read()).get("hits", [])
+    if kind == "video":
+        def best(h):
+            vs = [v for v in (h.get("videos") or {}).values() if v.get("url") and v.get("width")]
+            ok = sorted([v for v in vs if min(v["width"], v["height"]) >= 1080], key=lambda v: v["width"] * v["height"])
+            return ok[0] if ok else (max(vs, key=lambda v: v["width"] * v["height"]) if vs else None)
+        cands = [(h, best(h)) for h in hits if h.get("duration", 0) >= float(st.get("min", 4))]
+        cands = [(h, v) for h, v in cands if v]
+        want = [(h, v) for h, v in cands if (v["height"] > v["width"]) == (orient == "portrait")] or cands
+        if len(want) <= pick: raise RuntimeError(f"「{q}」只搜到 {len(want)} 条够长的视频")
+        h, v = want[pick]
+        return ({"site": "Pixabay", "id": h["id"], "page": h.get("pageURL"), "author": h.get("user", ""), "size": f"{v['width']}x{v['height']}",
+                 "dur": h.get("duration"), "q": q, "pick": pick}, v["url"])
+    if len(hits) <= pick: raise RuntimeError(f"「{q}」只搜到 {len(hits)} 张图")
+    h = hits[pick]
+    return ({"site": "Pixabay", "id": h["id"], "page": h.get("pageURL"), "author": h.get("user", ""), "size": f"{h.get('imageWidth')}x{h.get('imageHeight')}",
+             "q": q, "pick": pick}, h.get("largeImageURL") or h.get("webformatURL"))
+
+
 def main():
     ep = os.path.abspath(sys.argv[1]); dry = "--dry" in sys.argv
     D = json.load(open(os.path.join(ep, "lines.json"), encoding="utf-8"))
     todo = media.stocks(D)
     if not todo: print("这期没有素材库关键词"); return
-    key = env().get("PEXELS_API_KEY", "")
+    E = env(); key = E.get("PEXELS_API_KEY", ""); pkey = E.get("PIXABAY_API_KEY", "")
     done = fail = 0
     for f, kind, st, frame in todo:
         dst = os.path.join(ep, f)
         if os.path.exists(dst): print("已有", f); done += 1; continue
         orient = st.get("orient") or ("portrait" if frame in ("bleed", "tall") else "landscape")
         q = urllib.parse.quote(st["q"]); pick = int(st.get("pick", 0))
-        if not key: print("跳过（没有 PEXELS_API_KEY）", f); fail += 1; continue
+        if not key and not pkey: print("跳过（没有 PIXABAY_API_KEY / PEXELS_API_KEY）", f); fail += 1; continue
         try:
-            if kind == "video":
+            if pkey:
+                meta, link = pixabay(st, kind, orient, pick, pkey)
+                print(f"{'将下载' if dry else '下载'} {'视频' if kind == 'video' else '图片'} {f} ← Pixabay {meta['id']}（{meta['author']}，{meta['size']}）{meta['page']}")
+                if not dry: download(link, dst)
+            elif kind == "video":
                 r = api(f"https://api.pexels.com/videos/search?query={q}&orientation={orient}&per_page=15", key)
                 cands = [v for v in r.get("videos", []) if v.get("duration", 0) >= float(st.get("min", 4))]
                 if len(cands) <= pick: raise RuntimeError(f"「{st['q']}」只搜到 {len(cands)} 条够长的视频")

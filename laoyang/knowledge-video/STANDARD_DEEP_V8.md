@@ -95,7 +95,7 @@ v7 的版式层照样能用：`take`（图 + 结论栏）、`table`（图 + 表�
 
 | 来源 | 写法 | 谁来弄 | 注意 |
 |---|---|---|---|
-| **素材库关键词（默认）** | `stock: {q: "英文关键词", kind: "video"/"img", pick: 0}` | Mac 出片机 `stock_media.py` 用 Pexels 免费 API 搜索、下载 | 免费；自动写「Pexels · 作者」进出处行、角标「示意」；不合适就改 `pick`（换第几条）或关键词 |
+| **素材库关键词（默认）** | `stock: {q: "英文关键词", kind: "video"/"img", pick: 0}` | Mac 出片机 `stock_media.py` 用 Pixabay（优先，可用中文关键词）/ Pexels 免费 API 搜索、下载 | 免费；自动写「Pexels · 作者」进出处行、角标「示意」；不合适就改 `pick`（换第几条）或关键词 |
 | 素材库原链接 | `url` + `credit` | Mac 出片机 `fetch_assets.py` 下载 | 用原图 / 原视频文件链接；`label: "示意"` |
 | AI 生成（图 / 视频镜头） | `gen: {prompt, kind: "img"/"video", dur, ratio}` | Mac 出片机 `gen_media.py` 调火山方舟（Seedream 图、Seedance 视频） | 需要 `ARK_API_KEY`；按提示词缓存，不重复花钱；自动标「AI 生成」 |
 | 老杨给的原件（报告页、截图） | `file: "assets/media/<卡id>.png"` | 老杨放进期目录的 `assets/media/`（不进仓库），或发给 Claude | `label: "原文截图"`；截图前去掉个人信息 |

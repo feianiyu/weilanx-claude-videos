@@ -17,7 +17,7 @@
 | 配音凭证：`VOLC_API_KEY`、`VOLC_SPEAKER_ID`（火山引擎声音复刻，老杨本人声音） | 老杨，存在 Mac 的 `tts.env`，路径由 `config.env` 的 `TTS_ENV` 指定 | Mac 退回到云扬配音，声音不是老杨本人，**不能当成片用** |
 | 底图 | 每期在 `lines.json` 的 `bgs[].url` 写 Pexels 原图链接，Mac 用 `core/fetch_assets.py` 下载 | 云端构建用占位色（只能看排版）；Mac 下载失败会在日志里提示 |
 | BGM / 音效 | 深度版用程序合成的和声垫底（`bgm.synth: pad`），无需下载 | — |
-| 素材库凭证：`PEXELS_API_KEY`（Pexels 免费 API，每小时 200 次；深度 v8 默认用它找镜头和图片） | 老杨，写在 Mac 的 `~/laoyang-render/config.env` | `stock` 媒体不下载，成片里是占位框，出片报告会写明，**不能发** |
+| 素材库凭证：`PIXABAY_API_KEY`（Pixabay 免费 API，登录后在 pixabay.com/api/docs 页面上能看到；优先用它）或 `PEXELS_API_KEY`（Pexels 2026-11 暂停发新 Key）。深度 v8 默认用它找镜头和图片 | 老杨，写在 Mac 的 `~/laoyang-render/config.env` | `stock` 媒体不下载，成片里是占位框，出片报告会写明，**不能发** |
 | （备选、要花钱）AI 生成画面凭证：`ARK_API_KEY`（火山方舟），可选 `ARK_IMAGE_MODEL`、`ARK_VIDEO_MODEL`、`ARK_VIDEO_RES`（深度 v8） | 老杨，写在 Mac 的 `tts.env` 或 `~/laoyang-render/config.env` | `gen` 媒体不生成，成片里是占位框，出片报告会写明，**不能发** |
 | 原件截图（报告页、政策原文） | 老杨放进期目录 `assets/media/<卡id>.png`（不进仓库） | 占位框 |
 | 本机 whisper（`WHISPER_PY`、`WHISPER_MODEL`） | Mac 安装时配置 | 没有就跳过“多音字抽查”，初筛里没有可疑句 |
