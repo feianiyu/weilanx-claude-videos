@@ -403,7 +403,7 @@ if DEEP:
     sys.path.insert(0, CORE); import media as _media
     HAS_MEDIA, _mw, _mmiss = _media.prep(cdat, D, REGRESS, DUR)
     for _x in _mw: print("媒体提示：", _x)
-    if _mmiss: print(f"!! 有 {len(_mmiss)} 个媒体缺失（画面用占位）。Mac 上先跑：python3 core/fetch_assets.py {sys.argv[1]}；AI 生成的跑 python3 core/gen_media.py {sys.argv[1]}")
+    if _mmiss: print(f"!! 有 {len(_mmiss)} 个媒体缺失（画面用占位）。Mac 上先跑：python3 core/fetch_assets.py {sys.argv[1]}；素材库关键词的跑 python3 core/stock_media.py {sys.argv[1]}；AI 生成的跑 python3 core/gen_media.py {sys.argv[1]}（出片机会自动跑）")
     if any(c["type"] == "play" for c in cdat):
         import game as _game
         for _p in _game.export(D, EP): print("小游戏：", os.path.relpath(_p, EP))

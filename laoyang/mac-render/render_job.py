@@ -263,6 +263,23 @@ def kv_assets(job: Job):
     return f"失败 {len(fails)}，损坏 {len(broken)}"
 
 
+def kv_stock_media(job: Job):
+    """深度 v8：lines.json 里写了 stock 关键词的图片 / 视频，从 Pexels 免费素材库找并下载。没有 PEXELS_API_KEY 就跳过，成片里是占位画面。"""
+    sys.path.insert(0, kv_core()); import media
+    D = json.load(open(os.path.join(job.ep, "lines.json"), encoding="utf-8"))
+    if not media.stocks(D):
+        return "这期没有素材库关键词"
+    out = job.sh([py(), os.path.join(kv_core(), "stock_media.py"), job.ep], timeout=1800)
+    bad = [ln for ln in out.splitlines() if ln.startswith(("失败", "跳过"))]
+    if bad:
+        job.warn.append("有素材库镜头没下载到，成片里是占位画面：" + "；".join(bad)[:200])
+    picked = [ln for ln in out.splitlines() if ln.startswith("下载")]
+    if picked:
+        job.warn.append("本期素材库镜头（请看一眼是否合适，不合适让 Claude 改 pick 或关键词）：" + "；".join(picked)[:400])
+    last = [ln for ln in out.splitlines() if ln.startswith("素材库镜头")]
+    return last[-1] if last else "已跑"
+
+
 def kv_gen_media(job: Job):
     """深度 v8：lines.json 里写了 gen 的图片 / 视频镜头，用火山方舟生成（有缓存）。没有 ARK_API_KEY 就跳过，成片里是占位画面。"""
     sys.path.insert(0, kv_core()); import media
@@ -376,6 +393,7 @@ def run_knowledge_video(job: Job, selftest=False):
         job.step("多音字抽查（本机 whisper）", lambda: kv_whisper(job), fatal=False)
         job.step("语速统一", lambda: kv_pace(job), fatal=False)
     job.step("下载底图、配乐、音效", lambda: kv_assets(job))
+    job.step("素材库镜头（Pexels，免费）", lambda: kv_stock_media(job), fatal=False)
     job.step("AI 生成画面（深度 v8）", lambda: kv_gen_media(job), fatal=False)
     job.step("测拍", lambda: kv_beat(job), fatal=False)
     job.step("构建", lambda: job.sh([py(), os.path.join(core, "build.py"), job.ep], timeout=900) and "")

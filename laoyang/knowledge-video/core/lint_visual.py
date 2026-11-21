@@ -95,7 +95,8 @@ def lint(D, ep_dir=None):
         d = c.get("data", {}); m = d.get("media") if isinstance(d.get("media"), dict) else d
         for role, mm in (("卡", m if c["type"] in MED else None), ("整屏底图", d.get("bleed"))):
             if not mm: continue
-            if not (mm.get("file") or mm.get("url") or mm.get("gen")): E.append(f"{c['id']} 的{role}媒体没写来源：file / url / gen 至少一个。")
+            if not (mm.get("file") or mm.get("url") or mm.get("gen") or mm.get("stock")): E.append(f"{c['id']} 的{role}媒体没写来源：stock / file / url / gen 至少一个。")
+            if mm.get("stock") and not mm["stock"].get("q"): E.append(f"{c['id']} 的 stock 没写关键词 q。")
             if mm.get("url") and not mm.get("gen") and not mm.get("credit"): E.append(f"{c['id']} 的{role}媒体来自素材库，要写 credit（出处 / 作者），会自动进出处行。")
             if mm.get("gen") and mm.get("label") and "AI" not in mm["label"]: E.append(f"{c['id']} 是 AI 生成的，角标必须带「AI」（平台要求显式标识）。")
             if mm.get("gen") and not (mm["gen"].get("prompt")): E.append(f"{c['id']} 的 gen 没写 prompt。")

@@ -91,11 +91,16 @@ v7 的版式层照样能用：`take`（图 + 结论栏）、`table`（图 + 表�
 
 ## 3. 媒体从哪来
 
+**默认只用免费来源（11-21 老杨定）**：原件截图 > 素材库关键词 `stock` > 素材库原链接 `url`。AI 生成 `gen` 要花钱，只在素材库确实找不到、且老杨同意时用。
+
 | 来源 | 写法 | 谁来弄 | 注意 |
 |---|---|---|---|
-| 素材库（Pexels 图片 / 视频） | `url` + `credit` | Mac 出片机 `fetch_assets.py` 下载 | 用原图 / 原视频链接；`label: "示意"` |
+| **素材库关键词（默认）** | `stock: {q: "英文关键词", kind: "video"/"img", pick: 0}` | Mac 出片机 `stock_media.py` 用 Pexels 免费 API 搜索、下载 | 免费；自动写「Pexels · 作者」进出处行、角标「示意」；不合适就改 `pick`（换第几条）或关键词 |
+| 素材库原链接 | `url` + `credit` | Mac 出片机 `fetch_assets.py` 下载 | 用原图 / 原视频文件链接；`label: "示意"` |
 | AI 生成（图 / 视频镜头） | `gen: {prompt, kind: "img"/"video", dur, ratio}` | Mac 出片机 `gen_media.py` 调火山方舟（Seedream 图、Seedance 视频） | 需要 `ARK_API_KEY`；按提示词缓存，不重复花钱；自动标「AI 生成」 |
 | 老杨给的原件（报告页、截图） | `file: "assets/media/<卡id>.png"` | 老杨放进期目录的 `assets/media/`（不进仓库），或发给 Claude | `label: "原文截图"`；截图前去掉个人信息 |
+
+`stock` 的关键词用英文写**具体画面**（`container port night aerial`，不写 `economy`）；尽量选没有人脸特写的场景。下载后出片报告会列出每条镜头的 Pexels 链接，老杨看一眼，不合适让 Claude 改 `pick`。
 
 `gen` 的提示词写**画面**，不写字（AI 生成的字常常是错的）；脚本会自动补一句统一风格（电影感、低饱和暖色、无文字、无水印、不出现真人面孔特写）。不想要统一风格写 `"raw": true`。
 
@@ -103,7 +108,7 @@ v7 的版式层照样能用：`take`（图 + 结论栏）、`table`（图 + 表�
 
 ## 4. 体检（`core/lint_visual.py`，`"layout": "v8"`）
 
-- 不过不出片：媒体没写来源（file / url / gen 都没有）；素材库媒体没写 credit；AI 生成的 label 不带「AI」；gen 没写 prompt；试玩卡缺 inputs / outputs / keys；媒体卡连排 3 张。
+- 不过不出片：媒体没写来源（stock / file / url / gen 都没有）；stock 没写关键词；素材库媒体没写 credit；AI 生成的 label 不带「AI」；gen 没写 prompt；试玩卡缺 inputs / outputs / keys；媒体卡连排 3 张。
 - 提示：一张图片 / 镜头都没用；钩子卡没有 bleed；试玩卡没写 cta；镜头合计超过全片 30%；视频比卡片短；整屏底图分辨率不够。
 - v7 的版式 / 标注提示在 v8 期数里照样跑。
 
@@ -114,14 +119,16 @@ v7 的版式层照样能用：`take`（图 + 结论栏）、`table`（图 + 表�
 | `core/media.js` | photo / clip / play 三种卡、整屏动态底图层 `#mdbg`、取帧和等待解码（`MEDIA_ALL`、`MEDIA_WAIT`） |
 | `core/media.py` | build 时整理媒体：图片缩放、视频抽帧、缺文件给占位、credit 进出处行、镜头占比提示 |
 | `core/game.py` | 试玩卡 → `build/小游戏_<卡id>.html` |
-| `core/gen_media.py` | Mac 上用火山方舟生成 `gen` 媒体（有缓存）。**2026-11-21 写成，还没在真机跑过**：第一次先 `--dry` |
+| `core/stock_media.py` | Mac 上按 `stock` 关键词从 Pexels 免费素材库找图 / 视频并下载，旁边写 `.stock.json` 记作者和链接。**还没在真机跑过**：第一次先 `--dry` |
+| `core/gen_media.py` | Mac 上用火山方舟生成 `gen` 媒体（有缓存，要花钱，备选）。**还没在真机跑过**：第一次先 `--dry` |
 | `core/fetch_assets.py` | 加上 photo / clip / bleed 的 `url` |
 | `core/cards.js`、`shell_deep.html`、`morph.js` | 每帧调 `MEDIA_ALL`；`render(t)` 在图片 / 帧没解码完时返回 Promise（截图前自动等）；粒子转场认得媒体框 |
 | `core/build.py`、`lint_visual.py`、`regress.py` | 接入媒体层；`layout: v8` 硬拦；演示期 8 帧基准 |
-| `../mac-render/render_job.py` | 新步骤「AI 生成画面（深度 v8）」；验素材时连媒体一起验；交付时带上 `小游戏_*.html` |
+| `../mac-render/render_job.py` | 新步骤「素材库镜头（Pexels，免费）」「AI 生成画面（深度 v8）」；出片报告列出下载到的 Pexels 链接；验素材时连媒体一起验；交付时带上 `小游戏_*.html` |
 
 ## 6. 还没验证的
 
-- AI 生成镜头的真实观感、费用和生成时间（要老杨在 Mac 配上 `ARK_API_KEY` 后跑一期看）。
+- Pexels 关键词自动选的镜头合不合适（要老杨在 Mac 配上免费的 `PEXELS_API_KEY` 后跑一期看）。
+- AI 生成镜头的观感和费用（备选，暂不配 `ARK_API_KEY`）。
 - 小游戏在各平台怎么挂、观众会不会去玩。
 - 有镜头的片子 3 秒划走率、20% 处留存有没有变好（发布 48 小时回填）。

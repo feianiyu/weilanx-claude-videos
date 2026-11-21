@@ -7,7 +7,7 @@
 """
 import os, json, glob, shutil, subprocess
 
-MEDIA_KEYS = ("file", "url", "gen", "credit", "label", "frame", "kb", "pan", "in", "rate", "dim", "look", "kind")
+MEDIA_KEYS = ("file", "url", "gen", "stock", "credit", "label", "frame", "kb", "pan", "in", "rate", "dim", "look", "kind")
 VIDEO_EXT = (".mp4", ".mov", ".webm", ".m4v")
 
 
@@ -21,7 +21,7 @@ def _probe(f):
 def _norm(raw, cid, default_kind):
     """把卡片里的媒体字段整理成一个 dict；返回 (m, 原始字段)"""
     m = dict(raw or {})
-    gen = m.get("gen") or {}
+    gen = m.get("gen") or m.get("stock") or {}
     kind = m.get("kind") or (gen.get("kind") if gen else None)
     if not kind and m.get("file"): kind = "video" if m["file"].lower().endswith(VIDEO_EXT) else "img"
     if not kind and m.get("url"): kind = "video" if m["url"].split("?")[0].lower().endswith(VIDEO_EXT) else ("video" if default_kind == "video" and not gen else default_kind)
@@ -48,16 +48,22 @@ def prep(cdat, D, regress=False, dur=None):
         if c["type"] == "play": any_media = True
         for m, mid, role in jobs:
             any_media = True
-            if m.get("credit") and not d.get("src") and role == "card": d["src"] = m["credit"]
+            sj = m["file"] + ".stock.json"   # stock_media.py 下载时记下的 Pexels 作者 → 自动进出处行
+            if m.get("stock") and os.path.exists(sj) and not regress:
+                sm = json.load(open(sj, encoding="utf-8")); m.setdefault("credit", f"{sm.get('site', 'Pexels')} · {sm.get('author', '')}".strip(" ·"))
+            if m.get("stock") and not m.get("label"): m["label"] = "示意"
+            if m.get("credit") and role == "card":   # 画面出处进出处行：卡片没写出处就用它；写了就接在后面
+                if not d.get("src"): d["src"] = m["credit"]
+                elif m["credit"] not in d["src"]: d["src"] = d["src"] + "；画面：" + m["credit"]
             fr = m.get("frame") or d.get("frame") or "full"
             m["fit"] = "contain" if fr == "doc" else "cover"
             span = c["t1"] - c["t0"] + 0.5
             if m["kind"] == "video": clip_sec += c["t1"] - c["t0"]
             f = m["file"]
             if regress or not os.path.exists(f):
-                why = (m.get("gen") or {}).get("prompt") or m.get("url") or f
+                why = (m.get("gen") or {}).get("prompt") or (("素材库：" + m["stock"].get("q", "")) if m.get("stock") else "") or m.get("url") or f
                 m["missing"] = why; m.pop("src", None)
-                if not regress: missing.append(f); print(f"!! 缺媒体，用占位：{f}（{'AI 生成' if m.get('gen') else '下载' if m.get('url') else '本地文件'}）")
+                if not regress: missing.append(f); print(f"!! 缺媒体，用占位：{f}（{'AI 生成' if m.get('gen') else '素材库关键词' if m.get('stock') else '下载' if m.get('url') else '本地文件'}）")
                 continue
             w, h, fdur = _probe(f)
             if not w: m["missing"] = f"打不开：{f}"; missing.append(f); print("!! 媒体打不开：", f); continue
@@ -108,4 +114,18 @@ def gens(D):
         for raw, mid, dk in cand:
             m = _norm(raw, mid, dk)
             if m.get("gen"): out.append((m["file"], m["kind"], m["gen"], "bleed" if mid.endswith("_bg") else (m.get("frame") or d.get("frame") or "full")))
+    return out
+
+
+def stocks(D):
+    """stock_media 用：所有写了素材库关键词的媒体 [(file, kind, stock, frame)]"""
+    out = []
+    for c in D.get("cards", []):
+        d = c.get("data", {}); cid = c.get("id")
+        cand = []
+        if c.get("type") in ("photo", "clip"): cand.append((d.get("media") or {k: d[k] for k in MEDIA_KEYS if k in d}, cid, "video" if c["type"] == "clip" else "img"))
+        if d.get("bleed"): cand.append((d["bleed"], cid + "_bg", "video"))
+        for raw, mid, dk in cand:
+            m = _norm(raw, mid, dk)
+            if m.get("stock") and not m.get("gen"): out.append((m["file"], m["kind"], m["stock"], "bleed" if mid.endswith("_bg") else (m.get("frame") or d.get("frame") or "full")))
     return out

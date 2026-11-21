@@ -433,10 +433,9 @@
      }
     ],
     "bleed": {
-     "gen": {
-      "prompt": "夜晚的集装箱港口，龙门吊亮着灯在吊装集装箱，远处城市灯火，航拍镜头缓慢向前推进",
-      "kind": "video",
-      "dur": 5
+     "stock": {
+      "q": "container port night aerial",
+      "kind": "video"
      },
      "dim": 0.75
     }
@@ -651,10 +650,9 @@
     "eyebrow": "火的一边",
     "title": "出口：*前 10 个月 25.99 万亿*",
     "frame": "wide",
-    "gen": {
-     "prompt": "白天的集装箱码头，桥吊把彩色集装箱吊上货轮，低角度跟拍，节奏平稳",
-     "kind": "video",
-     "dur": 5
+    "stock": {
+     "q": "container ship loading crane",
+     "kind": "video"
     },
     "cap": {
      "t": "同比 *+17.6%*",
@@ -1185,8 +1183,8 @@
     "eyebrow": "出口很大一块靠全球 AI 投资",
     "title": "存储部件出口 *+132.5%*",
     "frame": "full",
-    "gen": {
-     "prompt": "大型数据中心机房内部，一排排服务器机柜，冷色指示灯，透视纵深，镜头平视",
+    "stock": {
+     "q": "data center server racks",
      "kind": "img"
     },
     "kb": [
