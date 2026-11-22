@@ -251,12 +251,12 @@ def run_v3(EP, L, keys_req):
             c0, c1 = cuts[i], cuts[i + 1]; seg = x[int(c0 * SR):int(c1 * SR)].copy()
             fz = min(len(seg) // 4, int(0.012 * SR))
             if fz > 0: seg[:fz] *= np.linspace(0, 1, fz); seg[-fz:] *= np.linspace(1, 0, fz)
-            # 句尾只剩很轻的气声 / 底噪（说话响度的 6%–15%）一直拖到文件末尾时，补 150ms 淡出：
-            # 这不是没说完的字（字的响度远高于 15%），淡掉它句尾体检才不误报；真被切的字（> 15%）不碰，照样报出来重配
+            # 句尾只剩很轻的气声 / 底噪（说话响度的 6%–25%）一直拖到文件末尾时，补 150ms 淡出：
+            # 这不是没说完的字（EP.32 实测：句尾气声 0.06–0.2，被切的字 0.3 以上），淡掉它句尾体检才不误报；真被切的字（> 25%）不碰，照样报出来重配
             if i == len(grp) - 1 and len(seg) > SR // 2:
                 hh = int(0.01 * SR); nn = len(seg) // hh; rr = np.sqrt((seg[:nn * hh].reshape(nn, hh) ** 2).mean(1) + 1e-12)
                 sp = float(np.percentile(rr, 90)); tl = float(rr[-5:].max()) / max(sp, 1e-9)
-                if 0.06 < tl <= 0.15:
+                if 0.06 < tl <= 0.25:
                     fo = min(len(seg) // 4, int(0.15 * SR)); seg[-fo:] *= np.linspace(1, 0, fo) ** 2
             encode(seg, os.path.join(EP, "vo", f"{k}.mp3"))
             ws = [{"w": w["word"], "s": round(max(0.0, w["startTime"] - c0), 3), "e": round(max(0.0, w["endTime"] - c0), 3)} for w in per[i]]
