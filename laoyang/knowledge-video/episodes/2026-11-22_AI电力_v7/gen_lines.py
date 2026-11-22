@@ -148,6 +148,34 @@ C = [
  {"type":"question","rel":"评论区","at":"v63","steps":["v63|芯片和电力|s","v63|更关键的约束|s"],
   "data":{"eyebrow":"评论区说说","lines":["下一阶段 AI 竞争",{"text":"*芯片* 还是 *电力*","s":1},{"text":"哪个是更关键的约束？","s":2}]}},
 ]
+# 2026-11-22 Claude：首次出片 11 句句尾被切，其中 7 句是以「，：；」结尾的半句（半句单独合成，结尾不自然、容易被切）。
+# 文字不变，只把半句和同段的下一句并成一句配音（下一句是某张卡的起点时不并，免得两张卡挤在同一句）；
+# 卡片里的 vNN 自动改到合并后的编号。另 4 句换演法让缓存失效、重配。
+_FIX_EMO = {"v05": "平稳陈述，句尾「一份报告」说完整，尾字不要吞", "v16": "平稳陈述，句尾「保持领先」说完整，尾字不要吞",
+            "v51": "平稳说清楚，句尾「风电或光伏」说完整，尾字不要吞", "v52": "加重语气，句尾「化石能源」说完整，尾字不要吞",
+            "v08": "平稳陈述，句尾「基准情景」说完整，尾字不要吞", "v18": "平稳陈述，句尾「用电需求」说完整，尾字不要吞",
+            "v20": "平稳陈述，句尾「快于预期」说完整，尾字不要吞", "v23": "转折，句尾「而是说」说完整，尾字不要吞",
+            "v42": "转折，句尾「反面问题」说完整，尾字不要吞", "v44": "平稳陈述，句尾「有没有太阳」说完整，尾字不要吞",
+            "v55": "平稳陈述，句尾「新能源资源结合」说完整，尾字不要吞"}
+_ATS = {c["at"] for c in C}
+_S2, _MAP = [], {}
+for _i, (_s, _t, _e) in enumerate(S):
+    _k = f"v{_i+1:02d}"; _e = _FIX_EMO.get(_k, _e)
+    if _S2 and _S2[-1][1][-1] in "，：；" and _S2[-1][0] == _s and _k not in _ATS:
+        _ps, _pt, _pe = _S2[-1]
+        _S2[-1] = (_s, _pt + _t, _e if _e in ("aha", "heavy") else _pe)
+    else:
+        _S2.append((_s, _t, _e))
+    _MAP[_k] = f"v{len(_S2):02d}"
+S = _S2
+import re as _re
+def _remap(x):
+    if isinstance(x, str): return _re.sub(r"\bv\d\d\b", lambda m: _MAP.get(m.group(0), m.group(0)), x)
+    if isinstance(x, list): return [_remap(y) for y in x]
+    if isinstance(x, dict): return {k: (_remap(v) if k in ("at", "steps") else v) for k, v in x.items()}
+    return x
+C = [_remap(c) for c in C]
+lines = {f"v{i+1:02d}": {"sec": s, "sub": t, "emo": e} for i, (s, t, e) in enumerate(S)}
 for i, c in enumerate(C): c["id"] = f"k{i+1:02d}"
 C = [dict([("id", c["id"])] + [(k, v) for k, v in c.items() if k != "id"]) for c in C]
 D = {
@@ -157,7 +185,7 @@ D = {
  "tension": "大家盯着芯片和模型，电却可能先卡住算力",
  "essence": "有电力优势，不等于自动赢得AI竞争",
  "decision": "看 AI 相关项目时，除了模型和芯片，也问电从哪来、多久接上、多少钱一度",
- "payoff": "v05",
+ "payoff": _MAP["v05"],
  "source": {"who": "伍德麦肯兹", "org": "国际能源研究机构"},
  "series": {"title": "拆解伍德麦肯兹报告", "sub": "AI时代，中美为什么都在争夺电力？"},
  "frame": {"seriesLine": "拆解伍德麦肯兹报告", "column": "LAOYANG CUBE / 企业经营观察", "ep": "EP.32"},
