@@ -624,7 +624,8 @@
     "title": "需求在变，*生产不能说变就变*",
     "frame": "wide",
     "stock": {
-     "q": "tire factory production",
+     "q": "factory packaging production line",
+     "id": 74507,
      "kind": "video"
     },
     "zoom": {

@@ -110,7 +110,7 @@ cards = [
   "data": {"lines": [[["第一", "#F5A623"]], [["AI 先进入具体工作", None]]], "size": 80, "cy": 900, "in": "光扫", "out": "雾散"}},
  {"id": "k08", "type": "clip", "rel": "场景", "at": "v10", "steps": ["v11|现实问题|s", "v11|不能说变就变|s"],
   "data": {"eyebrow": "贵州贵安 · 轮胎工厂", "title": "需求在变，*生产不能说变就变*", "frame": "wide",
-           "stock": {"q": "tire factory production", "kind": "video"},
+           "stock": {"q": "factory packaging production line", "id": 74507, "kind": "video"},
            "zoom": {"x": 0.5, "y": 0.5, "z": 1.35, "s": 1}, "cap": {"t": "这是每家制造企业*每天的难题*", "s": 2}, "src": WEF}},
  {"id": "k09", "type": "list", "rel": "几个发现", "at": "v12", "steps": ["v12|订单多了|s", "v13|订单少了|s", "v14|销售部门|s"],
   "data": {"eyebrow": "三个老问题", "title": "计划*跟得上变化*吗", "items": [
