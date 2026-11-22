@@ -13,8 +13,12 @@ def dec(f):
 
 def check(EP, quiet=False):
     bad = []
+    try: keys = set(json.load(open(os.path.join(EP, "lines.json"), encoding="utf-8"))["lines"])
+    except Exception: keys = None
     for f in sorted(glob.glob(os.path.join(EP, "vo", "v*.mp3"))):
-        k = os.path.basename(f)[:-4]; x = dec(f)
+        k = os.path.basename(f)[:-4]
+        if keys is not None and k not in keys: continue   # 改稿后留下的旧句子文件（句子编号变了），不查
+        x = dec(f)
         if len(x) < SR // 2: continue
         h = int(0.01 * SR); n = len(x) // h; r = np.sqrt((x[:n * h].reshape(n, h) ** 2).mean(1) + 1e-12)
         speech = float(np.percentile(r, 90))

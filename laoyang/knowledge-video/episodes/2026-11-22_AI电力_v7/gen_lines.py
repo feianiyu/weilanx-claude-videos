@@ -175,6 +175,10 @@ def _remap(x):
     if isinstance(x, dict): return {k: (_remap(v) if k in ("at", "steps") else v) for k, v in x.items()}
     return x
 C = [_remap(c) for c in C]
+# 第二次出片（1dbeca9）合并后仍有 4 句句尾没收住：按合并后的编号再换演法重配
+_FIX_NEW = {"v32": "转折，说完「反面问题」停一拍", "v34": "平稳陈述，最后几个字放慢落稳，说完停一拍",
+            "v39": "平稳陈述，最后几个字放慢落稳，说完停一拍", "v44": "平稳陈述，最后几个字放慢落稳，说完停一拍"}
+S = [(s_, t_, _FIX_NEW.get(f"v{i_+1:02d}", e_)) for i_, (s_, t_, e_) in enumerate(S)]
 lines = {f"v{i+1:02d}": {"sec": s, "sub": t, "emo": e} for i, (s, t, e) in enumerate(S)}
 for i, c in enumerate(C): c["id"] = f"k{i+1:02d}"
 C = [dict([("id", c["id"])] + [(k, v) for k, v in c.items() if k != "id"]) for c in C]
