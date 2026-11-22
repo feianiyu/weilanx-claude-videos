@@ -64,7 +64,7 @@ def lint(D, ep_dir=None):
     over = [f"{t}×{k}" for t, k in Counter(types).items() if t in TEXTY and k > 3]
     if over: E.append("同一种文字卡超过 3 张：" + "、".join(over) + "。")
     kinds = len(set(types))
-    if kinds < 5: E.append(f"全期只有 {kinds} 种画面，至少 5 种。")
+    if kinds < 5 and len(C) >= 8: E.append(f"全期只有 {kinds} 种画面，至少 5 种。")   # 不足 8 张卡的样片 / 短片不查
     tx = sum(t in TEXTY for t in types) / n; lg = sorted({t for t in types if t in LOGIC})
     W.append(f"{n} 张卡、{kinds} 种画面；文字卡 {tx:.0%}，逻辑图 {len(lg)} 种（{'、'.join(lg) or '无'}）——比例由内容决定，这里只报告。")
     # 2½ 版式层 + 标注层（深度 v7，STANDARD_DEEP_V7.md）：拼写错了拦；用得少、连着同一种只提示
