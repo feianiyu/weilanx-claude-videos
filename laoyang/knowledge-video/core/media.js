@@ -131,7 +131,9 @@ function MEDIA_ALL(t,K){let bg=null;if(_MDBG)_MDBG.getContext('2d').clearRect(0,
   if(c.type==='play'&&on)_plFrame(k,t);
   if(d.media&&on){if(!k._md)k._md={cv:k.el.querySelector('.md-box canvas'),pins:[...k.el.querySelectorAll('.md-pin')].map((el,i)=>({el,x:d.pins[i].x,y:d.pins[i].y}))};
    if(k._md.cv)_mdDraw(k._md.cv,d.media,Math.max(0,t-c.t0),t,_mdView(c,d.media,d,t),k._md.pins);}
-  if(d.bleed&&on){const a=+k.el.style.opacity||0;if(a>0){bg=bg||_mdBg();const X=bg.getContext('2d');
+  // 整屏底图比卡片多留一会儿（默认 0.9s，bleed.hold 可调）再 0.5s 淡出：下一张卡长出来时底下还有画面，不露静态底图（11-22 样片反馈）
+  const hold=d.bleed?(d.bleed.hold==null?0.9:d.bleed.hold):0,onB=d.bleed&&t>=c.t0-0.01&&(c.last||t<=c.t1+hold+0.5);
+  if(onB){const a=(c.first?1:eo(cl((t-c.t0)/0.4)))*(c.last?1:1-cl((t-(c.t1+hold))/0.5));if(a>0){bg=bg||_mdBg();const X=bg.getContext('2d');
    const off=document.createElement('canvas');off.width=1080;off.height=1920;   // 先画到离屏，再按卡片透明度叠上去（两张 bleed 交叉淡化时不打架）
    const m=d.bleed;
    const blit=()=>{X.save();X.globalAlpha=a*(m.dim==null?0.8:m.dim);X.filter=m.look==='raw'?'none':'saturate(.7) brightness(.62)';X.drawImage(off,0,0);X.restore();};   // 整屏底图压暗、降饱和，和 v3 底图观感一致，字压得住

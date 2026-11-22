@@ -3,6 +3,7 @@
 规则：外框结构变动 +1.0；同一版式内的尺寸 / 配置调整、新效果 / 新规则 / 新工具 +0.1；修 bug 不升号，只记一行。有意改了画面（`regress.py --update`）必须在这里写明。
 
 ## 深度 v8.1 · 2026-11-21 · 素材库关键词自动找镜头（免费）
+- 补（11-22 样片反馈）：`bleed` 整屏画面在卡片退场后多留 0.9s 再 0.5s 淡出（`hold` 可调），换卡时不再露出半秒静态底图。10 秒样片 `episodes/2026-11-22_样片_v8素材库/` 在 Mac 出片机全链路跑通（Pixabay 找镜头 15s、出片 1.6 分钟）。
 - 补：Pexels 暂停发放新 API Key，`stock_media.py` 改为优先用 Pixabay（`PIXABAY_API_KEY`，支持中文关键词，视频按宽高自己挑横竖），Pexels 作备用。
 - 来源（老杨 11-21）：不想为 AI 生成额外花钱。媒体默认只用免费来源。
 - 新字段 `stock: {q, kind, pick, orient, min}`；新 `core/stock_media.py`：Mac 上用 Pexels 免费 API 按关键词搜，视频挑短边 ≥1080 里最小的 mp4，图片取 large2x；旁边写 `.stock.json`（作者、链接），build 自动把「Pexels · 作者」接进出处行，角标默认「示意」。
