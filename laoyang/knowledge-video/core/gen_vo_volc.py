@@ -224,6 +224,14 @@ def run_v3(EP, L, keys_req):
             c["sim"] = round(difflib.SequenceMatcher(None, norm(text), norm(h)).ratio(), 2) if h is not None else None
         if any(c.get("sim") is not None for c in good):
             top = max(c["sim"] or 0 for c in good); good = [c for c in good if (c["sim"] or 0) >= top - 0.03]   # 念得最准的那几遍里再挑
+        # 2026-11-22：优先挑「句尾自然收住」的那一遍（真正说完的位置离文件结尾还有 50ms 以上）。
+        # 合成音频有时到文件末尾还有声音，按它切句尾体检就过不了（EP.32、EP.33 多次因此出片失败）
+        def _tail_ok(c):
+            w = c.get("words") or []; xx = c["x"]
+            return speech_end(xx, w[-1]["endTime"] if w else len(xx) / SR) < len(xx) / SR - 0.05
+        clean = [c for c in good if _tail_ok(c)]
+        if clean and len(clean) < len(good): print(f"{grp[0]}：{len(good) - len(clean)} 遍句尾没收住，不选", flush=True)
+        good = clean or good
         best = good[0] if v.get("pick") == "first" else max(good, key=lambda c: c.get("score", 0))
         log.append({"group": grp, "picked": best["n"], "takes": [{k: c[k] for k in ("n", "ok", "why", "score", "f0_sd", "dur_cv", "sim") if k in c} for c in cands]})
         x, words = level(best["x"]), best["words"]
@@ -243,6 +251,13 @@ def run_v3(EP, L, keys_req):
             c0, c1 = cuts[i], cuts[i + 1]; seg = x[int(c0 * SR):int(c1 * SR)].copy()
             fz = min(len(seg) // 4, int(0.012 * SR))
             if fz > 0: seg[:fz] *= np.linspace(0, 1, fz); seg[-fz:] *= np.linspace(1, 0, fz)
+            # 句尾只剩很轻的气声 / 底噪（说话响度的 6%–15%）一直拖到文件末尾时，补 150ms 淡出：
+            # 这不是没说完的字（字的响度远高于 15%），淡掉它句尾体检才不误报；真被切的字（> 15%）不碰，照样报出来重配
+            if i == len(grp) - 1 and len(seg) > SR // 2:
+                hh = int(0.01 * SR); nn = len(seg) // hh; rr = np.sqrt((seg[:nn * hh].reshape(nn, hh) ** 2).mean(1) + 1e-12)
+                sp = float(np.percentile(rr, 90)); tl = float(rr[-5:].max()) / max(sp, 1e-9)
+                if 0.06 < tl <= 0.15:
+                    fo = min(len(seg) // 4, int(0.15 * SR)); seg[-fo:] *= np.linspace(1, 0, fo) ** 2
             encode(seg, os.path.join(EP, "vo", f"{k}.mp3"))
             ws = [{"w": w["word"], "s": round(max(0.0, w["startTime"] - c0), 3), "e": round(max(0.0, w["endTime"] - c0), 3)} for w in per[i]]
             json.dump(ws, open(os.path.join(EP, "vo", f"{k}.words.json"), "w"), ensure_ascii=False)
