@@ -9,7 +9,7 @@ v8 媒体：钩子整屏动态底图（工厂机械臂）、轮胎厂镜头、�
 """
 import json
 
-WEF = "世界经济论坛《Inside China's Industrial Transformation》2026-06"
+WEF = "世界经济论坛报告 2026-06"
 XH = "新华社 2026-11-10"
 S = [
  # —— 开场 ——
