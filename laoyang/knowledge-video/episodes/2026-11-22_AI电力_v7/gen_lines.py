@@ -176,7 +176,7 @@ def _remap(x):
     return x
 C = [_remap(c) for c in C]
 # 第二次出片（1dbeca9）合并后仍有 4 句句尾没收住：按合并后的编号再换演法重配
-_FIX_NEW = {"v32": "转折，说完「反面问题」停一拍", "v34": "平稳陈述，「可靠的系统」五个字落稳，说完自然收住",
+_FIX_NEW = {"v32": "转折，说完「反面问题」停一拍", "v34": "平稳陈述，句尾「可靠的系统」说完整",
             "v39": "平稳陈述，最后几个字放慢落稳，说完停一拍", "v44": "平稳陈述，最后几个字放慢落稳，说完停一拍"}
 S = [(s_, t_, _FIX_NEW.get(f"v{i_+1:02d}", e_)) for i_, (s_, t_, e_) in enumerate(S)]
 lines = {f"v{i+1:02d}": {"sec": s, "sub": t, "emo": e} for i, (s, t, e) in enumerate(S)}

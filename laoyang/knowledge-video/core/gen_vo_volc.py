@@ -237,6 +237,18 @@ def run_v3(EP, L, keys_req):
         x, words = level(best["x"]), best["words"]
         encode(x, os.path.join(EP, "vo_raw", f"{grp[0]}_group.mp3"))
         per = assign(words, texts); dur = len(x) / SR
+        # 2026-11-22：服务端的字时间戳有时整体偏短（EP.32 v34：时间戳说 8.7s 说完，实际 9.9s 才说完，越长的句子差得越多），
+        # 按它切，句尾就被切掉。从音频末尾往回找真正的最后一个字，时间戳比它早 0.3s 以上时，整组时间戳按比例拉长对齐。
+        _hh = int(0.01 * SR); _nn = len(x) // _hh
+        _rr = np.sqrt((x[:_nn * _hh].reshape(_nn, _hh) ** 2).mean(1) + 1e-12); _thr = 0.06 * float(np.percentile(_rr, 90))
+        _loud = np.nonzero(_rr > _thr)[0]; real_end = (int(_loud[-1]) + 1) * 0.01 if len(_loud) else dur
+        _ws = [w for p_ in per for w in p_]
+        if _ws:
+            t0_, t1_ = _ws[0]["startTime"], _ws[-1]["endTime"]
+            if real_end > t1_ + 0.3 and t1_ > t0_:
+                kk = (real_end - t0_) / (t1_ - t0_)
+                for w in _ws: w["startTime"] = t0_ + (w["startTime"] - t0_) * kk; w["endTime"] = t0_ + (w["endTime"] - t0_) * kk
+                print(f"{grp[0]}：字时间戳比实际声音短 {real_end - t1_:.2f}s，按 ×{kk:.3f} 拉长对齐", flush=True)
         # 切点：组首 = 第一个字前 0.12s；句间 = 上一句「真正说完」和下一句开口之间；组尾 = 真正说完 + 0.14s
         # （不能直接信服务端的字结束时间：它常常偏早 0.2–0.5 秒，按它切会把句末的字切掉）
         starts = [w[0]["startTime"] if w else None for w in per]; ends = [w[-1]["endTime"] if w else None for w in per]
@@ -246,7 +258,7 @@ def run_v3(EP, L, keys_req):
             if a_ is None or b_ is None: cuts.append(cuts[-1]); continue
             real = speech_end(x, a_)
             cuts.append(real + 0.06 if b_ - real < 0.12 else (real + b_) / 2)
-        cuts.append(min(dur, speech_end(x, ends[-1] or dur) + 0.14))
+        cuts.append(min(dur, max(speech_end(x, ends[-1] or dur), real_end) + 0.14))   # 组尾以「音频里真正的最后一个字」为准
         for i, k in enumerate(grp):
             c0, c1 = cuts[i], cuts[i + 1]; seg = x[int(c0 * SR):int(c1 * SR)].copy()
             fz = min(len(seg) // 4, int(0.012 * SR))
