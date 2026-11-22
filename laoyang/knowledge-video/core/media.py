@@ -54,7 +54,9 @@ def prep(cdat, D, regress=False, dur=None):
             if m.get("stock") and not m.get("label"): m["label"] = "示意"
             if m.get("credit") and role == "card":   # 画面出处进出处行：卡片没写出处就用它；写了就接在后面
                 if not d.get("src"): d["src"] = m["credit"]
-                elif m["credit"] not in d["src"]: d["src"] = d["src"] + "；画面：" + m["credit"]
+                elif m["credit"] not in d["src"]:   # 接在后面时只写网站名：出处行一长就超出视频号安全区（EP.33 实测）
+                    site = m["credit"].split(" · ")[0]
+                    d["src"] = d["src"] + "；画面：" + (site if len(d["src"]) + len(m["credit"]) > 30 else m["credit"])
             fr = m.get("frame") or d.get("frame") or "full"
             m["fit"] = "contain" if fr == "doc" else "cover"
             span = c["t1"] - c["t0"] + 0.5

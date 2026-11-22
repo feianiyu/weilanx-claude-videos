@@ -7,6 +7,7 @@
     q     英文关键词（Pexels 用英文搜得最准）；写画面，别写抽象词
     kind  video / img（clip 卡、bleed 默认 video，photo 卡默认 img）
     pick  第几个结果（默认 0 = 最相关的那条）；不满意改成 1、2 重新出片
+    id    直接指定 Pixabay 编号（挑好了某一条时用，优先于 q / pick）
     orient 可选 portrait / landscape / square；不写时按 frame 自动选（bleed、tall 竖的，其他横的）
     min   视频至少几秒（默认 4）
 密钥：Pexels 免费 API Key，写在 Mac 的 ~/laoyang-render/config.env：PEXELS_API_KEY=...（免费，每小时 200 次）
@@ -51,6 +52,7 @@ def pixabay(st, kind, orient, pick, key):
     base = "https://pixabay.com/api/videos/" if kind == "video" else "https://pixabay.com/api/"
     url = f"{base}?key={key}&q={urllib.parse.quote(q)}&lang={lang}&per_page=30&safesearch=true"
     if kind != "video": url += "&image_type=photo&orientation=" + ("vertical" if orient == "portrait" else "horizontal")
+    if st.get("id"): url = f"{base}?key={key}&id={int(st['id'])}"; pick = 0; st = dict(st, min=0); orient = "any"   # 指定 Pixabay 编号：老杨或 Claude 已经挑好的那一条
     with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "laoyang-render/1.0"}), timeout=60) as r: hits = json.loads(r.read()).get("hits", [])
     if kind == "video":
         def best(h):
@@ -59,7 +61,7 @@ def pixabay(st, kind, orient, pick, key):
             return ok[0] if ok else (max(vs, key=lambda v: v["width"] * v["height"]) if vs else None)
         cands = [(h, best(h)) for h in hits if h.get("duration", 0) >= float(st.get("min", 4))]
         cands = [(h, v) for h, v in cands if v]
-        want = [(h, v) for h, v in cands if (v["height"] > v["width"]) == (orient == "portrait")] or cands
+        want = cands if orient == "any" else ([(h, v) for h, v in cands if (v["height"] > v["width"]) == (orient == "portrait")] or cands)
         if len(want) <= pick: raise RuntimeError(f"「{q}」只搜到 {len(want)} 条够长的视频")
         h, v = want[pick]
         return ({"site": "Pixabay", "id": h["id"], "page": h.get("pageURL"), "author": h.get("user", ""), "size": f"{v['width']}x{v['height']}",

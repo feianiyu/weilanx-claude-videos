@@ -1,0 +1,137 @@
+{
+ "_说明": "深度 v8 · 10 秒样片：素材库镜头（Pixabay 关键词自动找）。不发布。",
+ "v": 3,
+ "style": "deep",
+ "layout": "v8",
+ "morph": true,
+ "situation": "做国内生意的中下游老板",
+ "tension": "出口火热，自己利润变薄",
+ "essence": "样片",
+ "decision": "样片",
+ "payoff": "v02",
+ "source": {
+  "who": "海关总署",
+  "org": ""
+ },
+ "series": {
+  "title": "样片：素材库镜头",
+  "sub": "v8 媒体层"
+ },
+ "frame": {
+  "seriesLine": "样片：素材库镜头",
+  "column": "LAOYANG CUBE / 企业经营观察",
+  "ep": "SAMPLE v8"
+ },
+ "bgs": [
+  {
+   "file": "assets/bg_37404257.jpg",
+   "url": "https://images.pexels.com/photos/37404257/pexels-photo-37404257.jpeg",
+   "note": "Pexels #37404257（Pexels License，免费商用），同 EP.31",
+   "dim": 1,
+   "pos": "50% 50%"
+  }
+ ],
+ "voice": {
+  "engine": "volc",
+  "v": 3,
+  "model": "expressive",
+  "rate": 15,
+  "takes": 2,
+  "group": "line",
+  "name": "老杨本人（火山引擎声音复刻 2.0 · 表现力增强版）"
+ },
+ "gapSec": 0.28,
+ "secGap": 0.55,
+ "bgm": {
+  "synth": "pad",
+  "src": "程序合成和声垫底（无版权）"
+ },
+ "bgmUnder": 19,
+ "fx": {
+  "hits": [],
+  "mist": 0.5
+ },
+ "retain": {
+  "maxGap": 7
+ },
+ "cover": {
+  "topic": "样片",
+  "title": "素材库<br>镜头样片",
+  "en": "Stock footage sample",
+  "sub": "v8 媒体层",
+  "tag": "SAMPLE",
+  "tag2": "样片"
+ },
+ "publish": {
+  "title": "样片 不发布",
+  "dy_title": "样片 不发布",
+  "desc": "前10个月，中国出口25.99万亿，增长17.6%。\\n样片，不发布。",
+  "tags": [
+   "#民营企业",
+   "#宏观经济",
+   "#出口"
+  ]
+ },
+ "lines": {
+  "v01": {
+   "sec": "c1",
+   "sub": "前10个月，中国出口25.99万亿，增长17.6%。",
+   "emo": "num"
+  },
+  "v02": {
+   "sec": "c1",
+   "sub": "港口一片火热，可很多工厂的利润，却越来越薄。",
+   "emo": "turn"
+  }
+ },
+ "cards": [
+  {
+   "id": "k01",
+   "type": "hook",
+   "at": "v01",
+   "steps": [
+    "v01|25.99万亿|s"
+   ],
+   "data": {
+    "kicker": "海关数据 · 前 10 个月",
+    "lines": [
+     "中国出口",
+     {
+      "t": "*25.99 万亿*",
+      "s": 1
+     }
+    ],
+    "bleed": {
+     "stock": {
+      "q": "container port night aerial",
+      "kind": "video"
+     },
+     "dim": 0.8
+    }
+   }
+  },
+  {
+   "id": "k02",
+   "type": "clip",
+   "rel": "场景",
+   "at": "v02",
+   "steps": [
+    "v02|利润|s"
+   ],
+   "data": {
+    "eyebrow": "火的一边",
+    "title": "港口*一片火热*",
+    "frame": "wide",
+    "stock": {
+     "q": "container ship loading crane",
+     "kind": "video"
+    },
+    "cap": {
+     "t": "可工厂利润 *越来越薄*",
+     "s": 1
+    },
+    "src": "海关总署 11-10"
+   }
+  }
+ ]
+}
