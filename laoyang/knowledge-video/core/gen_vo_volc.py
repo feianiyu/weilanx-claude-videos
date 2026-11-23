@@ -202,14 +202,23 @@ def run_v3(EP, L, keys_req):
         texts = [text_of(L, k) for k in grp]; text = "".join(texts); ctx = ctx_of(L, grp)
         n_takes = P["takes"] + (1 if any(L["lines"][k].get("emo") == "hook" for k in grp) and P["takes"] > 1 else 0)
         cands = []
-        for n in range(max(1, n_takes)):
+        n = 0
+        # 2026-11-22：正常配 n_takes 遍；如果一遍能用的都没有（多是服务端返回的音频结尾被截断），最多再补 3 遍
+        while n < max(1, n_takes) or (not any(c.get("ok") for c in cands) and n < max(1, n_takes) + 3):
+            n += 1
             try:
                 a, words, meta = T.synth(text, key, spk, res, ctx=ctx, model=P["model"], rate=P["rate"], section=section)
             except T.TTSError as e:
-                cands.append({"n": n, "ok": False, "why": str(e)[:120]}); continue
+                cands.append({"n": n - 1, "ok": False, "why": str(e)[:120]}); continue
             x = decode(a); ok, why = judge(x, words, text)
+            if ok and meta.get("warn"): ok, why = False, "流式传输中断：" + meta["warn"][:60]
+            if ok and len(x) > SR // 2:   # 音频最后 50ms 还很响 = 服务端返回的音频在说话中途就断了（EP.34 v44、v54、v59）
+                _h = int(0.01 * SR); _n = len(x) // _h; _r = np.sqrt((x[:_n * _h].reshape(_n, _h) ** 2).mean(1) + 1e-12)
+                _t = float(_r[-5:].max()) / max(float(np.percentile(_r, 90)), 1e-9)
+                if _t > 0.25: ok, why = False, f"合成音频结尾被截断（{_t:.2f}）"
+            n_ = n - 1
             sc = liveliness(x, words) if ok else (0, 0, 0)
-            cands.append({"n": n, "ok": ok, "why": why, "score": round(sc[0], 2), "f0_sd": round(sc[1], 2), "dur_cv": round(sc[2], 3), "x": x, "words": words})
+            cands.append({"n": n_, "ok": ok, "why": why, "score": round(sc[0], 2), "f0_sd": round(sc[1], 2), "dur_cv": round(sc[2], 3), "x": x, "words": words})
         if not any("x" in c for c in cands): raise SystemExit(f"{grp[0]} 这一组合成失败：{cands[-1]['why']}")
         todo.append((grp, texts, text, cands)); print(" ".join(grp), f"配了 {len(cands)} 遍", flush=True)
     # 第二步：本机 whisper 把每一遍听写回文字（出片机提供 LY_WHISPER_PY；没有就跳过），念错字的那一遍不要
