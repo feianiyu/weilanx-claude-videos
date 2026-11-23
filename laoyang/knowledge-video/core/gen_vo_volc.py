@@ -202,6 +202,9 @@ def run_v3(EP, L, keys_req):
         texts = [text_of(L, k) for k in grp]; text = "".join(texts); ctx = ctx_of(L, grp)
         n_takes = P["takes"] + (1 if any(L["lines"][k].get("emo") == "hook" for k in grp) and P["takes"] > 1 else 0)
         cands = []
+        # 2026-11-22：以「，：；、」结尾的半句，服务端几乎每遍都在说话中途截断（EP.35 v44 连配 5 遍全被截）。
+        # 送去合成时把句末标点换成句号，让它按整句收尾；字幕和画面仍然用原文
+        if text and text[-1] in "，：；、,:;": text = text[:-1] + "。"
         n = 0
         # 2026-11-22：正常配 n_takes 遍；如果一遍能用的都没有（多是服务端返回的音频结尾被截断），最多再补 3 遍
         while n < max(1, n_takes) or (not any(c.get("ok") for c in cands) and n < max(1, n_takes) + 3):
