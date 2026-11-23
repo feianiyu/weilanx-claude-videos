@@ -158,6 +158,14 @@ def kv_voice(job: Job):
                 shutil.copyfile(os.path.join(cache, f"{h}.meta.json"), mj)
         else:
             todo.append(k)
+    # 2026-11-22：缓存里的句子如果句尾被截断（以前配坏、被缓存住的），自动重配，不用再手改 emo
+    try:
+        sys.path.insert(0, kv_core()); import check_vo_tail
+        bad = [k for k, _ in check_vo_tail.check(job.ep, quiet=True) if k in keys and k not in todo]
+        if bad:
+            todo += bad; job.warn.append("缓存里这些句子句尾被截断，已自动重配：" + "、".join(bad))
+    except Exception as e:  # noqa: BLE001
+        job.warn.append(f"缓存句尾检查没做成：{e}")
     job.facts["配音"] = f"{engine}，新配 {len(todo)} 句，沿用缓存 {len(keys) - len(todo)} 句"
     if todo:
         if engine in ("volc", "volcano", "本人"):
