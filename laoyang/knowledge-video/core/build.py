@@ -66,6 +66,7 @@ for k in keys:
             if _g is not None: t = tl[prev][1] + float(_g)
     elif BEAT: t = snap(t, t)
     tl[k] = (round(t, 3), round(t + L[k]["dur"], 3)); t += L[k]["dur"]; prev = k
+TAIL = float(D.get("tailSec", TAIL))   # 留存 v1.3：新期写 "tailSec": 0.8，最后一句说完不留空尾巴（Jenny Hoyos：最后 1 秒空白让留存从 70% 掉到 45%）
 DUR = round(t + TAIL, 3)
 # v2.2：BGM 从曲中某处起播，使 restBefore 句起点正好落在曲子的乐句线（高潮段）上
 BGM_OFF = 0.0

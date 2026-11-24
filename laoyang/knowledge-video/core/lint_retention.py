@@ -18,6 +18,7 @@ PROMISE = ASK + r"|建议|结论|判断|怎么看|怎么研究|怎么应对|答�
 NUM = r"\d|[一二两三四五六七八九十百千万亿半]+多?(成|倍|个点|%|亿|万)|一半|翻了?一?倍|减半"
 PROOF = r"\d|[一二两三四五六七八九十百千万亿]+(成|倍|个点|%)|《|报告|公告|通报|新闻稿|调查|数据|条文|判决|联合国|安理会|发布会|大会上|访谈|听证会|原话"
 AI_WORDS = r"值得注意的是|综上所述|总而言之|不仅如此|与此同时|换句话说|从某种意义上|赋能|抓手|底层逻辑|深度解析|让我们"
+FILLER = r"话不多说|废话不多说|进入正题|下面我们|下面来看|接下来我们|我们来看|我们先来|先来说说|开始之前|首先我们"   # v1.3 丝滑过渡：过渡句要带新悬念，不说空话
 strip = lambda t: re.sub(r"[，。？！、：；“”‘’《》（）\s]", "", t)
 
 def lint(L, keys, D):
@@ -31,6 +32,12 @@ def lint(L, keys, D):
     if miss: W.append("入口卡没填全：缺 " + "、".join(miss) + "（§2：处境 / 说不通 / 本质句 / 决策）。")
     ess = strip(D.get("essence") or "")
     if len(ess) > 30: W.append(f"essence（本质句）{len(ess)} 字，超过 30 字：要短到观众能原样转述。")
+    # 16 预告提前（v1.3，Jenny Hoyos「钩子 3 秒 + 3–5 秒内说清结尾会发生什么」；我们按句算：第 3 句以内）
+    if len(subs) >= 3 and not any(re.search(PROMISE, subs[i]) or re.search(SHAPE, subs[i]) for i in range(3)):
+        W.append("前 3 句里没有预告（问句、「建议 / 答案 / 判断」，或「三类人」这种带数量的清单）：钩子之后要马上告诉观众结尾会拿到什么（§3.2）。")
+    # 17 结尾不留空尾巴（v1.3）
+    if float(D.get("tailSec", 2.6)) > 1.0:
+        W.append(f"tailSec={D.get('tailSec', '未填（默认 2.6）')}：最后一句说完画面还停 1 秒以上，等于给观众划走的时间。lines.json 写 \"tailSec\": 0.8（§3.2）。")
     # 6 证
     if len(subs) >= 3 and not re.search(PROOF, subs[1] + subs[2]): W.append("第 2–3 句里看不出硬证据（数字 / 案例 / 出处）：只有钩子没有证据，像标题党。")
     # 7 约
@@ -84,6 +91,8 @@ def lint(L, keys, D):
     for i, t in enumerate(subs):
         m = re.search(AI_WORDS, t)
         if m: W.append(f"第{i+1}句有书面套话「{m.group(0)}」：换成饭桌上会说的话。")
+        m = re.search(FILLER, t)
+        if m and i > 0: W.append(f"第{i+1}句「{m.group(0)}」是空过渡：换成一句带新悬念的承接，比如「所以他们干了一件更狠的事」（§3.2）。")
     long_ = [i + 1 for i, x in enumerate(n) if x > 45]
     if long_: W.append("单句超过 45 字：第 " + "、".join(map(str, long_)) + " 句。拆开，或把清单交给画面。")
     avg = tot / len(n)
