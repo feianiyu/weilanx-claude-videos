@@ -114,7 +114,7 @@ if DEEP:
                  "rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${Math.max(0,a)})`;};\n"
                  + "\n".join(open(f"{CORE}/{f}", encoding="utf-8").read() for f in ("fx.js", "fx_particles.js", "fx_text.js", "fx_mist.js"))
                  + "\n$('mist').style.display='block';$('fxo').style.display='block';\n")
-    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/layers.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/media.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
+    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_vivid.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/layers.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/media.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
            .replace("/*@EP_CSS*/", ep_css).replace("__CUBE64__", svg_cube(64)).replace("__CUBE58__", svg_cube(58))
            .replace("__T1__", D["series"]["title"]).replace("__SERIES__", FR.get("seriesLine", D["series"]["title"]))
            .replace("__COLUMN__", FR.get("column", "LAOYANG CUBE")).replace("__EPNO__", FR.get("ep", "")))
@@ -216,7 +216,7 @@ for k in keys:
         else: ln = [txt[:txt.index(br) + len(br)], txt[txt.index(br) + len(br):]] if br and br in txt else split2(txt, wb2)
         w = max(cw(x) for x in ln)
         item = {"s": s, "e": e, "lines": ln, "fs": min(52, int(840 / w))}
-        if D.get("karaoke") or D.get("layout") == "v9":
+        if D.get("karaoke") or D.get("layout") in ("v9", "v10"):
             wl = []; cur_p = off
             for line_s in ln:
                 row = []
@@ -230,7 +230,7 @@ for k in keys:
 for s in subs: print("SUB", s["fs"], " / ".join(s["lines"]))
 
 # ---------- sfx（v2.2：采样音效库 + 自合成；v9：autoSfx 按卡片和动效锚点自动排点） ----------
-V9 = D.get("layout") == "v9"
+V9 = D.get("layout") in ("v9", "v10")
 AUTO_SFX = bool(D.get("autoSfx", V9))
 SFXLIB = D.get("sfxlib", {})
 sfx = [{"t": round(A[at] + float(off), 3), "kind": kind} for at, kind, off in SFXLIST]
@@ -245,8 +245,13 @@ if DEEP and AUTO_SFX and not REGRESS:
         elif _ct == "fxtext":
             if _t0 > 0.45: _auto.append({"t": round(_t0 - 0.42, 3), "kind": "riser"})
             _auto.append({"t": round(_t0 + 0.04, 3), "kind": "thud"})
-        elif _ct in ("bignum", "duo"):
+        elif _ct in ("bignum", "duo", "social"):
             _auto.append({"t": round(max(0.02, _t0 + 0.05), 3), "kind": "chime"})
+        elif _ct in ("ticker", "metaphor", "actors"):
+            _auto.append({"t": round(max(0.02, _t0 - 0.04), 3), "kind": "swoosh"})
+            _sts_v = [round(A[x] - 0.1, 3) for x in _c.get("steps", [])]
+            for _j, _st in enumerate(_sts_v[:3]):
+                _auto.append({"t": round(_st + 0.04, 3), "kind": "thud" if (_ct == "ticker" and _j == 0) else "chime"})
         elif _i > 0:
             _auto.append({"t": round(max(0.02, _t0 - 0.04), 3), "kind": "swoosh"})
         _sts = [round(A[x] - 0.1, 3) for x in _c.get("steps", [])]
@@ -613,7 +618,7 @@ if DEEP:
         sys.path.insert(0, CORE); import lint_visual
         _ve, _vw = lint_visual.lint(D, EP)
         for _x in _vw: print("画面体检：", _x)
-        if _ve and D.get("layout") in ("v5", "v6", "v7", "v8", "v9") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
+        if _ve and D.get("layout") in ("v5", "v6", "v7", "v8", "v9", "v10") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
         for _x in _ve: print("画面提示：", _x)
     if RETAIN:   # §2.7 体检：第 1 张是钩子大字卡；前 20% 画面每 ≤maxGap 秒变一次；后段有金句卡
         R_err = []

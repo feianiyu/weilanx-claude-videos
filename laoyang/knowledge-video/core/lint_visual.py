@@ -27,11 +27,14 @@ REL = {
  # —— 媒体层（深度 v8）：代码画不出来的东西 ——
  "现场": ["photo", "clip"], "原件": ["photo"], "场景": ["clip", "photo"], "历史画面": ["photo", "clip"], "实物": ["photo"],
  "算一算": ["play", "waterfall"], "互动": ["play"],
- "分化": ["diverge", "pnbar", "versus", "bars"], "涨跌对比": ["pnbar", "bars", "duo", "multi"], "几项并列": ["multi", "bars", "list"], "地区分布": ["tilemap", "bars"], "流向": ["flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["link", "flow", "map"],
+ # —— 具象场景与视觉隐喻（深度 v10）：听什么就看见什么 ——
+ "行情": ["ticker", "line", "bars"], "官宣": ["social", "quote"], "转发": ["social", "quote"], "隐喻": ["metaphor"], "博弈": ["actors", "forces", "balance"],
+ "分化": ["ticker", "diverge", "pnbar", "versus", "bars"], "涨跌对比": ["ticker", "pnbar", "bars", "duo", "multi"], "几项并列": ["multi", "bars", "list"], "地区分布": ["tilemap", "bars"], "流向": ["metaphor", "flowmap", "sankey", "flow", "link"], "两维定位": ["bubble", "matrix"], "迁移": ["bubble", "flowmap", "versus"], "排名变化": ["race", "bars", "chart"], "路径": ["routes", "map", "timeline"], "两端": ["actors", "link", "flow", "map"],
 }
 TEXTY = {"text", "punch", "question", "shift", "list", "quote"}
 LOGIC = {"map", "chain", "matrix", "balance", "waterfall", "cycle", "tree", "funnel", "pyramid", "venn", "timeline", "iceberg",
-         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line", "tilemap", "flowmap", "bubble", "race", "diverge", "pnbar", "multi"}
+         "sankey", "donut", "versus", "ladder", "dots", "forces", "stack", "line", "tilemap", "flowmap", "bubble", "race", "diverge", "pnbar", "multi",
+         "ticker", "social", "metaphor", "actors"}
 
 def _prev_episode(ep_dir):
     if not ep_dir: return None
@@ -82,7 +85,7 @@ def lint(D, ep_dir=None):
             if not a.get("on"): E.append(f"{c['id']} 有一条标注没写 on（标在哪几个字上）。")
             if a.get("k") in ("delta", "bracket") and not a.get("to"): E.append(f"{c['id']} 的 {a.get('k')} 标注要写 to（到哪几个字）。")
         if d.get("lay") == "note" and c["type"] != "bignum": W.append(f"{c['id']} 用了 note 版式，它是给 bignum 配的。")
-    if D.get("layout") in ("v7", "v8", "v9"):
+    if D.get("layout") in ("v7", "v8", "v9", "v10"):
         lays = [lay_of(c) for c in C if c["type"] not in ("hook", "punch", "question")]
         used = {x for ls in lays for x in ls}; ak = {a.get("k") for c in C for a in c.get("data", {}).get("ann", [])}
         if len(used) < 4: W.append(f"版式只用了 {len(used)} 种（{'、'.join(sorted(used))}）：试试结论栏、上图下表、对比、镜头推近（V7 §2）。")
@@ -109,7 +112,7 @@ def lint(D, ep_dir=None):
     mt = [c["type"] in MED or c["type"] == "play" for c in C]
     for i in range(len(mt) - 2):
         if all(mt[i:i + 3]): E.append(f"媒体卡连排 3 张（{C[i]['id']} 起）：图片和镜头是用来换气的，中间要回到逻辑图。")
-    if D.get("layout") in ("v8", "v9"):
+    if D.get("layout") in ("v8", "v9", "v10"):
         nm = sum(c["type"] in MED for c in C); nb = sum(bool(c.get("data", {}).get("bleed")) for c in C); npl = sum(c["type"] == "play" for c in C)
         W.append(f"媒体层：图片 / 镜头卡 {nm} 张，整屏动态底图 {nb} 处，试玩卡 {npl} 张。")
         if nm + nb == 0: W.append("v8 期数一张图片 / 镜头都没有：至少给钩子一个 bleed 动态底图，或给故事段一张现场图（V8 §2）。")
@@ -125,4 +128,4 @@ def lint(D, ep_dir=None):
 
 if __name__ == "__main__":
     ep = sys.argv[1]; D = json.load(open(os.path.join(ep, "lines.json")))
-    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6", "v7", "v8", "v9") else 0)
+    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6", "v7", "v8", "v9", "v10") else 0)
