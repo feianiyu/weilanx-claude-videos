@@ -215,14 +215,66 @@ for k in keys:
         if manual: ln = [x for x in manual[[c[1] for c in chunks].index(off)].split("|") if x]
         else: ln = [txt[:txt.index(br) + len(br)], txt[txt.index(br) + len(br):]] if br and br in txt else split2(txt, wb2)
         w = max(cw(x) for x in ln)
-        subs.append({"s": s, "e": e, "lines": ln, "fs": min(52, int(840 / w))})
+        item = {"s": s, "e": e, "lines": ln, "fs": min(52, int(840 / w))}
+        if D.get("karaoke") or D.get("layout") == "v9":
+            wl = []; cur_p = off
+            for line_s in ln:
+                row = []
+                for m_ in re.finditer(r"[A-Za-z0-9.%+-]+|[一-龥]{1,2}|[^A-Za-z0-9一-龥]", line_s):
+                    ts0 = max(s, min(e - 0.04, stime(cur_p + m_.start())))
+                    ts1 = max(ts0 + 0.06, min(e, stime(cur_p + m_.end())))
+                    row.append([m_.group(0), round(ts0, 3), round(ts1, 3)])
+                wl.append(row); cur_p += len(line_s)
+            item["wl"] = wl
+        subs.append(item)
 for s in subs: print("SUB", s["fs"], " / ".join(s["lines"]))
 
-# ---------- sfx（v2.2：采样音效库 + 自合成；data-sfx="kind" data-sfxoff=秒；音效的「冲击点」对齐到锚点） ----------
+# ---------- sfx（v2.2：采样音效库 + 自合成；v9：autoSfx 按卡片和动效锚点自动排点） ----------
+V9 = D.get("layout") == "v9"
+AUTO_SFX = bool(D.get("autoSfx", V9))
 SFXLIB = D.get("sfxlib", {})
 sfx = [{"t": round(A[at] + float(off), 3), "kind": kind} for at, kind, off in SFXLIST]
+if DEEP and AUTO_SFX and not REGRESS:
+    _prio = {"thud": 5, "stamp": 4, "chime": 3, "riser": 2, "swoosh": 1}
+    _auto = []
+    for _i, _c in enumerate(CARDS):
+        _at = _c["at"]; _t0 = 0.0 if _i == 0 else (A[_at] - 0.15 if "|" in _at else tl[_at][0] - 0.3)
+        _ct = _c["type"]; _cd = _c.get("data", {})
+        if _ct in ("hook", "punch", "myth"):
+            _auto.append({"t": round(max(0.02, _t0 + 0.03), 3), "kind": "thud"})
+        elif _ct == "fxtext":
+            if _t0 > 0.45: _auto.append({"t": round(_t0 - 0.42, 3), "kind": "riser"})
+            _auto.append({"t": round(_t0 + 0.04, 3), "kind": "thud"})
+        elif _ct in ("bignum", "duo"):
+            _auto.append({"t": round(max(0.02, _t0 + 0.05), 3), "kind": "chime"})
+        elif _i > 0:
+            _auto.append({"t": round(max(0.02, _t0 - 0.04), 3), "kind": "swoosh"})
+        _sts = [round(A[x] - 0.1, 3) for x in _c.get("steps", [])]
+        if _ct == "check":
+            for _st in _sts: _auto.append({"t": round(_st + 0.06, 3), "kind": "chime"})
+        elif _ct == "hook":
+            for _st in _sts[:2]: _auto.append({"t": round(_st + 0.02, 3), "kind": "thud"})
+        elif (_cd.get("stamp") or _cd.get("sticker")) and _sts:
+            _auto.append({"t": round(_sts[-1] + 0.04, 3), "kind": "stamp"})
+    _auto.sort(key=lambda x: (x["t"], -_prio.get(x["kind"], 0)))
+    _kept = list(sfx)
+    # 专属 3D 魔方片头（brand）自带 2.8s 节奏音效组（不受 0.40s 节流限制，精准卡在聚拢锁死 + 三连快拧 + 粒子散开）
+    if CARDS and (CARDS[0].get("data") or {}).get("bleed", {}).get("brand"):
+        _kept += [
+            {"t": 0.02, "kind": "riser_fast"},
+            {"t": 0.45, "kind": "cube_lock"},
+            {"t": 0.62, "kind": "cube_click1"},
+            {"t": 1.02, "kind": "cube_click2"},
+            {"t": 1.42, "kind": "cube_click3"},
+            {"t": 2.00, "kind": "spark_out"},
+        ]
+    for _e in _auto:
+        if all(abs(_e["t"] - _k["t"]) >= 0.40 for _k in _kept):
+            _kept.append(_e)
+    sfx = _kept
 sfx.sort(key=lambda x: x["t"])
-assert len(sfx) <= 20, (len(sfx), sfx)
+if not AUTO_SFX:
+    assert len(sfx) <= 20, (len(sfx), sfx)
 # ---------- audio ----------
 os.makedirs("build", exist_ok=True)
 def load(path, sec=4.0):
@@ -264,8 +316,28 @@ def pad(sec):
                 out[a0:a1] += np.sin(2 * np.pi * (f + det) * t_ + m) * env * 0.08
     k = int(SR * 0.004); out = np.convolve(out, np.ones(k) / k, "same")   # 柔化
     return out.astype(np.float32)
-if isinstance(D.get("bgm"), dict) and D["bgm"].get("synth") == "pad":
-    b = np.zeros(int(DUR * SR), np.float32) if REGRESS else pad(DUR + 5)
+def pulse(sec):
+    """深度 v9 律动配乐：在温暖 Am-F-C-G 和声垫底上加入克制的 100 BPM 低频脉冲 + 三段能量包络，确定性、无版权。"""
+    base = pad(sec).astype(np.float64)
+    n = len(base); tt = np.arange(n, dtype=np.float64) / SR
+    bpm = 100.0; beat = 60.0 / bpm
+    roots = [45, 41, 36, 43]  # A2, F2, C2, G2 (低音根音，避开人声核心中频)
+    sub = np.zeros(n, dtype=np.float64)
+    nb = int(sec // beat) + 1
+    for i in range(nb):
+        t0 = i * beat; a0 = int(t0 * SR); a1 = min(n, int((t0 + beat * 0.85) * SR))
+        if a1 <= a0: break
+        t_ = np.arange(a1 - a0, dtype=np.float64) / SR
+        midi = roots[int(t0 // 8.0) % 4]
+        f = 440.0 * 2 ** ((midi - 69) / 12)
+        accent = 1.0 if i % 4 == 0 else (0.68 if i % 2 == 0 else 0.42)
+        env = (1 - np.exp(-t_ * 55)) * np.exp(-t_ * 6.5) * accent
+        sub[a0:a1] += (np.sin(2 * np.pi * f * t_) * 0.78 + np.sin(2 * np.pi * f * 2 * t_) * 0.14) * env * 0.20
+    # 能量包络：前 8 秒开场提气，中段略收，后 20% 微推
+    env_sec = np.where(tt < 8.0, 1.18 - 0.18 * (tt / 8.0), np.where(tt > sec * 0.78, 1.0 + 0.18 * ((tt - sec * 0.78) / max(1.0, sec * 0.22)), 0.96))
+    return ((base * 0.82 + sub) * env_sec).astype(np.float32)
+if isinstance(D.get("bgm"), dict) and D["bgm"].get("synth") in ("pad", "pulse"):
+    b = np.zeros(int(DUR * SR), np.float32) if REGRESS else (pulse(DUR + 5) if D["bgm"].get("synth") == "pulse" else pad(DUR + 5))
 elif BGM_OFF >= 0:
     b = load(BGM, DUR + BGM_OFF + 5)[int(BGM_OFF * SR):]
 else:   # 片子比曲子的高潮位置还长：曲子从头起播，前面留空（原来负数切片会只剩曲尾几秒）
@@ -314,7 +386,64 @@ def glitch():  # 方波碎片 + 比特噪声 0.22s，-24dB
     nz = np.repeat(rng.standard_normal(n // 64 + 1), 64)[:n] * 0.6
     env = np.exp(-tt * 9) * (1 - np.exp(-tt * 800))
     return ((0.6 * sq + nz) * env).astype(np.float32) * 10 ** (-24 / 20)
-SYN = {"tick": tick(), "softpop": softpop(), "whoosh": whoosh(), "glitch": glitch()}
+def thud():   # 低频重击 0.22s，用于 hook/punch/slam
+    n = int(.22 * SR); tt = np.arange(n) / SR
+    f = 115 * np.exp(-tt * 14) + 38; ph = 2 * np.pi * np.cumsum(f) / SR
+    env = (1 - np.exp(-tt * 600)) * np.exp(-tt * 16)
+    return (np.sin(ph) * env).astype(np.float32) * 10 ** (-14 / 20)
+def stamp():  # 盖章/贴纸厚实脆响 0.15s
+    n = int(.15 * SR); tt = np.arange(n) / SR; rng = np.random.default_rng(11)
+    body = np.sin(2 * np.pi * 160 * tt * np.exp(-tt * 8)) * np.exp(-tt * 28)
+    click = rng.standard_normal(n).astype(np.float32) * np.exp(-tt * 95) * 0.45
+    return ((body + click) * (1 - np.exp(-tt * 900))).astype(np.float32) * 10 ** (-15 / 20)
+def chime():  # 温暖短促泛音 0.18s，用于 tick/bignum
+    n = int(.18 * SR); tt = np.arange(n) / SR
+    env = (1 - np.exp(-tt * 500)) * np.exp(-tt * 22)
+    y = np.sin(2 * np.pi * 880 * tt) * 0.65 + np.sin(2 * np.pi * 1320 * tt) * 0.35
+    return (y * env).astype(np.float32) * 10 ** (-19 / 20)
+def swoosh(): # 轻柔换卡扫风 0.28s，不抢人声
+    n = int(.28 * SR); tt = np.arange(n) / SR; rng = np.random.default_rng(17)
+    x = rng.standard_normal(n).astype(np.float32); env = np.sin(np.pi * np.clip(tt / .28, 0, 1)) ** 2
+    fc = 420 + 2200 * (tt / .28) ** 1.4; y = np.zeros(n, np.float32); a = 0.0
+    for i in range(n):
+        k2 = 2 * np.pi * fc[i] / SR; a += k2 / (1 + k2) * (x[i] - a); y[i] = a
+    y = y - np.convolve(y, np.ones(20) / 20, "same")
+    return (y / (np.abs(y).max() + 1e-9) * env).astype(np.float32) * 10 ** (-23 / 20)
+def riser():  # 章节/高潮前轻柔抬升 0.50s
+    n = int(.50 * SR); tt = np.arange(n) / SR; rng = np.random.default_rng(23)
+    x = rng.standard_normal(n).astype(np.float32); u = tt / .50
+    env = (u ** 2.2) * (1 - np.exp(-(1 - u) * 35))
+    tone = np.sin(2 * np.pi * np.cumsum(260 + 520 * u * u) / SR) * 0.35
+    return ((x * 0.25 + tone) * env).astype(np.float32) * 10 ** (-22 / 20)
+def riser_fast():  # 0.42s 高速磁吸聚拢扫频
+    n = int(.42 * SR); tt = np.arange(n) / SR; u = tt / .42; rng = np.random.default_rng(31)
+    x = rng.standard_normal(n).astype(np.float32)
+    tone = np.sin(2 * np.pi * np.cumsum(180 + 980 * (u ** 2.1)) / SR) * 0.45
+    env = (u ** 1.8) * (1 - np.exp(-(1 - u) * 50))
+    return ((x * 0.22 + tone) * env).astype(np.float32) * 10 ** (-17 / 20)
+def cube_lock():   # 0.28s 魔方合拢重击（深低频 Sub + 金属锁扣声）
+    n = int(.28 * SR); tt = np.arange(n) / SR; rng = np.random.default_rng(37)
+    sub = np.sin(2 * np.pi * np.cumsum(135 * np.exp(-tt * 15) + 42) / SR) * np.exp(-tt * 12)
+    metal = (np.sin(2 * np.pi * 1680 * tt) * 0.45 + np.sin(2 * np.pi * 2520 * tt) * 0.30) * np.exp(-tt * 42)
+    snap = rng.standard_normal(n).astype(np.float32) * np.exp(-tt * 110) * 0.4
+    return ((sub * 0.85 + metal * 0.45 + snap) * (1 - np.exp(-tt * 900))).astype(np.float32) * 10 ** (-12 / 20)
+def cube_click(pitch=1.0):  # 0.14s 清脆机械魔方拧动卡扣声
+    n = int(.14 * SR); tt = np.arange(n) / SR; rng = np.random.default_rng(int(41 * pitch))
+    c1 = np.sin(2 * np.pi * 920 * pitch * tt) * np.exp(-tt * 55)
+    c2 = np.sin(2 * np.pi * 1480 * pitch * tt) * np.exp(-tt * 40) * 0.55
+    grit = rng.standard_normal(n).astype(np.float32) * np.exp(-tt * 85) * 0.35
+    return ((c1 + c2 + grit) * (1 - np.exp(-tt * 1100))).astype(np.float32) * 10 ** (-15 / 20)
+def spark_out():   # 0.48s 能量粒子四散星尘扫风
+    n = int(.48 * SR); tt = np.arange(n) / SR; u = tt / .48; rng = np.random.default_rng(47)
+    x = rng.standard_normal(n).astype(np.float32)
+    shimmer = (np.sin(2 * np.pi * 1760 * tt) * 0.3 + np.sin(2 * np.pi * 2640 * tt) * 0.25) * np.exp(-tt * 6.5)
+    env = (1 - np.exp(-tt * 28)) * ((1 - u) ** 1.6)
+    return ((x * 0.18 + shimmer) * env).astype(np.float32) * 10 ** (-19 / 20)
+SYN = {"tick": tick(), "softpop": softpop(), "whoosh": whoosh(), "glitch": glitch(),
+       "thud": thud(), "stamp": stamp(), "chime": chime(), "swoosh": swoosh(), "riser": riser(),
+       "riser_fast": riser_fast(), "cube_lock": cube_lock(),
+       "cube_click1": cube_click(1.0), "cube_click2": cube_click(1.14), "cube_click3": cube_click(1.30),
+       "spark_out": spark_out()}
 vo_ref = wrms(vo, speech)
 def peakwin(x):   # 50ms 窗最大 RMS（dB）
     w = int(.05 * SR); n = max(1, len(x) // w); xs = x[:n * w].reshape(n, w)
@@ -393,7 +522,7 @@ if DEEP:
     for i, c in enumerate(CARDS):
         at = c["at"]; t0 = 0.0 if i == 0 else (A[at] - 0.15 if "|" in at else tl[at][0] - 0.3)
         cdat.append({"id": c.get("id", f"k{i}"), "type": c["type"], "data": c.get("data", {}), "t0": round(t0, 3), "first": i == 0,
-                     "st": [round(A[x] - 0.1, 3) for x in c.get("steps", [])], **({"morph": c["morph"]} if "morph" in c else {})})
+                     "st": [round(A[x] - 0.1, 3) for x in c.get("steps", [])], **({"morph": c["morph"]} if "morph" in c else {}), **({"tr": c["tr"]} if "tr" in c else {})})
     for i, c in enumerate(cdat):
         c["t1"] = cdat[i + 1]["t0"] if i + 1 < len(cdat) else DUR; c["last"] = i + 1 == len(cdat)
         assert c["t1"] > c["t0"] + 0.5, ("卡片时间太短或顺序错", c["id"], c["t0"], c["t1"])
@@ -418,6 +547,22 @@ if DEEP and D.get("morph"):
     data["morph"] = True   # 深度 v6 粒子接力转场（morph.js）
 if DEEP and HAS_MEDIA:
     data["media"] = True   # 深度 v8 媒体层（media.js）
+if DEEP and (V9 or D.get("motion")):
+    data["motion"] = D.get("motion", "v2")
+if DEEP and (V9 or D.get("karaoke")):
+    data["karaoke"] = True
+if DEEP and (V9 or D.get("progressBar")):
+    _chaps = []
+    for _c in cdat:
+        if _c["type"] in ("hook", "fxtext", "punch"):
+            _nm = ("开场" if _c["type"] == "hook" else ("结论" if _c["type"] == "punch" else (_c["data"].get("eyebrow") or "核心")))
+            if isinstance(_nm, str): _nm = _nm.replace("*", "")[:8]
+            if not _chaps or _c["t0"] - _chaps[-1]["t"] >= 4.0:
+                _chaps.append({"t": _c["t0"], "name": _nm})
+    if len(_chaps) < 2 and len(cdat) >= 3:
+        _step = max(1, len(cdat) // 3)
+        _chaps = [{"t": cdat[j]["t0"], "name": f"0{idx+1}"} for idx, j in enumerate(range(0, len(cdat), _step)[:4])]
+    data["progressBar"] = {"chapters": _chaps}
 if DEEP and int(D.get("v", 1)) >= 3:
     data["look"] = D.get("look", "muted")   # 底图观感：muted = 彩色照片降饱和、轻压暗（老杨 11-11 定）；mono = 纯黑白；dark = v2 的重压暗
 if DEEP and D.get("fx"):
@@ -468,7 +613,7 @@ if DEEP:
         sys.path.insert(0, CORE); import lint_visual
         _ve, _vw = lint_visual.lint(D, EP)
         for _x in _vw: print("画面体检：", _x)
-        if _ve and D.get("layout") in ("v5", "v6", "v7", "v8") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
+        if _ve and D.get("layout") in ("v5", "v6", "v7", "v8", "v9") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
         for _x in _ve: print("画面提示：", _x)
     if RETAIN:   # §2.7 体检：第 1 张是钩子大字卡；前 20% 画面每 ≤maxGap 秒变一次；后段有金句卡
         R_err = []

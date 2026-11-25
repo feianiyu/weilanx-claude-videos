@@ -12,9 +12,11 @@
 // =====================================================================
 const LG={o:'#F5A623',r:'#E8553A',w:'#F4F1EA',l:'rgba(244,241,234,.6)',g:'#8E8A82',bg:'rgba(10,10,10,.72)'};
 // ---------- 文字工具 ----------
-const _lgLen=s=>[...String(s).replace(/\*/g,'')].reduce((a,ch)=>a+(/[\x00-\xff]/.test(ch)?0.56:1),0);
+const _lgLen=s=>{let x=String(s).replace(/\*/g,'');if(window.DATA&&window.DATA.motion)x=x.replace(/!([^!\s][^!]*)!/g,'$1').replace(/\+([^+\s][^+]*)\+/g,'$1').replace(/~([^~\s][^~]*)~/g,'$1');return [...x].reduce((a,ch)=>a+(/[\x00-\xff]/.test(ch)?0.56:1),0);};
 const _lgFit=(s,size,maxW)=>{const L=Math.max(...String(s).split('|').map(_lgLen),1);return Math.max(22,Math.min(size,Math.floor(maxW/L)));};
-const _lgSpan=s=>esc(s).replace(/\*([^*]+)\*/g,'<tspan class="lgem">$1</tspan>');
+const _lgSpan=s=>{let r=esc(s).replace(/\*([^*]+)\*/g,'<tspan class="lgem">$1</tspan>');
+ if(window.DATA&&window.DATA.motion){r=r.replace(/!([^!\s][^!]*)!/g,'<tspan class="lgem-r">$1</tspan>').replace(/\+([^+\s][^+]*)\+/g,'<tspan class="lgem-g">$1</tspan>').replace(/~([^~\s][^~]*)~/g,'<tspan class="lgem-c">$1</tspan>');}
+ return r;};
 // 多行文字：| 换行；*词* 橙色；自动缩字号到 maxW
 function LT(x,y,s,o={}){if(s==null||s==='')return '';const size=o.fit===false?(o.size||36):_lgFit(s,o.size||36,o.w||800),ls=String(s).split('|'),lh=size*1.22,y0=y-(ls.length-1)*lh/2+size*0.36;
  return `<text class="${o.cls||'lgt'}" x="${x}" y="${y0.toFixed(1)}" font-size="${size}" text-anchor="${o.a||'middle'}"${o.fill?` fill="${o.fill}"`:''}>`+ls.map((l,i)=>`<tspan x="${x}" ${i?`dy="${lh.toFixed(1)}"`:''}>${_lgSpan(l)}</tspan>`).join('')+`</text>`;}

@@ -2,6 +2,13 @@
 
 规则：外框结构变动 +1.0；同一版式内的尺寸 / 配置调整、新效果 / 新规则 / 新工具 +0.1；修 bug 不升号，只记一行。有意改了画面（`regress.py --update`）必须在这里写明。
 
+## 深度 v9 · 2026-11-24 · 动感与留存引擎 + 电影级 WebGL2 3D 魔方专属开场
+- 来源（老杨 11-24）：针对「动画效果过于单一、流量/留存不高、开场缺少老杨魔方专属质感」进行全面升级；全部通过 `"layout": "v9"`（或独立开关）启用，旧期画面逐像素不变。
+- `cards.js` / `cards_logic.js` / `shell_deep.html`：新增弹性过冲曲线 `backOut`、5 种语义卡片转场（`cut` / `zoom` / `slide` / `wipe` / `rise`）、停留期镜头微呼吸、多步卡片焦点压暗，以及 HTML+SVG 双端语义色（`!红!` / `+绿+` / `~青~`）。
+- `build.py`：新增零配置 `autoSfx` 自动排点与 10 种程序化无版权音效（`thud / stamp / chime / swoosh / riser` + 魔方片头 6 连机械节奏音效）；新增 `bgm.synth: "pulse"` 100 BPM 低频律动配乐；输出 `subs[].wl` 词级时间戳与章节进度条数据。
+- `shell_deep.html` / `_checks.py`：新增逐词卡拉 OK 高亮字幕（`karaoke`）与顶部视频号安全区内极简章节进度条（`progressBar`）。
+- `media.js` / `media.py` / `lint_visual.py`：新增 **2.8 秒 WebGL2 光线步进 PBR 3D 装甲魔方片头**（`bleed: {"brand": "cube"}`，倒角黑曜石金属 + 熔金核心 + 翡翠冷光轮廓 + 撞击色散/冲击波 + 同步机械快拧音效），并预留本机自定义 `.mp4` 片头库槽位（`bleed: {"preset": "..."}` → `~/laoyang-render/intros/`）。标准见 `STANDARD_DEEP_V9.md`。
+
 ## 留存脚本 v1.3 · 2026-11-24 · 吸收短视频爆款法则
 - 来源：老杨转来 Jenny Hoyos（YouTube Shorts）的爆款法则总结，定的口径是「片长不变，只吸收规则」。逐条对照写在 `STANDARD_RETENTION_SCRIPT.md` §3.2。
 - `build.py`：`lines.json` 新字段 `tailSec`（最后一句之后画面停多久，默认仍是 2.6 秒，老期数不变；新期写 0.8）。

@@ -7,8 +7,22 @@
 """
 import os, json, glob, shutil, subprocess
 
-MEDIA_KEYS = ("file", "url", "gen", "stock", "credit", "label", "frame", "kb", "pan", "in", "rate", "dim", "look", "kind")
+MEDIA_KEYS = ("file", "url", "gen", "stock", "brand", "preset", "credit", "label", "frame", "kb", "pan", "in", "rate", "dim", "look", "kind")
 VIDEO_EXT = (".mp4", ".mov", ".webm", ".m4v")
+CORE_INTROS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "intros")
+LOCAL_INTROS = os.path.expanduser("~/laoyang-render/intros")
+
+
+def _resolve_preset(name):
+    """按名字在 ~/laoyang-render/intros/（优先）或 core/assets/intros/ 找自定义开场视频/图片。"""
+    for root in (LOCAL_INTROS, CORE_INTROS):
+        if not os.path.isdir(root): continue
+        direct = os.path.join(root, name)
+        if os.path.isfile(direct): return direct
+        for ext in (".mp4", ".mov", ".webm", ".jpg", ".jpeg", ".png"):
+            p = os.path.join(root, name + ext)
+            if os.path.isfile(p): return p
+    return None
 
 
 def _probe(f):
@@ -21,6 +35,13 @@ def _probe(f):
 def _norm(raw, cid, default_kind):
     """把卡片里的媒体字段整理成一个 dict；返回 (m, 原始字段)"""
     m = dict(raw or {})
+    if m.get("brand"):
+        m["kind"] = "brand"
+        return m
+    if m.get("preset"):
+        found = _resolve_preset(m["preset"])
+        if found: m["file"] = found
+        else: m.setdefault("file", os.path.join(LOCAL_INTROS, m["preset"] + ".mp4"))
     gen = m.get("gen") or m.get("stock") or {}
     kind = m.get("kind") or (gen.get("kind") if gen else None)
     if not kind and m.get("file"): kind = "video" if m["file"].lower().endswith(VIDEO_EXT) else "img"
@@ -48,6 +69,9 @@ def prep(cdat, D, regress=False, dur=None):
         if c["type"] == "play": any_media = True
         for m, mid, role in jobs:
             any_media = True
+            if m.get("brand"):
+                print(f"品牌开场动画 {mid}：{m['brand']}")
+                continue
             sj = m["file"] + ".stock.json"   # stock_media.py 下载时记下的 Pexels 作者 → 自动进出处行
             if m.get("stock") and os.path.exists(sj) and not regress:
                 sm = json.load(open(sj, encoding="utf-8")); m.setdefault("credit", f"{sm.get('site', 'Pexels')} · {sm.get('author', '')}".strip(" ·"))

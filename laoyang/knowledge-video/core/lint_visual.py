@@ -82,7 +82,7 @@ def lint(D, ep_dir=None):
             if not a.get("on"): E.append(f"{c['id']} 有一条标注没写 on（标在哪几个字上）。")
             if a.get("k") in ("delta", "bracket") and not a.get("to"): E.append(f"{c['id']} 的 {a.get('k')} 标注要写 to（到哪几个字）。")
         if d.get("lay") == "note" and c["type"] != "bignum": W.append(f"{c['id']} 用了 note 版式，它是给 bignum 配的。")
-    if D.get("layout") in ("v7", "v8"):
+    if D.get("layout") in ("v7", "v8", "v9"):
         lays = [lay_of(c) for c in C if c["type"] not in ("hook", "punch", "question")]
         used = {x for ls in lays for x in ls}; ak = {a.get("k") for c in C for a in c.get("data", {}).get("ann", [])}
         if len(used) < 4: W.append(f"版式只用了 {len(used)} 种（{'、'.join(sorted(used))}）：试试结论栏、上图下表、对比、镜头推近（V7 §2）。")
@@ -95,7 +95,7 @@ def lint(D, ep_dir=None):
         d = c.get("data", {}); m = d.get("media") if isinstance(d.get("media"), dict) else d
         for role, mm in (("卡", m if c["type"] in MED else None), ("整屏底图", d.get("bleed"))):
             if not mm: continue
-            if not (mm.get("file") or mm.get("url") or mm.get("gen") or mm.get("stock")): E.append(f"{c['id']} 的{role}媒体没写来源：stock / file / url / gen 至少一个。")
+            if not (mm.get("file") or mm.get("url") or mm.get("gen") or mm.get("stock") or mm.get("brand") or mm.get("preset")): E.append(f"{c['id']} 的{role}媒体没写来源：brand / preset / stock / file / url / gen 至少一个。")
             if mm.get("stock") and not mm["stock"].get("q"): E.append(f"{c['id']} 的 stock 没写关键词 q。")
             if mm.get("url") and not mm.get("gen") and not mm.get("credit"): E.append(f"{c['id']} 的{role}媒体来自素材库，要写 credit（出处 / 作者），会自动进出处行。")
             if mm.get("gen") and mm.get("label") and "AI" not in mm["label"]: E.append(f"{c['id']} 是 AI 生成的，角标必须带「AI」（平台要求显式标识）。")
@@ -109,7 +109,7 @@ def lint(D, ep_dir=None):
     mt = [c["type"] in MED or c["type"] == "play" for c in C]
     for i in range(len(mt) - 2):
         if all(mt[i:i + 3]): E.append(f"媒体卡连排 3 张（{C[i]['id']} 起）：图片和镜头是用来换气的，中间要回到逻辑图。")
-    if D.get("layout") == "v8":
+    if D.get("layout") in ("v8", "v9"):
         nm = sum(c["type"] in MED for c in C); nb = sum(bool(c.get("data", {}).get("bleed")) for c in C); npl = sum(c["type"] == "play" for c in C)
         W.append(f"媒体层：图片 / 镜头卡 {nm} 张，整屏动态底图 {nb} 处，试玩卡 {npl} 张。")
         if nm + nb == 0: W.append("v8 期数一张图片 / 镜头都没有：至少给钩子一个 bleed 动态底图，或给故事段一张现场图（V8 §2）。")
@@ -125,4 +125,4 @@ def lint(D, ep_dir=None):
 
 if __name__ == "__main__":
     ep = sys.argv[1]; D = json.load(open(os.path.join(ep, "lines.json")))
-    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6", "v7", "v8") else 0)
+    e, w = lint(D, ep); [print("提示：", x) for x in w]; [print("未通过：", x) for x in e]; sys.exit(1 if e and D.get("layout") in ("v5", "v6", "v7", "v8", "v9") else 0)

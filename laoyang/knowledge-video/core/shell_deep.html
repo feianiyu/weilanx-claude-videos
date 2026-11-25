@@ -15,7 +15,7 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 #wrap{position:absolute;left:50%;top:0;transform-origin:top center}
 #v{position:relative;width:1080px;height:1920px;overflow:hidden;background:#050505;color:#F4F1EA}
 .abs{position:absolute}
-:root{--o:#F5A623;--w:#F4F1EA;--g:#8E8A82;--g2:#3E3B36;--gb:#6E6A63}
+:root{--o:#F5A623;--w:#F4F1EA;--g:#8E8A82;--g2:#3E3B36;--gb:#6E6A63;--r:#FF5A4E;--gn:#3CF07A;--cy:#4FD1C5}
 .bgl{position:absolute;left:-12px;top:-21px;width:1104px;height:1962px;background-position:center;background-size:cover;opacity:0;will-change:transform,opacity}
 #shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,4,4,.95) 0px,rgba(4,4,4,.90) 420px,rgba(4,4,4,.80) 900px,rgba(4,4,4,.70) 1250px,rgba(4,4,4,.76) 1560px,rgba(4,4,4,.88) 1920px)}
 #vig{position:absolute;inset:0;background:radial-gradient(ellipse 85% 70% at 50% 62%,transparent 55%,rgba(0,0,0,.55) 100%)}
@@ -71,6 +71,7 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 /* ---------------- 卡片（cards.js 生成） ---------------- */
 .card{position:absolute;left:80px;top:400px;width:920px;height:910px;visibility:hidden;opacity:0}
 .card em{font-style:normal;color:var(--o)}
+.card em.em-r{color:var(--r)}.card em.em-g{color:var(--gn)}.card em.em-c{color:var(--cy)}
 .u{opacity:0}
 .ey{font-size:24px;letter-spacing:3px;color:var(--o);font-weight:900;white-space:nowrap}
 .ti{font-size:54px;font-weight:900;line-height:1.3;margin-top:12px}
@@ -238,11 +239,23 @@ html,body{background:#000;height:100%;overflow:hidden;font-family:"NSC",sans-ser
 .pc-lw{margin:40px auto 0;width:420px}.pc-ln{height:10px;background:var(--o);transform-origin:center}
 .pc-s{font-size:32px;color:var(--g);margin-top:30px;font-weight:700}
 #sub em.fw{font-style:normal;color:var(--o)}
+/* ===== 深度 v9：顶部章节进度条 + 逐词卡拉OK字幕 ===== */
+#prog{left:104px;width:872px;top:92px;display:none;z-index:20}
+.pg-row{display:flex;align-items:center;gap:14px}
+.pg-trk{position:relative;flex:1;height:5px;background:rgba(244,241,234,.18);border-radius:3px;overflow:visible}
+.pg-fill{position:absolute;left:0;top:0;bottom:0;background:var(--o);border-radius:3px;box-shadow:0 0 12px rgba(245,166,35,.55)}
+.pg-tk{position:absolute;top:-3px;width:3px;height:11px;background:rgba(5,5,5,.85);border-radius:2px}
+.pg-lbl{font-size:20px;font-weight:900;color:var(--o);letter-spacing:1.5px;white-space:nowrap;text-shadow:0 2px 6px rgba(0,0,0,.9)}
+.sw{display:inline-block;color:rgba(255,255,255,.68);transition:none}
+.sw.past{color:#fff}
+.sw.on{color:var(--o);transform:scale(1.06);text-shadow:0 3px 14px rgba(245,166,35,.5),0 3px 10px #000}
+.sw.fw.past{color:var(--o)}
+#sub.open-boost{text-shadow:0 4px 16px rgba(0,0,0,.95),0 0 4px #000}
 /* ===== 深度 v5 逻辑图谱卡（cards_logic.js，STANDARD_DEEP_V5.md）===== */
 .lgx{margin-top:22px;width:920px}.lgx svg{display:block;overflow:visible}
 .lgt{font-family:"NSC";font-weight:700;fill:#F4F1EA;paint-order:stroke;stroke:rgba(5,5,5,.55);stroke-width:6px}
 .lgbt{font-weight:900}.lgn{font-family:"NSC";font-weight:700;fill:#B9B3A8}
-.lgem{fill:#F5A623}.lgor{fill:#F5A623}.lgred{fill:#FF8A70}.lgdark{fill:#111;stroke:none;font-weight:900}
+.lgem{fill:#F5A623}.lgem-r{fill:#FF5A4E}.lgem-g{fill:#3CF07A}.lgem-c{fill:#4FD1C5}.lgor{fill:#F5A623}.lgred{fill:#FF8A70}.lgdark{fill:#111;stroke:none;font-weight:900}
 .lgnum{fill:#F5A623;font-weight:900;stroke:none;font-variant-numeric:tabular-nums}
 .lgdate{fill:#F5A623;font-weight:900}.lgcol{font-weight:900;stroke:none}.lgold{fill:#9A958C}
 .lgbox{fill:rgba(10,10,10,.74);stroke:rgba(244,241,234,.62);stroke-width:2.5}
@@ -306,6 +319,7 @@ svg.ann .an-tx{font-weight:900;font-family:inherit}
 <div id="wrap"><div id="v">
  <div id="bgs" class="abs" style="inset:0"></div><div id="shade" class="abs"></div><canvas id="mist" class="abs" width="540" height="960" style="left:0;top:0;width:1080px;height:1920px;display:none"></canvas><div id="vig" class="abs"></div>
  <canvas id="grain" width="540" height="960"></canvas>
+ <div id="prog" class="abs"></div>
  <div id="brand" class="abs">__CUBE64__<b>老杨魔方</b><i>企业经营观察</i></div>
  <div id="series" class="abs">__SERIES__</div>
  <div id="cards" class="abs"></div><canvas id="fxo" class="abs" width="1080" height="1920" style="left:0;top:0;display:none"></canvas>
@@ -338,9 +352,23 @@ const BGS=(D.bgs||[]).map((b,i)=>{const el=document.createElement('div');el.clas
 const NB=18,wv=$('wave');wv.innerHTML='<i></i>'.repeat(NB);const bars=[...wv.children];const WS=D.wave||'';
 const env=[...Array(NB)].map((_,i)=>0.5+0.5*Math.sin(Math.PI*(i+.5)/NB));
 const subEl=$('sub');let lastSub=-2;const SUBHI=D.subHi?new RegExp(D.subHi,'g'):null;
+const progEl=$('prog');let pgFill=null,pgLbl=null,pgChaps=[];
+if(D.progressBar&&progEl){
+ pgChaps=(D.progressBar.chapters||[]);
+ progEl.style.display='block';
+ const ticks=pgChaps.slice(1).map(c=>`<i class="pg-tk" style="left:${(c.t/D.dur*100).toFixed(2)}%"></i>`).join('');
+ progEl.innerHTML=`<div class="pg-row"><div class="pg-trk"><div class="pg-fill" id="pgf"></div>${ticks}</div><span class="pg-lbl" id="pgl"></span></div>`;
+ pgFill=$('pgf');pgLbl=$('pgl');
+}
+let subSpans=[];
 function render(t){
  const f=Math.round(t*30);
  const kb=t/D.dur;
+ if(pgFill){
+  pgFill.style.width=(cl(t/D.dur)*100).toFixed(2)+'%';
+  if(pgChaps.length){let ci=0;for(let i=0;i<pgChaps.length;i++){if(t>=pgChaps[i].t-0.05)ci=i;}
+   pgLbl.textContent=`0${ci+1}/0${pgChaps.length} · ${pgChaps[ci].name}`;}
+ }
  const RT=D.retain, lift=RT?eo(cl(t/RT.lift)):1;   // 留人套件：开场亮图 + 快推近，lift 秒内收回到正常压暗
  BGS.forEach((b,i)=>{const nx=BGS[i+1];const a=(i===0?1:eo(cl((t-b.t0)/1.0)))*(nx?1-cl((t-nx.t0-0.9)/0.1):1);
   b.el.style.opacity=(t>=b.t0-0.01||i===0?a*b.dim:0).toFixed(3);b.el.style.transform=`scale(${(1+0.02*kb+(RT?0.07*(1-lift):0)).toFixed(4)})`;});
@@ -350,7 +378,28 @@ function render(t){
  const lv=WS.length?parseInt(WS[Math.min(WS.length-1,Math.max(0,f))],36)/35:0;
  bars.forEach((b,i)=>{const j=0.62+0.38*Math.abs(Math.sin(f*0.37+i*1.93)*Math.cos(f*0.21+i*0.71));b.style.height=(6+52*lv*env[i]*j).toFixed(1)+'px';});
  const tt=f/30;let si=-1;for(let i=0;i<D.subs.length;i++){const s=D.subs[i];if(tt>=s.s-0.05&&tt<s.e+0.2){si=i;break;}}
- if(si!==lastSub){if(si>=0){const s=D.subs[si];subEl.innerHTML=s.lines.map(x=>{x=x.replace(/&/g,'&amp;').replace(/</g,'&lt;');return D.subHi?x.replace(SUBHI,'<em class="fw">$&</em>'):x;}).join('<br>');subEl.style.fontSize=Math.min(50,s.fs)+'px';}else subEl.innerHTML='';lastSub=si;}
+ if(si!==lastSub){
+  subSpans=[];
+  if(si>=0){
+   const s=D.subs[si];
+   if(D.karaoke&&s.wl){
+    subEl.innerHTML=s.wl.map(row=>row.map(tok=>{
+     const tx=tok[0].replace(/&/g,'&amp;').replace(/</g,'&lt;');
+     const isFw=SUBHI&&SUBHI.test(tok[0]);if(SUBHI)SUBHI.lastIndex=0;
+     return `<span class="sw${isFw?' fw':''}" data-a="${tok[1]}" data-b="${tok[2]}">${tx}</span>`;
+    }).join('')).join('<br>');
+    subSpans=[...subEl.querySelectorAll('.sw')];
+   }else{
+    subEl.innerHTML=s.lines.map(x=>{x=x.replace(/&/g,'&amp;').replace(/</g,'&lt;');return D.subHi?x.replace(SUBHI,'<em class="fw">$&</em>'):x;}).join('<br>');
+   }
+   subEl.style.fontSize=Math.min(50,s.fs)+'px';
+  }else subEl.innerHTML='';
+  lastSub=si;
+ }
+ if(D.karaoke){
+  subEl.classList.toggle('open-boost',tt<5.0);
+  for(const sp of subSpans){const a=+sp.dataset.a,b=+sp.dataset.b;const on=tt>=a-0.02&&tt<b+0.04;const past=tt>=b+0.04;sp.classList.toggle('on',on);sp.classList.toggle('past',past);}
+ }
  subEl.style.opacity=si>=0?cl((tt-D.subs[si].s+0.05)/0.12):0;
  if(typeof MEDIA_WAIT!=='undefined')return MEDIA_WAIT();   // 深度 v8：图片 / 视频帧没解码完时返回 Promise，截图前等它
 }

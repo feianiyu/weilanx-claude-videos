@@ -2,7 +2,7 @@
 CHECK = """(()=>{const out=[];
 if(document.getElementById('cards')){   // 深度版：卡片区 x80–1000 / y400–1310，字幕 y1500–1730（页脚线 1745）
  const ST=document.body.classList.contains('stage'),ZL=ST?104:76,ZR=ST?976:1004,ZB=ST?1392:1312;   // 深度 v3 舞台模式：整卡 0.94 倍并居中，卡片区 x104–976（视频号安全区）/ y396–1392
- document.querySelectorAll('#cards .card').forEach(c=>{if(getComputedStyle(c).visibility==='hidden'||+c.style.opacity<0.5)return;
+ document.querySelectorAll('#cards .card').forEach(c=>{if(getComputedStyle(c).visibility==='hidden'||+c.style.opacity<0.5||c.dataset.trin==='1')return;
   c.querySelectorAll('*').forEach(e=>{let op=1;for(let x=e;x&&x!==c;x=x.parentElement)op*=+(getComputedStyle(x).opacity);if(op<0.3)return;
    if(e.closest('.ch-in'))return;if(e.closest('.mp svg')&&e.tagName!=='svg')return;   /* 结构图：图内元素被 svg 裁切，只查 svg 外框 */
    if(e.dataset&&e.dataset.fx==='slam'){const tr=getComputedStyle(e).transform;if(tr!=='none'&&!tr.startsWith('matrix(1, 0, 0, 1'))return;}   /* 砸入动效缩放途中的那几帧不算越界 */
