@@ -47,7 +47,7 @@ def load_cfg():
 CFG = load_cfg()
 
 # launchd 启动时 PATH 很短，补上 Homebrew 和常用位置
-os.environ["PATH"] = ":".join([f"{HOME}/.homebrew/bin", "/opt/homebrew/bin", "/usr/local/bin", f"{HOME}/bin",
+os.environ["PATH"] = ":".join([f"{HOME}/.local/bin", f"{HOME}/.homebrew/bin", "/opt/homebrew/bin", "/usr/local/bin", f"{HOME}/bin",
                                 os.environ.get("PATH", ""), "/usr/bin", "/bin", "/usr/sbin", "/sbin"])
 os.environ.setdefault("PYTHONUNBUFFERED", "1")
 
