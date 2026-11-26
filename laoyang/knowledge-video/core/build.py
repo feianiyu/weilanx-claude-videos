@@ -109,7 +109,7 @@ if DEEP:
     def svg_cube(px): return f'<svg width="{px}" height="{px}" viewBox="-56 -56 112 112">{CUBE}</svg>'
     ep_html = ""; ep_js = open("scenes.js", encoding="utf-8").read() if os.path.exists("scenes.js") else ""
     FXLIB = ""
-    if D.get("fx"):   # 深度 v2.3 融合层：彩雾 + 文字出场（STANDARD_DEEP_V2 §2.8）；不写 fx 的期数画面不变
+    if D.get("fx") or (D.get("layout") == "v10" and D.get("fx") is not False):   # 深度 v2.3 融合层；v10 默认开克制光尘微动，消除背景死寂
         FXLIB = ("const X=$('fxo').getContext('2d'),O='#F5A623',AU='#F0B429',G='#3CF07A',IV='#FFE9C4',GR='#8C857A',RD='#E8553A',lerp=(a,b,p)=>a+(b-a)*p,"
                  "rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${Math.max(0,a)})`;};\n"
                  + "\n".join(open(f"{CORE}/{f}", encoding="utf-8").read() for f in ("fx.js", "fx_particles.js", "fx_text.js", "fx_mist.js"))
@@ -570,8 +570,9 @@ if DEEP and (V9 or D.get("progressBar")):
     data["progressBar"] = {"chapters": _chaps}
 if DEEP and int(D.get("v", 1)) >= 3:
     data["look"] = D.get("look", "muted")   # 底图观感：muted = 彩色照片降饱和、轻压暗（老杨 11-11 定）；mono = 纯黑白；dark = v2 的重压暗
-if DEEP and D.get("fx"):
-    data["fx"] = dict({"mist": 0 if int(D.get("v", 1)) >= 3 else 0.8}, **(D["fx"] if isinstance(D["fx"], dict) else {}))
+if DEEP and (D.get("fx") or (D.get("layout") == "v10" and D.get("fx") is not False)):
+    _def_mist = 0.42 if D.get("layout") == "v10" else (0 if int(D.get("v", 1)) >= 3 else 0.8)
+    data["fx"] = dict({"mist": _def_mist}, **(D["fx"] if isinstance(D.get("fx"), dict) else {}))
     data["fx"]["hits"] = [round(A[x], 3) for x in data["fx"].get("hits", [])]
 if DEEP and int(D.get("v", 1)) >= 3 and D.get("retain") is None:
     D["retain"] = {"maxGap": 7.0}   # 深度 v3 默认带留人套件（第 1 张 hook、前 20% 画面间隔体检）；不要写 "retain": false
@@ -629,6 +630,10 @@ if DEEP:
         big = [g for g in gaps if g[0] > RETAIN["maxGap"]]
         if big: R_err.append(f"前 20%（0–{W}s）画面有 {len(big)} 段超过 {RETAIN['maxGap']}s 没变化：" + "、".join(f"{a}s 起 {g}s" for g, a in big) + "。加一个 step / 换卡 / 换底图。")
         print(f"留人套件：前 20%（0–{W}s）画面变化 {len(ev) - 1} 次，最长间隔 {max([g for g, _ in gaps] or [0])}s")
+        if D.get("layout") == "v10":
+            _all_ev = sorted({0.0, DUR, *[c["t0"] for c in cdat], *[x for c in cdat for x in c["st"]]})
+            _slow = [(round(b - a, 1), round(a, 1)) for a, b in zip(_all_ev, _all_ev[1:]) if b - a > 3.5]
+            if _slow: print(f"v10 节奏提示：全片有 {len(_slow)} 段超过 3.5s 无新要素（最长 {max(g for g,_ in _slow)}s）：" + "、".join(f"{a}s({g}s)" for g, a in _slow[:6]) + "——建议加密 step 或拆卡（引擎已自动叠加永动流光/呼吸）")
         if not any(c["type"] == "punch" and c["t0"] >= 0.6 * DUR for c in cdat): print("提示： 后 40% 没有 punch（金句卡）：结尾那句能截图转发的话，最好单独给一张卡。")
         if R_err: sys.exit("留人套件体检未通过：\n  " + "\n  ".join(R_err))
 if DEEP: pass

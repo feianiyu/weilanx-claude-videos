@@ -177,7 +177,8 @@ function _soFrame(k,t){
  el.querySelectorAll('.so-cnt').forEach(b=>{
   const s=+(b.dataset.s||1),ts=tau(c,s),to=+(b.dataset.to||0),unit=b.dataset.unit||'';
   const q=_vEO(cl((t-ts)/1.1));
-  const val=to*q;
+  const live=to>100&&t>ts+1.1?Math.floor((t-ts-1.1)*to*0.012):0;   // 保持热搜实时递增的活感
+  const val=to*q+live;
   b.textContent=(val>=10000?(val/10000).toFixed(1)+'万':_vFmt(val,0))+unit;
  });
 }
@@ -253,29 +254,44 @@ function _mpPipe(X,W,H,t,st,d){
 }
 
 function _mpSqueeze(X,W,H,t,st,d){
- // 双面重型液压板向中间挤压，核心利润/企业块被压缩变红报警
- const p=st.p!=null?st.p:(st.state==='crush'?0.88:0.35);
+ // 双面重型液压板向中间挤压（带持续警示斜纹流动 + 受压迸发火星 + 压力表呼吸）
+ const lv=window._LV||0;
+ const baseP=st.p!=null?st.p:(st.state==='crush'?0.88:0.35);
+ const p=cl(baseP+Math.sin(t*3.2)*0.03+lv*0.03);
  const cy=H*0.5,gap=_vLerp(150,52,p);
  const col=p>0.65?'#FF5A4E':'#F5A623',rgb=p>0.65?'255,90,78':'245,166,35';
  // 上下液压柱
  X.fillStyle='#2a2d34';X.fillRect(W/2-44,0,88,cy-gap-36);X.fillRect(W/2-44,cy+gap+36,88,H-(cy+gap+36));
- // 上下重型压板（带警示斜纹）
+ // 上下重型压板 + 流动警示斜纹
  for(const dir of [-1,1]){
   const y=dir<0?cy-gap-42:cy+gap;
-  X.fillStyle='#1b1d22';X.strokeStyle='rgba(245,166,35,0.6)';X.lineWidth=3;
-  X.fillRect(120,y,W-240,42);X.strokeRect(120,y,W-240,42);
+  X.save();X.beginPath();X.rect(120,y,W-240,42);X.clip();
+  X.fillStyle='#1b1d22';X.fillRect(120,y,W-240,42);
+  X.strokeStyle=`rgba(${rgb},0.35)`;X.lineWidth=14;
+  const off=(t*55*dir)%48;
+  for(let sx=80+off;sx<W-80;sx+=48){X.beginPath();X.moveTo(sx,y-8);X.lineTo(sx+26,y+50);X.stroke();}
+  X.restore();
+  X.strokeStyle=col;X.lineWidth=3;X.strokeRect(120,y,W-240,42);
  }
- // 被挤压的中间核心块
+ // 被挤压的中间核心块 + 迸发压力火星
  const bh=Math.max(48,gap*1.6),bw=360+p*110;
- const sh=p>0.65?Math.sin(t*55)*4:0;
+ const sh=p>0.55?Math.sin(t*48)*(2+3*p):0;
  X.save();X.translate(W/2+sh,cy);
- const g=X.createRadialGradient(0,0,10,0,0,220);
- g.addColorStop(0,`rgba(${rgb},0.45)`);g.addColorStop(1,'rgba(0,0,0,0)');
- X.fillStyle=g;X.beginPath();X.arc(0,0,220,0,6.283);X.fill();
+ const g=X.createRadialGradient(0,0,10,0,0,220+40*lv);
+ g.addColorStop(0,`rgba(${rgb},${(0.38+0.22*lv).toFixed(3)})`);g.addColorStop(1,'rgba(0,0,0,0)');
+ X.fillStyle=g;X.beginPath();X.arc(0,0,220+40*lv,0,6.283);X.fill();
  X.fillStyle=`rgba(${rgb},0.22)`;X.strokeStyle=col;X.lineWidth=4;
  X.beginPath();X.roundRect(-bw/2,-bh/2,bw,bh,12);X.fill();X.stroke();
  X.font='900 34px "NSC",sans-serif';X.fillStyle='#fff';X.textAlign='center';
  X.fillText((d.labels&&d.labels[1])||'中下游利润空间',0,12);
+ // 两侧持续迸发火星粒子
+ X.globalCompositeOperation='lighter';
+ for(let i=0;i<24;i++){
+  const side=i%2===0?1:-1,u=((t*(1.4+rnd(i*3.1))+rnd(i*7.7))%1);
+  const px=side*(bw/2+u*150),py=(rnd(i*5.3)-0.5)*bh*0.9+(u*u*36*(i%3-1));
+  X.fillStyle=`rgba(${rgb},${((1-u)*0.85).toFixed(3)})`;
+  X.beginPath();X.arc(px,py,2.2+rnd(i*9.1)*2.5,0,6.283);X.fill();
+ }
  X.restore();
  // 上下压力标签
  X.font='900 28px "NSC",sans-serif';X.textAlign='center';X.fillStyle='#FF8A70';
@@ -338,17 +354,27 @@ function _mpGears(X,W,H,t,st,d){
 }
 
 function _mpDomino(X,W,H,t,st,d){
- // 多米诺骨牌连锁倒塌
+ // 多米诺骨牌连锁倒塌（带持续传导冲击波 + 碎光粒子）
  const n=Math.max(4,(d.labels||[]).length||5),p=st.p!=null?st.p:cl(t*0.25);
  const baseY=H*0.74;
  X.strokeStyle='rgba(244,241,234,0.22)';X.lineWidth=3;X.beginPath();X.moveTo(60,baseY);X.lineTo(W-60,baseY);X.stroke();
+ // 底部能量传导扫描波
+ const waveX=100+((t*240)%(W-200));
+ const wg=X.createLinearGradient(waveX-90,0,waveX+20,0);
+ wg.addColorStop(0,'rgba(255,90,78,0)');wg.addColorStop(1,'rgba(255,90,78,0.8)');
+ X.strokeStyle=wg;X.lineWidth=5;X.beginPath();X.moveTo(waveX-90,baseY);X.lineTo(waveX,baseY);X.stroke();
  for(let i=0;i<n;i++){
   const x=120+i*(W-240)/(n-1);
   const fall=cl((p*n-i)*1.3);
-  const ang=_vEO(fall)*1.18;
+  const ang=_vEO(fall)*1.18+(fall>0.1?Math.sin(t*5+i)*0.02:Math.sin(t*2.5+i)*0.015);
   const col=fall>0.1?'#FF5A4E':'#F5A623';
+  if(fall>0.2){
+   const r=(18+((t*42+i*19)%55));
+   X.strokeStyle=`rgba(255,90,78,${(0.45*(1-r/75)).toFixed(3)})`;X.lineWidth=2.5;
+   X.beginPath();X.ellipse(x+50,baseY,r,r*0.28,0,0,6.283);X.stroke();
+  }
   X.save();X.translate(x,baseY);X.rotate(ang);
-  X.fillStyle=fall>0.1?'rgba(255,90,78,0.22)':'rgba(245,166,35,0.16)';X.strokeStyle=col;X.lineWidth=3.5;
+  X.fillStyle=fall>0.1?'rgba(255,90,78,0.24)':'rgba(245,166,35,0.16)';X.strokeStyle=col;X.lineWidth=3.5;
   X.beginPath();X.roundRect(-22,-180,44,180,8);X.fill();X.stroke();
   X.restore();
   X.font='900 24px "NSC",sans-serif';X.textAlign='center';X.fillStyle=fall>0.1?'#FF8A70':'#E6E1D7';
@@ -357,23 +383,46 @@ function _mpDomino(X,W,H,t,st,d){
 }
 
 function _mpChip(X,W,H,t,st,d){
- // 算力芯片主板 + 电路光脉冲
- const cx=W/2,cy=H/2,sz=190;
- X.save();X.strokeStyle='rgba(245,166,35,0.25)';X.lineWidth=3;
- for(let i=-4;i<=4;i++){
-  const o=i*36;
-  X.beginPath();X.moveTo(60,cy+o);X.lineTo(W-60,cy+o);X.stroke();
-  X.beginPath();X.moveTo(cx+o,40);X.lineTo(cx+o,H-40);X.stroke();
-  // 流动脉冲点
-  const u=((t*0.9+i*0.17)%1+1)%1;
-  X.fillStyle=i%2===0?'#F5A623':'#3CF07A';
-  X.beginPath();X.arc(60+u*(W-120),cy+o,5,0,6.283);X.fill();
+ // 算力芯片主板 + 多层高速光脉冲 + 旋转雷达环 + 核心扫描线
+ const cx=W/2,cy=H/2,sz=196,lv=window._LV||0;
+ const spd=st.state==='surge'?1.55:0.95;
+ X.save();
+ // 旋转双层 HUD 算力扫描环
+ X.save();X.translate(cx,cy);
+ for(const [r,rs,dash,col] of [[175,t*0.65,[24,14],'rgba(245,166,35,0.34)'],[215,-t*0.42,[10,14],'rgba(60,240,122,0.28)']]){
+  X.save();X.rotate(rs);X.setLineDash(dash);X.strokeStyle=col;X.lineWidth=2.5;
+  X.beginPath();X.arc(0,0,r,0,6.283);X.stroke();X.restore();
  }
- // 芯片核心块
+ X.restore();
+ // 纵横电路轨迹 + 双向高速数据脉冲包
+ X.strokeStyle='rgba(245,166,35,0.22)';X.lineWidth=2.5;
+ for(let i=-4;i<=4;i++){
+  const o=i*38;
+  X.beginPath();X.moveTo(48,cy+o);X.lineTo(W-48,cy+o);X.stroke();
+  X.beginPath();X.moveTo(cx+o,28);X.lineTo(cx+o,H-28);X.stroke();
+  const u1=((t*spd+i*0.19)%1+1)%1,u2=1-((t*spd*0.8+i*0.23)%1+1)%1;
+  X.fillStyle=i%2===0?'#F5A623':'#3CF07A';
+  X.beginPath();X.arc(48+u1*(W-96),cy+o,5.5+lv*2.5,0,6.283);X.fill();
+  X.fillStyle=i%2===0?'#4FD1C5':'#F5A623';
+  X.beginPath();X.arc(cx+o,28+u2*(H-56),4.5+lv*2,0,6.283);X.fill();
+ }
+ // 芯片核心块 + 声画呼吸光晕 + 内部矩阵扫描线
+ const cg=X.createRadialGradient(cx,cy,20,cx,cy,175);
+ cg.addColorStop(0,`rgba(245,166,35,${(0.24+0.22*lv).toFixed(3)})`);cg.addColorStop(1,'rgba(0,0,0,0)');
+ X.fillStyle=cg;X.beginPath();X.arc(cx,cy,175,0,6.283);X.fill();
  X.fillStyle='#101218';X.strokeStyle='#F5A623';X.lineWidth=5;
  X.beginPath();X.roundRect(cx-sz/2,cy-sz/2,sz,sz,18);X.fill();X.stroke();
- X.fillStyle='rgba(245,166,35,0.14)';X.fillRect(cx-sz/2+24,cy-sz/2+24,sz-48,sz-48);
- X.font='900 36px "NSC",sans-serif';X.textAlign='center';X.fillStyle='#F5A623';
+ // 内部动态亮起的 4x4 算力单元网格
+ for(let gx=0;gx<4;gx++)for(let gy=0;gy<4;gy++){
+  const pulse=0.12+0.32*(0.5+0.5*Math.sin(t*4.2+gx*1.3+gy*2.1));
+  X.fillStyle=`rgba(245,166,35,${pulse.toFixed(3)})`;
+  X.fillRect(cx-sz/2+24+gx*38,cy-sz/2+24+gy*38,32,32);
+ }
+ // 核心扫描光条
+ const scanY=cy-sz/2+16+((t*110)%(sz-32));
+ X.fillStyle='rgba(60,240,122,0.55)';X.fillRect(cx-sz/2+14,scanY,sz-28,4);
+ X.font='900 36px "NSC",sans-serif';X.textAlign='center';X.fillStyle='#fff';
+ X.shadowColor='#000';X.shadowBlur=12;
  X.fillText((d.labels&&d.labels[0])||'AI 算力核',cx,cy+12);
  X.restore();
 }
@@ -403,6 +452,7 @@ function _acHtml(d){
   (side.tag?`<i>${esc(side.tag)}</i>`:'')+`</div>`;
  return head(d)+`<div class="vv-box vv-ac">`+
   `<div class="ac-row">${mkSide(d.left||{},'ac-l')}<div class="ac-vs">VS</div>${mkSide(d.right||{},'ac-r')}</div>`+
+  `<canvas class="ac-cv" width="872" height="92"></canvas>`+
   `<div class="ac-bar"><div class="ac-bl"></div><div class="ac-br"></div></div>`+
   (d.clash?U(sOf(d.clash,1),hi(d.clash.t||d.clash),'ac-cl'):'')+
   `</div>`+(d.verdict?U(sOf(d.verdict,9),hi(d.verdict.t||d.verdict),'vv-vd'):'');
@@ -415,10 +465,33 @@ function _acFrame(k,t){
   if(sh.lp!=null)lp=_vLerp(lp,sh.lp,q);
   if(sh.rp!=null)rp=_vLerp(rp,sh.rp,q);
  });
- const tot=Math.max(0.01,lp+rp);
+ const tot=Math.max(0.01,lp+rp),ratio=lp/tot;
  const bl=el.querySelector('.ac-bl'),br=el.querySelector('.ac-br');
- if(bl)bl.style.width=(lp/tot*100).toFixed(1)+'%';
- if(br)br.style.width=(rp/tot*100).toFixed(1)+'%';
+ if(bl)bl.style.width=(ratio*100).toFixed(1)+'%';
+ if(br)br.style.width=((1-ratio)*100).toFixed(1)+'%';
+ // 实时能量对撞粒子束 Canvas
+ const cv=el.querySelector('.ac-cv');
+ if(cv){
+  const X=cv.getContext('2d'),W=cv.width,H=cv.height,cy=H/2,cx=W*ratio,lv=window._LV||0;
+  X.clearRect(0,0,W,H);
+  X.save();X.globalCompositeOperation='lighter';
+  // 左右对撞光束
+  const gL=X.createLinearGradient(0,cy,cx,cy);gL.addColorStop(0,'rgba(255,90,78,0.05)');gL.addColorStop(1,'rgba(255,90,78,0.85)');
+  const gR=X.createLinearGradient(W,cy,cx,cy);gR.addColorStop(0,'rgba(60,240,122,0.05)');gR.addColorStop(1,'rgba(60,240,122,0.85)');
+  X.fillStyle=gL;X.fillRect(0,cy-4,cx,8);
+  X.fillStyle=gR;X.fillRect(cx,cy-4,W-cx,8);
+  // 流动筹码粒子 + 中心碰撞火花
+  for(let i=0;i<16;i++){
+   const u=((t*1.6+i*0.13)%1);
+   X.fillStyle='rgba(255,140,110,0.9)';X.beginPath();X.arc(u*cx,cy+Math.sin(t*8+i)*10,3,0,6.283);X.fill();
+   X.fillStyle='rgba(60,240,122,0.9)';X.beginPath();X.arc(W-u*(W-cx),cy+Math.cos(t*8+i)*10,3,0,6.283);X.fill();
+  }
+  const spR=24+16*lv+6*Math.sin(t*14);
+  const cg=X.createRadialGradient(cx,cy,2,cx,cy,spR);
+  cg.addColorStop(0,'#fff');cg.addColorStop(0.4,'rgba(245,166,35,0.85)');cg.addColorStop(1,'rgba(0,0,0,0)');
+  X.fillStyle=cg;X.beginPath();X.arc(cx,cy,spR,0,6.283);X.fill();
+  X.restore();
+ }
 }
 
 // 注册到全局卡片库

@@ -167,6 +167,7 @@ function _trOf(c){if(c.tr)return c.tr;if(_TR_CUT.has(c.type))return 'cut';if(_TR
 function renderCards(t){
  if(typeof LY_PRE!=='undefined')LY_PRE(CARDS);stageLayout();if(typeof LY_POST!=='undefined')LY_POST(CARDS);let src='',srcA=0;
  const M2=window.DATA.motion==='v2';
+ if(M2&&!document.body.classList.contains('k2'))document.body.classList.add('k2');
  CARDS.forEach(k=>{const c=k.c;
   if(t<c.t0-0.01||t>c.t1+0.01){k.el.style.visibility='hidden';k.el.style.opacity=0;if(M2){k.el.style.clipPath='';delete k.el.dataset.trin;}return;}
   let pin,pout,a,trStr='';
@@ -193,8 +194,9 @@ function renderCards(t){
   if(c.data&&c.data.src){src=c.data.src;srcA=a;}
   let curS=0;
   if(M2&&_FOCUS_DIM.has(c.type)){k.units.forEach(u=>{if(u.s>0&&t>=tau(c,u.s)+u.delay)curS=Math.max(curS,u.s);});}
-  k.units.forEach(u=>{const T0=tau(c,u.s)+u.delay+(u.s===0&&!c.first?0.08:0);const pRaw=cl((t-T0)/0.35),p=M2?_bo(pRaw):eo(pRaw),pg=eo(cl((t-T0)/0.6));
+  k.units.forEach((u,ui)=>{const T0=tau(c,u.s)+u.delay+(u.s===0&&!c.first?0.08:0);const pRaw=cl((t-T0)/0.35),p=M2?_bo(pRaw):eo(pRaw),pg=eo(cl((t-T0)/0.6));
    const dimMul=(M2&&curS>1&&u.s>0&&u.s<curS)?0.58:1;
+   if(M2)u.el.classList.toggle('is-cur',curS>0&&u.s===curS);
    if(u.fx==='wipe'){const q=io(cl((t-T0)/1.2));u.el.style.opacity=t>=T0?dimMul:0;u.el.style.clipPath=`inset(0 ${((1-q)*100).toFixed(2)}% 0 0)`;}
    else if(u.fx==='mark'){u.el.style.setProperty('--m',eo(cl((t-T0)/0.45)).toFixed(3));}
    else if(u.fx==='tilt'){const q=eo(cl((t-T0)/0.9));u.el.parentElement.style.setProperty('--k',(q*(+u.el.dataset.dir)).toFixed(4));u.el.style.opacity=1;}
@@ -204,7 +206,8 @@ function renderCards(t){
    else if(u.fx==='grow'){u.el.style.opacity=t>=T0?dimMul:0;u.el.style.transform=u.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;}
    else if(u.fx==='pop'){const q=cl((t-T0)/0.25);const sp=M2?_bo(q):eo(q);u.el.style.opacity=q.toFixed(3);u.el.style.setProperty('--k',(1.45-0.45*sp).toFixed(3));}
    else{const opVal=(M2?eo(pRaw):p)*dimMul;u.el.style.opacity=opVal.toFixed(3);
-    u.el.style.transform=u.s===0&&!u.cnt?'':(M2?`translateY(${(18*(1-p)).toFixed(1)}px) scale(${(0.97+0.03*p).toFixed(4)})`:`translateY(${(14*(1-p)).toFixed(1)}px)`);}
+    const fl=(M2&&pRaw>=1&&u.s>0)?(Math.sin(t*2.3+ui*1.4)*2.8):0;
+    u.el.style.transform=u.s===0&&!u.cnt?'':(M2?`translateY(${(18*(1-p)+fl).toFixed(1)}px) scale(${(0.97+0.03*p).toFixed(4)})`:`translateY(${(14*(1-p)).toFixed(1)}px)`);}
    if(u.cnt){const to=+u.cnt.dataset.to,dec=+u.cnt.dataset.dec,q=eo(cl((t-T0)/0.6));u.cnt.textContent=fmtNum(to*q,dec);}
    u.grow.forEach(g=>{g.style.transform=g.dataset.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;});});
   if(typeof CARD_RENDER!=='undefined'&&CARD_RENDER[c.type])CARD_RENDER[c.type](k._pa||k,t);
