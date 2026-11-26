@@ -118,6 +118,11 @@ def voice_hash(L, k):
 def voice_hashes(job, L, keys):
     """每句的缓存指纹。配音 v3（按气口组合成）的指纹由 gen_vo_volc.py 自己算：组里任何一句改了，整组都要重配。"""
     v = L.get("voice", {})
+    force_eng = CFG.get("FORCE_VOICE_ENGINE", "")
+    if force_eng in ("voicestudio", "local") or v.get("engine") in ("voicestudio", "local"):
+        m = CFG.get("VOICESTUDIO_MODEL") or v.get("model") or "cosyvoice"
+        vn = CFG.get("VOICESTUDIO_VOICE") or v.get("name") or "老杨"
+        return {k: "vs" + hashlib.sha1(json.dumps([L["lines"][k].get("tts", L["lines"][k]["sub"]), m, vn, v.get("speed"), L["lines"][k].get("emo")], ensure_ascii=False).encode()).hexdigest()[:12] for k in keys}
     if int(v.get("v", 0)) >= 3 and v.get("engine") in ("volc", "volcano", "本人"):
         out = subprocess.run([py(), os.path.join(kv_core(), "gen_vo_volc.py"), job.ep, "--hashes"], capture_output=True, text=True, timeout=60)
         hs = json.loads(out.stdout.strip().splitlines()[-1]) if out.returncode == 0 and out.stdout.strip() else {}
@@ -136,7 +141,7 @@ def kv_voice(job: Job):
         job.sh([py(), os.path.join(kv_core(), "fake_vo.py"), job.ep])
         job.warn.append("用的是静音占位配音（voice=fake），只能看画面")
         return "静音占位配音"
-    engine = L.get("voice", {}).get("engine", "edge-tts") if mode == "auto" else mode
+    engine = CFG.get("FORCE_VOICE_ENGINE") or (L.get("voice", {}).get("engine", "edge-tts") if mode == "auto" else mode)
     # 配音缓存：按「读法 + 声音参数」算指纹存在仓库外面。台词没改的句子直接拿缓存（本人声音按字收费，能省就省），
     # mp3、逐字时间戳、时长三样一起恢复——仓库里的时间戳可能是 Claude 的占位版，不能和真配音混用。
     cache = os.path.join(CFG["WORK"], "cache", "voice")
@@ -168,7 +173,13 @@ def kv_voice(job: Job):
         job.warn.append(f"缓存句尾检查没做成：{e}")
     job.facts["配音"] = f"{engine}，新配 {len(todo)} 句，沿用缓存 {len(keys) - len(todo)} 句"
     if todo:
-        if engine in ("volc", "volcano", "本人"):
+        if engine in ("voicestudio", "local"):
+            env = dict(os.environ)
+            if CFG.get("VOICESTUDIO_URL"): env["VOICESTUDIO_URL"] = CFG["VOICESTUDIO_URL"]
+            if CFG.get("VOICESTUDIO_MODEL"): env["VOICESTUDIO_MODEL"] = CFG["VOICESTUDIO_MODEL"]
+            if CFG.get("VOICESTUDIO_VOICE"): env["VOICESTUDIO_VOICE"] = CFG["VOICESTUDIO_VOICE"]
+            job.sh([py(), os.path.join(kv_core(), "gen_vo_local.py"), job.ep, *todo], env=env, timeout=3600)
+        elif engine in ("volc", "volcano", "本人"):
             env = dict(os.environ)
             env.update(read_env(CFG["TTS_ENV"]))
             if not env.get("VOLC_API_KEY"):
