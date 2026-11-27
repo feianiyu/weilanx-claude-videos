@@ -65,7 +65,7 @@ def check():
         print("读取音色列表跳过：", e)
 
 
-def _synth_one(base, text, out_mp3, model, voice, speed=1.08, instructions=None):
+def _synth_one(base, text, out_mp3, model, voice, speed=1.02, instructions=None):
     # 半句末尾补句号，避免模型尾字未收住
     t_send = text.strip()
     if t_send and t_send[-1] in "，、：；":
@@ -95,10 +95,11 @@ def _synth_one(base, text, out_mp3, model, voice, speed=1.08, instructions=None)
     raw_wav = out_mp3 + ".raw.wav"
     with open(raw_wav, "wb") as f:
         f.write(wav_bytes)
-    # 末尾补 120ms 静音缓冲并转 48kHz mp3，保证 check_vo_tail.py 100% 通过
+    # C 版暖色人声后期（高通去闷 + 柔压缩）+ 末尾 120ms 静音防截断，转 48kHz mp3
     subprocess.run(
         ["ffmpeg", "-y", "-v", "error", "-i", raw_wav,
-         "-af", "apad=pad_dur=0.12", "-ar", "48000", "-ac", "1", "-b:a", "192k", out_mp3],
+         "-af", "highpass=f=75,acompressor=threshold=-20dB:ratio=2:attack=8:release=120,apad=pad_dur=0.12",
+         "-ar", "48000", "-ac", "1", "-b:a", "192k", out_mp3],
         check=True,
     )
     os.remove(raw_wav)
@@ -117,9 +118,9 @@ def main():
     lp = os.path.join(ep, "lines.json")
     L = json.load(open(lp, encoding="utf-8"))
     vcfg = L.get("voice", {})
-    model = os.environ.get("VOICESTUDIO_MODEL") or vcfg.get("model") or "cosyvoice"
+    model = os.environ.get("VOICESTUDIO_MODEL") or vcfg.get("model") or "omnivoice"
     voice = os.environ.get("VOICESTUDIO_VOICE") or vcfg.get("name") or "老杨"
-    speed = float(vcfg.get("speed") or 1.08)
+    speed = float(vcfg.get("speed") or 1.02)
 
     vo_dir = os.path.join(ep, "vo")
     os.makedirs(vo_dir, exist_ok=True)
