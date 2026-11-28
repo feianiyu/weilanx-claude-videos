@@ -11,10 +11,11 @@ DEFAULTS = {
     "JOBS": "6",                                           # 并行渲染进程数（M1 Max 用 6）
     "PUSH_REPORTS": "1",                                   # 报告推回 GitHub，Claude 直接读
     "TTS_ENV": f"{HOME}/weilanx-claude-videos/materials/老杨魔方知识分享版/tts.env",  # 本人声音凭证
-    "FORCE_VOICE_ENGINE": "",                              # 可选全局覆盖配音引擎，填 voicestudio 则全免费走本机 VoiceStudio
-    "VOICESTUDIO_URL": "",                                 # 空 = 自动探测本机 VoiceStudio 端口
-    "VOICESTUDIO_MODEL": "omnivoice",                      # 本机 VoiceStudio 模型（omnivoice / cosyvoice / indextts / voxcpm2）
-    "VOICESTUDIO_VOICE": "老杨",                           # 本机 VoiceStudio 声音档案名
+    "FORCE_VOICE_ENGINE": "",                              # 可选全局覆盖配音引擎，填 voicestudio 则全免费走本机配音
+    "VOICESTUDIO_URL": "",                                 # 空 = 自动探测本机 VoiceStudio 端口（HTTP 回退时使用）
+    "VOICESTUDIO_MODEL": "indextts2",                      # 默认 G 版（MPS 直连 IndexTTS 2.5）；填 omnivoice 则走 HTTP
+    "VOICESTUDIO_VOICE": "老杨_自然版",                     # 本机声音档案名
+    "VOICESTUDIO_REF_AUDIO": f"{HOME}/laoyang-render/lab/laoyang_ref_v2.wav",  # IndexTTS 2.5 参考音频
     "WHISPER_PY": f"{HOME}/mlx-whisper-env/bin/python",   # 本机 mlx-whisper，用来抽查多音字
     "WHISPER_MODEL": "mlx-community/whisper-small-mlx",
     "WHISPER_MIN_RATIO": "0.85",

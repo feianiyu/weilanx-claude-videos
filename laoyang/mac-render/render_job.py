@@ -178,6 +178,7 @@ def kv_voice(job: Job):
             if CFG.get("VOICESTUDIO_URL"): env["VOICESTUDIO_URL"] = CFG["VOICESTUDIO_URL"]
             if CFG.get("VOICESTUDIO_MODEL"): env["VOICESTUDIO_MODEL"] = CFG["VOICESTUDIO_MODEL"]
             if CFG.get("VOICESTUDIO_VOICE"): env["VOICESTUDIO_VOICE"] = CFG["VOICESTUDIO_VOICE"]
+            if CFG.get("VOICESTUDIO_REF_AUDIO"): env["VOICESTUDIO_REF_AUDIO"] = CFG["VOICESTUDIO_REF_AUDIO"]
             job.sh([py(), os.path.join(kv_core(), "gen_vo_local.py"), job.ep, *todo], env=env, timeout=3600)
         elif engine in ("volc", "volcano", "本人"):
             env = dict(os.environ)
