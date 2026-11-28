@@ -165,6 +165,7 @@ function _soHtml(d){
   `<div class="vv-box vv-so">`+
    `<div class="so-hd"><div class="so-av">${av}</div><div class="so-id"><b>${esc(d.author||'官方发布')}<i class="so-v">✓</i></b><span>${esc(d.handle||'')} · ${esc(d.time||'')}</span></div>`+
    (d.badge?`<div class="so-bdg">${esc(d.badge)}</div>`:'')+`</div>`+
+   `<canvas class="so-pulse" width="790" height="26"></canvas>`+
    (d.text?U(0,hi(d.text),'so-tx'):'')+
    (d.highlight?U(sOf(d.highlight,1),`<span class="so-hi" data-s="${sOf(d.highlight,1)}" data-fx="mark">${hi(d.highlight.t||d.highlight)}</span>`,'so-big','data-fx="slam"'):'')+
    (d.quote?U(sOf(d.quote,0),`<div class="so-qt"><b>${esc(d.quote.author||'原帖')}</b><p>${hi(d.quote.text||'')}</p></div>`,'so-qtw'):'')+
@@ -173,7 +174,7 @@ function _soHtml(d){
   (d.foot?U(sOf(d.foot,2),hi(d.foot.t||d.foot),'vv-vd'):'');
 }
 function _soFrame(k,t){
- const c=k.c,el=k.el;
+ const c=k.c,el=k.el,lv=window._LV||0;
  el.querySelectorAll('.so-cnt').forEach(b=>{
   const s=+(b.dataset.s||1),ts=tau(c,s),to=+(b.dataset.to||0),unit=b.dataset.unit||'';
   const q=_vEO(cl((t-ts)/1.1));
@@ -181,6 +182,25 @@ function _soFrame(k,t){
   const val=to*q+live;
   b.textContent=(val>=10000?(val/10000).toFixed(1)+'万':_vFmt(val,0))+unit;
  });
+ // 社媒热议实时声纹/信号波（杜绝社媒卡静止）
+ const cv=el.querySelector('.so-pulse');
+ if(cv){
+  const X=cv.getContext('2d'),W=cv.width,H=cv.height,cy=H/2;
+  X.clearRect(0,0,W,H);
+  X.strokeStyle='rgba(223,182,104,0.22)';X.lineWidth=1.5;
+  X.beginPath();X.moveTo(0,cy);X.lineTo(W,cy);X.stroke();
+  X.strokeStyle='rgba(245,223,170,0.85)';X.lineWidth=2.4;
+  X.beginPath();
+  const amp=3.5+6.5*lv;
+  for(let x=0;x<=W;x+=6){
+   const env=Math.sin(Math.PI*x/W);
+   const y=cy+Math.sin(x*0.038-t*7.5)*amp*env+Math.cos(x*0.09+t*4.2)*1.8*env;
+   if(x===0)X.moveTo(x,y);else X.lineTo(x,y);
+  }
+  X.stroke();
+  const dotX=((t*240)%W);
+  X.fillStyle='#FFF3D4';X.beginPath();X.arc(dotX,cy,3.5,0,6.283);X.fill();
+ }
 }
 
 // ==================== 3. metaphor 物理动态隐喻舞台（6 大场景） ====================

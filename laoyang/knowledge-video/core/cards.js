@@ -206,9 +206,9 @@ function renderCards(t){
    else if(u.fx==='grow'){u.el.style.opacity=t>=T0?dimMul:0;u.el.style.transform=u.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;}
    else if(u.fx==='pop'){const q=cl((t-T0)/0.25);const sp=M2?_bo(q):eo(q);u.el.style.opacity=q.toFixed(3);u.el.style.setProperty('--k',(1.45-0.45*sp).toFixed(3));}
    else{const opVal=(M2?eo(pRaw):p)*dimMul;u.el.style.opacity=opVal.toFixed(3);
-    const fl=(M2&&pRaw>=1&&u.s>0)?(Math.sin(t*2.3+ui*1.4)*2.4):0;
+    const fl=(M2&&pRaw>=1&&(u.s>0||window.DATA.infiniteCanvas))?(Math.sin(t*2.4+ui*1.3)*2.8):0;
     const rxu=(M2&&pRaw<1)?(2.5*(1-p)).toFixed(2):'0';
-    u.el.style.transform=u.s===0&&!u.cnt?'':(M2?`perspective(900px) translateY(${(16*(1-p)+fl).toFixed(1)}px) rotateX(${rxu}deg) scale(${(0.975+0.025*p).toFixed(4)})`:`translateY(${(14*(1-p)).toFixed(1)}px)`);}
+    u.el.style.transform=(u.s===0&&!u.cnt&&!window.DATA.infiniteCanvas)?'':(M2?`perspective(900px) translateY(${(16*(1-p)+fl).toFixed(1)}px) rotateX(${rxu}deg) scale(${(0.975+0.025*p).toFixed(4)})`:`translateY(${(14*(1-p)).toFixed(1)}px)`);}
    if(u.cnt){const to=+u.cnt.dataset.to,dec=+u.cnt.dataset.dec,q=eo(cl((t-T0)/0.6));u.cnt.textContent=fmtNum(to*q,dec);}
    u.grow.forEach(g=>{g.style.transform=g.dataset.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;});});
   if(typeof CARD_RENDER!=='undefined'&&CARD_RENDER[c.type])CARD_RENDER[c.type](k._pa||k,t);

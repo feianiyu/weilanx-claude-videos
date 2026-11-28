@@ -74,7 +74,7 @@ function _init(CARDS){
       const d=_STEPS[(i-1)%_STEPS.length];
       cx+=d[0]; cy+=d[1];
     }
-    k.el.style.left=(cx-460)+'px';
+    k.el.style.left=(cx-430)+'px';
     k.el.style.top=(cy-455)+'px';
     k.el.dataset.v12x=cx;
     k.el.dataset.v12y=cy;
@@ -119,10 +119,10 @@ function _camAt(t){
       whip:Math.sin(raw*Math.PI)
     };
   }
-  // 幕内缓慢电影推进（1.00 -> 1.045）+ 极轻呼吸
+  // 幕内缓慢电影推进（0.99 -> 1.028，保证四周留足安全边距绝不吃边）+ 持续微呼吸
   const age=_cl((t-cur.t0)/dur);
-  const openZ=(i===0 && t<1.1)?_lerp(1.22,1.0,_io(_cl(t/1.1))):_lerp(1.0,1.045,age);
-  const openR=(i===0 && t<1.1)?_lerp(-1.4,0,_io(_cl(t/1.1))):Math.sin(t*0.7+i)*0.28;
+  const openZ=(i===0 && t<1.1)?_lerp(1.16,0.99,_io(_cl(t/1.1))):_lerp(0.99,1.028,age);
+  const openR=(i===0 && t<1.1)?_lerp(-1.2,0,_io(_cl(t/1.1))):Math.sin(t*0.85+i)*0.32;
   return {x:cur.x, y:cur.y, z:openZ, r:openR, idx:i, whip:0};
 }
 
