@@ -3,7 +3,7 @@
   python3 core/render.py <期> snap 5.0 20.3 ...        → build/snap_<t>.png
   python3 core/render.py <期> part a b out.mp4         → 只渲第 a..b 帧（无声）
   python3 core/render.py <期> final [--jobs 3]         → 并行分段 → 拼接 → 混入 build/mix.wav → out/老杨魔方_<标题>.mp4
-     meta.intro 为真时（layout v10 默认）开头接电影片头 core/assets/intro/intro_v2.mp4：片头 3.6s 起 0.5s 溶进正片，正片整体后移 3.6s
+     meta.intro 为真时（深度版每期默认）开头接电影片头 core/assets/intro/intro_v2.mp4：片头 3.6s 起 0.5s 溶进正片，正片整体后移 3.6s
 """
 import sys, os, json, subprocess, asyncio
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

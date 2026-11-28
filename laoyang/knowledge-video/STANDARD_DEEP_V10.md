@@ -15,7 +15,7 @@
 ```
 
 - `"layout": "v10"` 自动继承全部 v9 能力（`motion: "v2"`、`autoSfx: true`、`karaoke: true`、`progressBar: true`）。
-- **开场是电影片头**（2026-11-28 起，v10 默认）：出成片时 `render.py` 在每期最前面接 4.1 秒电影片头（金属碎片四面飞来拼成魔方 → 冲进光缝 → 金雾），3.6 秒起 0.5 秒溶进第 1 张 `hook` 卡，正片整体后移 3.6 秒。素材 `core/assets/intro/intro_v2.mp4`，做法和重出见 `brand_intro/README.md`。`lines.json` 写 `"intro": false` 关掉。
+- **开场是电影片头**（2026-11-28 起，深度版每期默认，不论 layout）：出成片时 `render.py` 在每期最前面接 4.1 秒电影片头（金属碎片四面飞来拼成魔方 → 冲进光缝 → 金雾），3.6 秒起 0.5 秒溶进第 1 张 `hook` 卡，正片整体后移 3.6 秒。素材 `core/assets/intro/intro_v2.mp4`，做法和重出见 `brand_intro/README.md`。`lines.json` 写 `"intro": false` 关掉。
 - 片头开着时第 1 张 `hook` 卡不要再写 `"bleed": {"brand": "cube"}`（build 会自动去掉，免得魔方出两遍）；`hook` 卡的整屏底图用 `stock` / `file`，暖琥珀调的最好，金雾溶进去最顺。
 
 ## 2. 新增 4 类具象视觉舞台（`core/cards_vivid.js`）
