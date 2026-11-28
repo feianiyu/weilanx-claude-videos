@@ -66,6 +66,7 @@ function _init(CARDS){
   vEl.appendChild(_coordsEl);
 
   // 6. 把每张卡片锚定在无限空间的独立坐标 (wx, wy)
+  // 关键：清除 stageLayout() 写入的 CSS zoom，防止 left/top 被 zoom 缩放导致远端卡片左右偏移！
   _cardsEl.style.overflow='visible';
   _cardsEl.style.transformOrigin='0 0';
   let cx=0, cy=0;
@@ -74,8 +75,10 @@ function _init(CARDS){
       const d=_STEPS[(i-1)%_STEPS.length];
       cx+=d[0]; cy+=d[1];
     }
+    k.el.style.zoom='1';
+    k.el.style.width='860px';
     k.el.style.left=(cx-430)+'px';
-    k.el.style.top=(cy-455)+'px';
+    k.el.style.top=(cy-420)+'px';
     k.el.dataset.v12x=cx;
     k.el.dataset.v12y=cy;
     return {x:cx, y:cy, t0:k.c.t0, t1:k.c.t1};
@@ -119,10 +122,10 @@ function _camAt(t){
       whip:Math.sin(raw*Math.PI)
     };
   }
-  // 幕内缓慢电影推进（0.99 -> 1.028，保证四周留足安全边距绝不吃边）+ 持续微呼吸
+  // 幕内缓慢电影推进（0.94 -> 0.97，严格满足视频号安全区，左右各留 ~130px 绝对对称边距）
   const age=_cl((t-cur.t0)/dur);
-  const openZ=(i===0 && t<1.1)?_lerp(1.16,0.99,_io(_cl(t/1.1))):_lerp(0.99,1.028,age);
-  const openR=(i===0 && t<1.1)?_lerp(-1.2,0,_io(_cl(t/1.1))):Math.sin(t*0.85+i)*0.32;
+  const openZ=(i===0 && t<1.1)?_lerp(1.10,0.94,_io(_cl(t/1.1))):_lerp(0.94,0.97,age);
+  const openR=(i===0 && t<1.1)?_lerp(-1.2,0,_io(_cl(t/1.1))):Math.sin(t*0.85+i)*0.26;
   return {x:cur.x, y:cur.y, z:openZ, r:openR, idx:i, whip:0};
 }
 
