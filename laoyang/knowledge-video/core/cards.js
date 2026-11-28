@@ -89,8 +89,8 @@ const CARD={
    const X=i=>40+i*(W-80)/Math.max(1,n-1),Y=v=>H-30-(v-mn+pad)/(mx-mn+2*pad)*(H-60);
    const pl=d.pts.map((p,i)=>`${X(i).toFixed(1)},${Y(p.y).toFixed(1)}`).join(' ');
    return head(d)+U(sOf(d.line,1),`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><line x1="40" y1="${H-30}" x2="${W-40}" y2="${H-30}" stroke="#4a463f" stroke-width="3"/>`+
-     `<polyline points="${pl}" fill="none" stroke="#F5A623" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>`+
-     d.pts.map((p,i)=>(i===0||i===n-1)?`<circle cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="12" fill="#F5A623"/>`:'').join('')+
+     `<polyline points="${pl}" fill="none" stroke="#DFB668" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>`+
+     d.pts.map((p,i)=>(i===0||i===n-1)?`<circle cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="12" fill="#DFB668"/>`:'').join('')+
      `</svg>`,'ln-svg','data-fx="wipe"')+
    `<div class="ln-lab">`+U(0,`<i>${esc(d.pts[0].x)}</i><b>${esc(d.from?d.from.label:d.pts[0].y)}</b>`,'ln-a')+U(sOf(d.end,2),`<i>${esc(d.pts[n-1].x)}</i><b class="o">${esc(d.end&&d.end.label||d.pts[n-1].y)}</b>`,'ln-b')+`</div>`+
    (d.unit?U(0,esc(d.unit),'ch-unit'):'');},
@@ -110,7 +110,7 @@ const CARD={
    d.dots.map((o,i)=>U(sOf(o,i+1),`<i class="${o.on?'on':''}"></i><span>${hi(o.label)}</span>`,'mx-d',`style="left:${(o.x*100).toFixed(1)}%;top:${((1-o.y)*100).toFixed(1)}%"`)).join('')+`</div>`,
  // 决策清单：看完回去重新想的那几件事（桥接段专用）{title,items:[{t,n}],stamp}
  check:d=>head(d)+`<div class="ck-l">`+d.items.map((x,i)=>U(sOf(x,i+1),
-   `<svg class="ck-box" viewBox="0 0 60 60" width="60" height="60"><rect x="4" y="4" width="52" height="52" rx="6" fill="none" stroke="#F5A623" stroke-width="5"/><polyline class="ck-tick" points="14,32 26,44 47,17" fill="none" stroke="#F5A623" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`+
+   `<svg class="ck-box" viewBox="0 0 60 60" width="60" height="60"><rect x="4" y="4" width="52" height="52" rx="6" fill="none" stroke="#DFB668" stroke-width="5"/><polyline class="ck-tick" points="14,32 26,44 47,17" fill="none" stroke="#DFB668" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`+
    `<div class="ck-t"><b>${hi(x.t)}</b>${x.n?`<small>${hi(x.n)}</small>`:''}</div>`,'ck-i','data-fx="tick"')).join('')+`</div>`+
    (d.stamp?U(sOf(d.stamp,d.items.length+1),esc(d.stamp.text||d.stamp),'stamp','data-fx="stamp"'):''),
  // ===== 留人套件（深度 v2.2，2026-11-08，lines.json 写 "retain" 才启用；STANDARD_DEEP_V2 §2.7）=====
@@ -184,11 +184,11 @@ function renderCards(t){
    if(rawIn<0.98)k.el.dataset.trin='1';else delete k.el.dataset.trin;
    const drift=(!c.data||(!c.data.focus&&c.type!=='play'&&c.type!=='fxtext'))?(0.988+0.018*age):1;
    k.el.style.clipPath='';
-   if(tr==='cut'){const sc=(1+0.06*(1-pin))*drift;trStr=`scale(${sc.toFixed(4)})`;}
-   else if(tr==='zoom'){const sc=(0.93+0.07*pin)*drift;trStr=`scale(${sc.toFixed(4)})`;}
-   else if(tr==='slide'){trStr=`translateX(${(36*(1-pin)).toFixed(1)}px) scale(${drift.toFixed(4)})`;}
-   else if(tr==='wipe'){k.el.style.clipPath=rawIn<0.999?`inset(0 ${((1-pin)*100).toFixed(2)}% 0 0)`:'';trStr=`scale(${drift.toFixed(4)})`;}
-   else{trStr=`translateY(${(26*(1-pin)).toFixed(1)}px) scale(${drift.toFixed(4)})`;}
+   if(tr==='cut'){const sc=(1+0.045*(1-pin))*drift;trStr=`perspective(1200px) scale(${sc.toFixed(4)})`;}
+   else if(tr==='zoom'){const sc=(0.94+0.06*pin)*drift,rx=(3.2*(1-pin)).toFixed(2);trStr=`perspective(1200px) rotateX(${rx}deg) scale(${sc.toFixed(4)})`;}
+   else if(tr==='slide'){const ry=(-4.0*(1-pin)).toFixed(2);trStr=`perspective(1200px) translateX(${(40*(1-pin)).toFixed(1)}px) rotateY(${ry}deg) scale(${drift.toFixed(4)})`;}
+   else if(tr==='wipe'){k.el.style.clipPath=rawIn<0.999?`inset(0 ${((1-pin)*100).toFixed(2)}% 0 0)`:'';trStr=`perspective(1200px) scale(${drift.toFixed(4)})`;}
+   else{const rx=(3.5*(1-pin)).toFixed(2);trStr=`perspective(1200px) translateY(${(26*(1-pin)).toFixed(1)}px) rotateX(${rx}deg) scale(${drift.toFixed(4)})`;}
   }
   k.el.style.visibility=a>0?'visible':'hidden';k.el.style.opacity=a.toFixed(3);k.el.style.transform=trStr;
   if(c.data&&c.data.src){src=c.data.src;srcA=a;}
@@ -206,8 +206,9 @@ function renderCards(t){
    else if(u.fx==='grow'){u.el.style.opacity=t>=T0?dimMul:0;u.el.style.transform=u.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;}
    else if(u.fx==='pop'){const q=cl((t-T0)/0.25);const sp=M2?_bo(q):eo(q);u.el.style.opacity=q.toFixed(3);u.el.style.setProperty('--k',(1.45-0.45*sp).toFixed(3));}
    else{const opVal=(M2?eo(pRaw):p)*dimMul;u.el.style.opacity=opVal.toFixed(3);
-    const fl=(M2&&pRaw>=1&&u.s>0)?(Math.sin(t*2.3+ui*1.4)*2.8):0;
-    u.el.style.transform=u.s===0&&!u.cnt?'':(M2?`translateY(${(18*(1-p)+fl).toFixed(1)}px) scale(${(0.97+0.03*p).toFixed(4)})`:`translateY(${(14*(1-p)).toFixed(1)}px)`);}
+    const fl=(M2&&pRaw>=1&&u.s>0)?(Math.sin(t*2.3+ui*1.4)*2.4):0;
+    const rxu=(M2&&pRaw<1)?(2.5*(1-p)).toFixed(2):'0';
+    u.el.style.transform=u.s===0&&!u.cnt?'':(M2?`perspective(900px) translateY(${(16*(1-p)+fl).toFixed(1)}px) rotateX(${rxu}deg) scale(${(0.975+0.025*p).toFixed(4)})`:`translateY(${(14*(1-p)).toFixed(1)}px)`);}
    if(u.cnt){const to=+u.cnt.dataset.to,dec=+u.cnt.dataset.dec,q=eo(cl((t-T0)/0.6));u.cnt.textContent=fmtNum(to*q,dec);}
    u.grow.forEach(g=>{g.style.transform=g.dataset.dir==='y'?`scaleY(${pg.toFixed(4)})`:`scaleX(${pg.toFixed(4)})`;});});
   if(typeof CARD_RENDER!=='undefined'&&CARD_RENDER[c.type])CARD_RENDER[c.type](k._pa||k,t);

@@ -8,9 +8,9 @@
 // 纯函数：每帧由 CARD_RENDER[type](k,t) 按时间算样子；不用真实时间、不用 Math.random。
 // 动画单元：SVG 里的 <g class="lu" data-ls="step" data-fx="fade|pop|grow|draw" data-o="原点" data-hot data-dim data-out data-delay>
 //   （用 data-ls 而不是 data-s，避免被 cards.js 的通用单元逻辑接管）
-// 颜色纪律同 v4：白线是常态；橙 #F5A623 只给重点；红 #E8553A 只给断点 / 冲突 / 阻力。
+// 颜色纪律同 v4：白线是常态；橙 #DFB668 只给重点；红 #C08253 只给断点 / 冲突 / 阻力。
 // =====================================================================
-const LG={o:'#F5A623',r:'#E8553A',w:'#F4F1EA',l:'rgba(244,241,234,.6)',g:'#8E8A82',bg:'rgba(10,10,10,.72)'};
+const LG={o:'#DFB668',r:'#C08253',w:'#F4F1EA',l:'rgba(244,241,234,.6)',g:'#8E8A82',bg:'rgba(10,10,10,.72)'};
 // ---------- 文字工具 ----------
 const _lgLen=s=>{let x=String(s).replace(/\*/g,'');if(window.DATA&&window.DATA.motion)x=x.replace(/!([^!\s][^!]*)!/g,'$1').replace(/\+([^+\s][^+]*)\+/g,'$1').replace(/~([^~\s][^~]*)~/g,'$1');return [...x].reduce((a,ch)=>a+(/[\x00-\xff]/.test(ch)?0.56:1),0);};
 const _lgFit=(s,size,maxW)=>{const L=Math.max(...String(s).split('|').map(_lgLen),1);return Math.max(22,Math.min(size,Math.floor(maxW/L)));};
@@ -25,8 +25,8 @@ function LU(inner,o={}){const a=[`class="lu${o.cls?' '+o.cls:''}"`,`data-ls="${o
  ['hot','dim','out','delay'].forEach(k=>{if(o[k]!=null)a.push(`data-${k}="${o[k]}"`);});if(o.o)a.push(`data-o="${o.o}"`);return `<g ${a.join(' ')}>${inner}</g>`;}
 const _lgSvg=(W,H,inner,defs='')=>`<div class="lgx"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><defs>`+
  `<marker id="lgAw" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="rgba(244,241,234,.8)"/></marker>`+
- `<marker id="lgAo" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#F5A623"/></marker>`+
- `<marker id="lgAr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#E8553A"/></marker>`+
+ `<marker id="lgAo" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#DFB668"/></marker>`+
+ `<marker id="lgAr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C08253"/></marker>`+
  `<filter id="lgGl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>${defs}</defs>${inner}</svg></div>`;
 const _box=(cx,cy,w,h,t,n,o={})=>`<rect class="lgbox${o.k?' k-'+o.k:''}" x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="${o.rx==null?12:o.rx}"/>`+
  (n?LT(cx,cy-h*0.13,t,{size:o.size||36,w:w-28,cls:'lgt lgbt'})+LT(cx,cy+h*0.24,n,{size:o.ns||25,w:w-24,cls:'lgn'}):LT(cx,cy,t,{size:o.size||36,w:w-28,cls:'lgt lgbt'}));
@@ -45,7 +45,7 @@ Object.assign(CARD_EXT,{
     arcs+=LU(`<path d="M${mx-20},${my-20} L${mx+20},${my+20} M${mx+20},${my-20} L${mx-20},${my+20}" stroke="${LG.r}" stroke-width="9" stroke-linecap="round"/>`+(d.break.label?LT(mx+(mx>cx?70:-70),my+(my>cy?50:-50),d.break.label,{size:30,w:260,cls:'lgt lgred',a:mx>cx?'start':'end'}):''),{s:d.break.s,fx:'pop'});}});
   const nodes=d.items.map((it,i)=>{const [x,y]=_pol(cx,cy,R,ang(i));return LU(_box(x,y,nw,nh,it.t,it.n,{size:34}),{s:_S(it,i),fx:'pop',hot:it.hot,dim:it.dim});}).join('');
   const orb=d.flow?[0,1,2,3].map(j=>`<circle class="lgorb" r="11" fill="${col}" data-j="${j}"/>`).join(''):'';
-  const ctr=d.center?LU(`<circle cx="${cx}" cy="${cy}" r="118" fill="rgba(245,166,35,.10)" stroke="${col}" stroke-width="3" stroke-dasharray="6 10"/>`+LT(cx,cy,d.center.t,{size:40,w:200,cls:'lgt lgbt'}),{s:_S(d.center,n),fx:'pop'}):'';
+  const ctr=d.center?LU(`<circle cx="${cx}" cy="${cy}" r="118" fill="rgba(223,182,104,.10)" stroke="${col}" stroke-width="3" stroke-dasharray="6 10"/>`+LT(cx,cy,d.center.t,{size:40,w:200,cls:'lgt lgbt'}),{s:_S(d.center,n),fx:'pop'}):'';
   return head(d)+_lgSvg(W,H,`<g class="lgorbs" data-cx="${cx}" data-cy="${cy}" data-r="${R}" data-fs="${d.flow?d.flow.s:''}" data-n="${n}" data-bk="${d.break?d.break.i:''}" data-bs="${d.break?d.break.s:''}">${orb}</g>`+arcs+ctr+nodes);},
 
  // ② 拆解树（金字塔原理）{title,root:{t,n,s},kids:[{t,n,s,hot,dim,kids:[{t,s,hot,dim}]}]}  最多 3 枝 × 3 叶
@@ -82,8 +82,8 @@ Object.assign(CARD_EXT,{
   const defs=C.map((c,i)=>`<clipPath id="lgV${i}"><circle cx="${c[0]}" cy="${c[1]}" r="${r}"/></clipPath>`).join('');
   let g=S.map((s,i)=>{const [x,y]=C[i],lx=three?(i===0?x-90:i===1?x+90:x):(i?x+110:x-110),ly=three?(i===2?y+110:y-90):y;
    return LU(`<circle class="lgvc" cx="${x}" cy="${y}" r="${r}"/>`+LT(lx,ly-(s.n?18:0),s.t,{size:40,w:200,cls:'lgt lgbt'})+(s.n?LT(lx,ly+28,s.n,{size:25,w:200,cls:'lgn'}):''),{s:_S(s,i),fx:'pop'});}).join('');
-  if(d.mid){const inner=three?`<g clip-path="url(#lgV0)"><g clip-path="url(#lgV1)"><circle cx="${C[2][0]}" cy="${C[2][1]}" r="${r}" fill="#F5A623" clip-path="url(#lgV2)"/></g></g>`
-    :`<g clip-path="url(#lgV0)"><circle cx="${C[1][0]}" cy="${C[1][1]}" r="${r}" fill="#F5A623"/></g>`;
+  if(d.mid){const inner=three?`<g clip-path="url(#lgV0)"><g clip-path="url(#lgV1)"><circle cx="${C[2][0]}" cy="${C[2][1]}" r="${r}" fill="#DFB668" clip-path="url(#lgV2)"/></g></g>`
+    :`<g clip-path="url(#lgV0)"><circle cx="${C[1][0]}" cy="${C[1][1]}" r="${r}" fill="#DFB668"/></g>`;
    const mx=three?460:460,my=three?355:310;
    g+=LU(`<g opacity=".92">${inner}</g>`+LT(mx,my,d.mid.t,{size:34,w:three?150:200,cls:'lgt lgdark'}),{s:_S(d.mid,S.length),fx:'pop'});}
   return head(d)+_lgSvg(W,H,g,defs);},

@@ -15,7 +15,7 @@
 //   focus:[{s,ids:[...],until}]          // 这一段只亮这些节点 / 连线 id（连线 id = a+'-'+b），其余压暗
 //  }
 // =====================================================================
-const MAP_C={line:'rgba(244,241,234,.55)',flow:'#F5A623',break:'#E8553A',up:'#F5A623',dash:'rgba(244,241,234,.45)'};
+const MAP_C={line:'rgba(244,241,234,.55)',flow:'#DFB668',break:'#C08253',up:'#DFB668',dash:'rgba(244,241,234,.45)'};
 function _mpNode(n){const w=n.w||200,h=n.h||(n.n?96:72),k=n.kind||'box';
  return `<g class="mpn k-${k}" data-id="${esc(n.id)}" transform="translate(${n.x},${n.y})">`+
   `<rect x="${-w/2}" y="${-h/2}" width="${w}" height="${h}" rx="${k==='ai'?h/2:10}"/>`+
@@ -34,14 +34,14 @@ const CARD_EXT={
   const edges=(d.edges||[]).map((e,i)=>{const A=N[e.a],B=N[e.b];if(!A||!B){console.error('map 连线找不到节点',e.a,e.b);return '';}
    const p=_mpPath(A,B,e.via),col=MAP_C[e.kind||'line']||MAP_C.line;
    return `<g class="mpe k-${e.kind||'line'}" data-i="${i}"><path d="${p}" stroke="${col}" fill="none" stroke-width="${e.kind==='flow'||e.kind==='up'?4:3}" ${e.kind==='dash'?'stroke-dasharray="10 10"':''} marker-end="${e.kind==='break'||e.kind==='dash'||e.noArrow?'':'url(#mpA'+(e.kind==='flow'||e.kind==='up'?'o':'w')+')'}"/>`+
-    (e.kind==='break'?`<g class="mpx"><path d="M-14,-14 L14,14 M14,-14 L-14,14" stroke="#E8553A" stroke-width="6"/></g>`:'')+
-    (e.kind==='flow'||e.kind==='up'?[0,1,2].map(j=>`<circle class="mpd" r="7" fill="#F5A623"/>`).join(''):'')+
+    (e.kind==='break'?`<g class="mpx"><path d="M-14,-14 L14,14 M14,-14 L-14,14" stroke="#C08253" stroke-width="6"/></g>`:'')+
+    (e.kind==='flow'||e.kind==='up'?[0,1,2].map(j=>`<circle class="mpd" r="7" fill="#DFB668"/>`).join(''):'')+
     (e.label?`<text class="mpe-l">${esc(e.label)}</text>`:'')+`</g>`;}).join('');
   const bands=(d.bands||[]).map((b,i)=>`<g class="mpb" data-i="${i}"><rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="${b.h/2}"/><text x="${b.x+b.w/2}" y="${b.y+b.h/2+12}">${esc(b.t||'')}</text></g>`).join('');
   const tags=(d.tags||[]).map((g,i)=>`<g class="mpt k-${g.kind||'tag'}" data-i="${i}" transform="translate(${g.x},${g.y}) rotate(${g.rot||0})">${g.kind==='sticker'?'<rect class="mpt-bg" rx="8"/>':''}<text>${esc(g.t)}</text></g>`).join('');
   return head(d)+`<div class="mp"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><defs>`+
    `<marker id="mpAw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="rgba(244,241,234,.75)"/></marker>`+
-   `<marker id="mpAo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#F5A623"/></marker>`+
+   `<marker id="mpAo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#DFB668"/></marker>`+
    `<filter id="mpG" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter></defs>`+
    `<g class="mp-cam">${bands}${edges}${(d.nodes||[]).map(_mpNode).join('')}${tags}</g></svg></div>`;},
  // 层级柱 {eyebrow,title,max:14,levels:[{n,label,s}],note}

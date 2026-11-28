@@ -48,7 +48,7 @@ function _tkFrame(k,t){
  for(let i=0;i<pts.length;i++){const x=px(i);X.beginPath();X.moveTo(x,T);X.lineTo(x,B);X.stroke();}
  // 基准虚线（起点价格）
  const yBase=py(pts[0].y);
- X.setLineDash([8,8]);X.strokeStyle='rgba(245,166,35,0.35)';X.lineWidth=2;
+ X.setLineDash([8,8]);X.strokeStyle='rgba(223,182,104,0.35)';X.lineWidth=2;
  X.beginPath();X.moveTo(L,yBase);X.lineTo(R,yBase);X.stroke();X.setLineDash([]);
  X.restore();
 
@@ -85,7 +85,7 @@ function _tkFrame(k,t){
   const pt=curve[j],prev=curve[Math.max(0,j-2)];
   const delta=Math.abs(pt.yv-prev.yv)/(mx-mn||1);
   const vh=10+Math.min(54,delta*280+rnd(j*5.3)*14);
-  X.fillStyle=pt.tone==='bad'?'rgba(255,90,78,0.45)':'rgba(60,240,122,0.45)';
+  X.fillStyle=pt.tone==='bad'?'rgba(192,130,83,0.45)':'rgba(216,224,235,0.45)';
   X.fillRect(pt.x-4,B+60-vh,8,vh);
  }
  X.restore();
@@ -93,7 +93,7 @@ function _tkFrame(k,t){
  // 5. 分段绘制发光折线 + 渐变面积填充（红跌 / 绿涨）
  for(let j=1;j<curve.length;j++){
   const a=curve[j-1],b=curve[j],isBad=b.tone==='bad';
-  const col=isBad?'#FF5A4E':'#3CF07A',rgb=isBad?'255,90,78':'60,240,122';
+  const col=isBad?'#C08253':'#D8E0EB',rgb=isBad?'192,130,83':'216,224,235';
   // 面积填充
   const g=X.createLinearGradient(0,Math.min(a.y,b.y),0,B);
   g.addColorStop(0,`rgba(${rgb},0.34)`);g.addColorStop(1,`rgba(${rgb},0.0)`);
@@ -108,7 +108,7 @@ function _tkFrame(k,t){
  // 6. 末端高亮光标点
  const last=curve[curve.length-1];
  if(last){
-  const isBad=last.tone==='bad',rgb=isBad?'255,90,78':'60,240,122';
+  const isBad=last.tone==='bad',rgb=isBad?'192,130,83':'216,224,235';
   const rP=12+6*Math.sin(t*10);
   X.save();X.globalCompositeOperation='lighter';
   X.fillStyle=`rgba(${rgb},0.35)`;X.beginPath();X.arc(last.x,last.y,rP,0,6.283);X.fill();
@@ -134,7 +134,7 @@ function _tkFrame(k,t){
   const s=p.s!=null?p.s:i,ts=tau(c,s)+0.45;
   const q=_vBO(cl((t-ts)/0.35));if(t<ts)return;
   const cx=Math.max(150,Math.min(W-150,px(i))),cy=py(p.y);
-  const isBad=p.tone==='bad',col=isBad?'#FF5A4E':'#3CF07A';
+  const isBad=p.tone==='bad',col=isBad?'#C08253':'#D8E0EB';
   const above=cy>T+125;
   const by=above?cy-66:cy+58;
   X.save();X.translate(cx,by);X.scale(q,q);
@@ -195,8 +195,8 @@ function _mpPipe(X,W,H,t,st,d){
  // 发光工业管道 + 能量粒子流 + 中央机械阀门（normal -> choke 堵住变红 -> burst 扩容爆发）
  const cy=H*0.50,r=68,vx=W*0.52;
  const choke=st.state==='choke'?1:0, surge=st.state==='surge'?1:0;
- const fCol=choke?'#FF5A4E':(surge?'#3CF07A':'#F5A623');
- const fRGB=choke?'255,90,78':(surge?'60,240,122':'245,166,35');
+ const fCol=choke?'#C08253':(surge?'#D8E0EB':'#DFB668');
+ const fRGB=choke?'192,130,83':(surge?'216,224,235':'223,182,104');
  // 背景科技格栅
  X.strokeStyle='rgba(244,241,234,0.06)';X.lineWidth=1;
  for(let x=40;x<W;x+=56){X.beginPath();X.moveTo(x,30);X.lineTo(x,H-30);X.stroke();}
@@ -259,7 +259,7 @@ function _mpSqueeze(X,W,H,t,st,d){
  const baseP=st.p!=null?st.p:(st.state==='crush'?0.88:0.35);
  const p=cl(baseP+Math.sin(t*3.2)*0.03+lv*0.03);
  const cy=H*0.5,gap=_vLerp(150,52,p);
- const col=p>0.65?'#FF5A4E':'#F5A623',rgb=p>0.65?'255,90,78':'245,166,35';
+ const col=p>0.65?'#C08253':'#DFB668',rgb=p>0.65?'192,130,83':'223,182,104';
  // 上下液压柱
  X.fillStyle='#2a2d34';X.fillRect(W/2-44,0,88,cy-gap-36);X.fillRect(W/2-44,cy+gap+36,88,H-(cy+gap+36));
  // 上下重型压板 + 流动警示斜纹
@@ -294,7 +294,7 @@ function _mpSqueeze(X,W,H,t,st,d){
  }
  X.restore();
  // 上下压力标签
- X.font='900 28px "NSC",sans-serif';X.textAlign='center';X.fillStyle='#FF8A70';
+ X.font='900 28px "NSC",sans-serif';X.textAlign='center';X.fillStyle='#D4A574';
  X.fillText('▼ '+((d.labels&&d.labels[0])||'上游成本上涨'),W/2,Math.max(46,cy-gap-58));
  X.fillText('▲ '+((d.labels&&d.labels[2])||'下游需求收缩'),W/2,Math.min(H-22,cy+gap+78));
 }
@@ -303,8 +303,8 @@ function _mpReservoir(X,W,H,t,st,d){
  // 动态蓄水池：进水管 + 波动液面 + 底部漏水 + 警戒线
  const lvl=st.p!=null?st.p:(st.state==='low'?0.28:(st.state==='high'?0.82:0.55));
  const tx=150,ty=110,tw=W-300,th=300;
- const col=lvl<0.35?'#FF5A4E':(lvl>0.75?'#3CF07A':'#F5A623');
- const rgb=lvl<0.35?'255,90,78':(lvl>0.75?'60,240,122':'245,166,35');
+ const col=lvl<0.35?'#C08253':(lvl>0.75?'#D8E0EB':'#DFB668');
+ const rgb=lvl<0.35?'192,130,83':(lvl>0.75?'216,224,235':'223,182,104');
  // 水池液面
  const wy=ty+th*(1-lvl);
  X.save();X.beginPath();X.rect(tx,ty,tw,th);X.clip();
@@ -320,12 +320,12 @@ function _mpReservoir(X,W,H,t,st,d){
  X.strokeStyle='rgba(244,241,234,0.55)';X.lineWidth=4;X.strokeRect(tx,ty,tw,th);
  // 警戒线
  const warnY=ty+th*0.68;
- X.save();X.setLineDash([10,8]);X.strokeStyle='#FF5A4E';X.lineWidth=2.5;
+ X.save();X.setLineDash([10,8]);X.strokeStyle='#C08253';X.lineWidth=2.5;
  X.beginPath();X.moveTo(tx-20,warnY);X.lineTo(tx+tw+20,warnY);X.stroke();X.restore();
  // 顶部注水 / 底部排水标签
  X.font='900 28px "NSC",sans-serif';X.textAlign='center';
- X.fillStyle='#3CF07A';X.fillText('↓ '+((d.labels&&d.labels[0])||'资金流入'),W/2,68);
- X.fillStyle='#FF8A70';X.fillText('↓ '+((d.labels&&d.labels[2])||'持续流出'),W/2,H-30);
+ X.fillStyle='#D8E0EB';X.fillText('↓ '+((d.labels&&d.labels[0])||'资金流入'),W/2,68);
+ X.fillStyle='#D4A574';X.fillText('↓ '+((d.labels&&d.labels[2])||'持续流出'),W/2,H-30);
  X.font='900 58px "NSC",sans-serif';X.fillStyle='#fff';X.fillText(Math.round(lvl*100)+'%',W/2,ty+th/2+20);
 }
 
@@ -345,9 +345,9 @@ function _mpGears(X,W,H,t,st,d){
   X.restore();
  };
  const a=t*spd+(jam?Math.sin(t*40)*0.04:0);
- drawGear(W*0.32,H*0.46,96,12,a,'#F5A623');
- drawGear(W*0.56,H*0.56,74,9,-a*12/9+0.3,jam?'#FF5A4E':'#3CF07A');
- drawGear(W*0.74,H*0.38,60,8,a*12/8,'#4FD1C5');
+ drawGear(W*0.32,H*0.46,96,12,a,'#DFB668');
+ drawGear(W*0.56,H*0.56,74,9,-a*12/9+0.3,jam?'#C08253':'#D8E0EB');
+ drawGear(W*0.74,H*0.38,60,8,a*12/8,'#A7B4C7');
  const L=d.labels||['核心引擎','传导齿轮','终端放大'];
  X.font='900 26px "NSC",sans-serif';X.textAlign='center';X.fillStyle='#F4F1EA';
  X.fillText(L[0]||'',W*0.32,H*0.46+10);X.fillText(L[1]||'',W*0.56,H*0.56+10);X.fillText(L[2]||'',W*0.74,H*0.38+10);
@@ -361,23 +361,23 @@ function _mpDomino(X,W,H,t,st,d){
  // 底部能量传导扫描波
  const waveX=100+((t*240)%(W-200));
  const wg=X.createLinearGradient(waveX-90,0,waveX+20,0);
- wg.addColorStop(0,'rgba(255,90,78,0)');wg.addColorStop(1,'rgba(255,90,78,0.8)');
+ wg.addColorStop(0,'rgba(192,130,83,0)');wg.addColorStop(1,'rgba(192,130,83,0.8)');
  X.strokeStyle=wg;X.lineWidth=5;X.beginPath();X.moveTo(waveX-90,baseY);X.lineTo(waveX,baseY);X.stroke();
  for(let i=0;i<n;i++){
   const x=120+i*(W-240)/(n-1);
   const fall=cl((p*n-i)*1.3);
   const ang=_vEO(fall)*1.18+(fall>0.1?Math.sin(t*5+i)*0.02:Math.sin(t*2.5+i)*0.015);
-  const col=fall>0.1?'#FF5A4E':'#F5A623';
+  const col=fall>0.1?'#C08253':'#DFB668';
   if(fall>0.2){
    const r=(18+((t*42+i*19)%55));
-   X.strokeStyle=`rgba(255,90,78,${(0.45*(1-r/75)).toFixed(3)})`;X.lineWidth=2.5;
+   X.strokeStyle=`rgba(192,130,83,${(0.45*(1-r/75)).toFixed(3)})`;X.lineWidth=2.5;
    X.beginPath();X.ellipse(x+50,baseY,r,r*0.28,0,0,6.283);X.stroke();
   }
   X.save();X.translate(x,baseY);X.rotate(ang);
-  X.fillStyle=fall>0.1?'rgba(255,90,78,0.24)':'rgba(245,166,35,0.16)';X.strokeStyle=col;X.lineWidth=3.5;
+  X.fillStyle=fall>0.1?'rgba(192,130,83,0.24)':'rgba(223,182,104,0.16)';X.strokeStyle=col;X.lineWidth=3.5;
   X.beginPath();X.roundRect(-22,-180,44,180,8);X.fill();X.stroke();
   X.restore();
-  X.font='900 24px "NSC",sans-serif';X.textAlign='center';X.fillStyle=fall>0.1?'#FF8A70':'#E6E1D7';
+  X.font='900 24px "NSC",sans-serif';X.textAlign='center';X.fillStyle=fall>0.1?'#D4A574':'#E6E1D7';
   X.fillText((d.labels&&d.labels[i])||`第${i+1}环`,x,baseY+44);
  }
 }
@@ -389,38 +389,38 @@ function _mpChip(X,W,H,t,st,d){
  X.save();
  // 旋转双层 HUD 算力扫描环
  X.save();X.translate(cx,cy);
- for(const [r,rs,dash,col] of [[175,t*0.65,[24,14],'rgba(245,166,35,0.34)'],[215,-t*0.42,[10,14],'rgba(60,240,122,0.28)']]){
+ for(const [r,rs,dash,col] of [[175,t*0.65,[24,14],'rgba(223,182,104,0.34)'],[215,-t*0.42,[10,14],'rgba(216,224,235,0.28)']]){
   X.save();X.rotate(rs);X.setLineDash(dash);X.strokeStyle=col;X.lineWidth=2.5;
   X.beginPath();X.arc(0,0,r,0,6.283);X.stroke();X.restore();
  }
  X.restore();
  // 纵横电路轨迹 + 双向高速数据脉冲包
- X.strokeStyle='rgba(245,166,35,0.22)';X.lineWidth=2.5;
+ X.strokeStyle='rgba(223,182,104,0.22)';X.lineWidth=2.5;
  for(let i=-4;i<=4;i++){
   const o=i*38;
   X.beginPath();X.moveTo(48,cy+o);X.lineTo(W-48,cy+o);X.stroke();
   X.beginPath();X.moveTo(cx+o,28);X.lineTo(cx+o,H-28);X.stroke();
   const u1=((t*spd+i*0.19)%1+1)%1,u2=1-((t*spd*0.8+i*0.23)%1+1)%1;
-  X.fillStyle=i%2===0?'#F5A623':'#3CF07A';
+  X.fillStyle=i%2===0?'#DFB668':'#D8E0EB';
   X.beginPath();X.arc(48+u1*(W-96),cy+o,5.5+lv*2.5,0,6.283);X.fill();
-  X.fillStyle=i%2===0?'#4FD1C5':'#F5A623';
+  X.fillStyle=i%2===0?'#A7B4C7':'#DFB668';
   X.beginPath();X.arc(cx+o,28+u2*(H-56),4.5+lv*2,0,6.283);X.fill();
  }
  // 芯片核心块 + 声画呼吸光晕 + 内部矩阵扫描线
  const cg=X.createRadialGradient(cx,cy,20,cx,cy,175);
- cg.addColorStop(0,`rgba(245,166,35,${(0.24+0.22*lv).toFixed(3)})`);cg.addColorStop(1,'rgba(0,0,0,0)');
+ cg.addColorStop(0,`rgba(223,182,104,${(0.24+0.22*lv).toFixed(3)})`);cg.addColorStop(1,'rgba(0,0,0,0)');
  X.fillStyle=cg;X.beginPath();X.arc(cx,cy,175,0,6.283);X.fill();
- X.fillStyle='#101218';X.strokeStyle='#F5A623';X.lineWidth=5;
+ X.fillStyle='#101218';X.strokeStyle='#DFB668';X.lineWidth=5;
  X.beginPath();X.roundRect(cx-sz/2,cy-sz/2,sz,sz,18);X.fill();X.stroke();
  // 内部动态亮起的 4x4 算力单元网格
  for(let gx=0;gx<4;gx++)for(let gy=0;gy<4;gy++){
   const pulse=0.12+0.32*(0.5+0.5*Math.sin(t*4.2+gx*1.3+gy*2.1));
-  X.fillStyle=`rgba(245,166,35,${pulse.toFixed(3)})`;
+  X.fillStyle=`rgba(223,182,104,${pulse.toFixed(3)})`;
   X.fillRect(cx-sz/2+24+gx*38,cy-sz/2+24+gy*38,32,32);
  }
  // 核心扫描光条
  const scanY=cy-sz/2+16+((t*110)%(sz-32));
- X.fillStyle='rgba(60,240,122,0.55)';X.fillRect(cx-sz/2+14,scanY,sz-28,4);
+ X.fillStyle='rgba(216,224,235,0.55)';X.fillRect(cx-sz/2+14,scanY,sz-28,4);
  X.font='900 36px "NSC",sans-serif';X.textAlign='center';X.fillStyle='#fff';
  X.shadowColor='#000';X.shadowBlur=12;
  X.fillText((d.labels&&d.labels[0])||'AI 算力核',cx,cy+12);
@@ -476,19 +476,19 @@ function _acFrame(k,t){
   X.clearRect(0,0,W,H);
   X.save();X.globalCompositeOperation='lighter';
   // 左右对撞光束
-  const gL=X.createLinearGradient(0,cy,cx,cy);gL.addColorStop(0,'rgba(255,90,78,0.05)');gL.addColorStop(1,'rgba(255,90,78,0.85)');
-  const gR=X.createLinearGradient(W,cy,cx,cy);gR.addColorStop(0,'rgba(60,240,122,0.05)');gR.addColorStop(1,'rgba(60,240,122,0.85)');
+  const gL=X.createLinearGradient(0,cy,cx,cy);gL.addColorStop(0,'rgba(192,130,83,0.05)');gL.addColorStop(1,'rgba(192,130,83,0.85)');
+  const gR=X.createLinearGradient(W,cy,cx,cy);gR.addColorStop(0,'rgba(216,224,235,0.05)');gR.addColorStop(1,'rgba(216,224,235,0.85)');
   X.fillStyle=gL;X.fillRect(0,cy-4,cx,8);
   X.fillStyle=gR;X.fillRect(cx,cy-4,W-cx,8);
   // 流动筹码粒子 + 中心碰撞火花
   for(let i=0;i<16;i++){
    const u=((t*1.6+i*0.13)%1);
-   X.fillStyle='rgba(255,140,110,0.9)';X.beginPath();X.arc(u*cx,cy+Math.sin(t*8+i)*10,3,0,6.283);X.fill();
-   X.fillStyle='rgba(60,240,122,0.9)';X.beginPath();X.arc(W-u*(W-cx),cy+Math.cos(t*8+i)*10,3,0,6.283);X.fill();
+   X.fillStyle='rgba(212,165,116,0.9)';X.beginPath();X.arc(u*cx,cy+Math.sin(t*8+i)*10,3,0,6.283);X.fill();
+   X.fillStyle='rgba(216,224,235,0.9)';X.beginPath();X.arc(W-u*(W-cx),cy+Math.cos(t*8+i)*10,3,0,6.283);X.fill();
   }
   const spR=24+16*lv+6*Math.sin(t*14);
   const cg=X.createRadialGradient(cx,cy,2,cx,cy,spR);
-  cg.addColorStop(0,'#fff');cg.addColorStop(0.4,'rgba(245,166,35,0.85)');cg.addColorStop(1,'rgba(0,0,0,0)');
+  cg.addColorStop(0,'#fff');cg.addColorStop(0.4,'rgba(223,182,104,0.85)');cg.addColorStop(1,'rgba(0,0,0,0)');
   X.fillStyle=cg;X.beginPath();X.arc(cx,cy,spR,0,6.283);X.fill();
   X.restore();
  }

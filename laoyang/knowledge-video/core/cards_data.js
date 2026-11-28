@@ -21,13 +21,13 @@ Object.assign(CARD_EXT,{
  // ⑭ 中国方块地图 {title,vals:{广东:9.1,…},max,unit,hl:[{ids:[…],s,label}],legend:["低","高"]}
  //   没写 vals 的省是暗格；hl 到时这些省描橙边、其余压暗，label 写在图下方
  tilemap:d=>{const W=920,cell=96,gap=6,ox=(W-9*cell)/2,H=8*cell+70,V=d.vals||{},mx=d.max||Math.max(1,...Object.values(V));
-  let g='';Object.entries(CN_TILES).forEach(([k,[c,r]],i)=>{const v=V[k],x=ox+c*cell,y=r*cell,has=v!=null,f=has?_mix('#3A342B','#F5A623',Math.min(1,v/mx)):'#1A1815';
+  let g='';Object.entries(CN_TILES).forEach(([k,[c,r]],i)=>{const v=V[k],x=ox+c*cell,y=r*cell,has=v!=null,f=has?_mix('#3A342B','#DFB668',Math.min(1,v/mx)):'#1A1815';
    const hls=(d.hl||[]).map((h,j)=>h.ids.includes(k)?j:-1).filter(j=>j>=0);
    g+=`<g class="lgtile" data-k="${esc(k)}" data-hl="${hls.join(',')}" data-r="${r}"><rect x="${x+gap/2}" y="${y+gap/2}" width="${cell-gap}" height="${cell-gap}" rx="8" fill="${f}" class="lgtr${has?' has':''}"/>`+
     `<text class="lgt lgbt lgtt${has&&v/mx>0.55?' dk':''}" x="${x+cell/2}" y="${y+cell/2+(has&&d.showVal!==false?-6:10)}" font-size="28" text-anchor="middle">${esc(_cnName(k))}</text>`+
     (has&&d.showVal!==false?`<text class="lgt lgtv${v/mx>0.55?' dk':''}" x="${x+cell/2}" y="${y+cell/2+28}" font-size="22" text-anchor="middle">${esc(String(v))}</text>`:'')+`</g>`;});
   const lg=d.legend||['低','高'];
-  g+=`<defs><linearGradient id="lgTg"><stop offset="0" stop-color="#3A342B"/><stop offset="1" stop-color="#F5A623"/></linearGradient></defs>`+
+  g+=`<defs><linearGradient id="lgTg"><stop offset="0" stop-color="#3A342B"/><stop offset="1" stop-color="#DFB668"/></linearGradient></defs>`+
    `<rect x="${ox+40}" y="${8*cell+22}" width="200" height="18" rx="9" fill="url(#lgTg)"/>`+LT(ox+4,8*cell+31,lg[0],{size:24,a:'start',cls:'lgn',fit:false})+LT(ox+252,8*cell+31,lg[1]+(d.unit?'（'+d.unit+'）':''),{size:24,a:'start',cls:'lgn',fit:false});
   (d.hl||[]).forEach((h,j)=>{if(h.label)g+=LU(LT(W-ox,8*cell+31,h.label,{size:32,w:520,a:'end',cls:'lgt lgor'}),{s:h.s,fx:'fade',out:(d.hl[j+1]||{}).s});});
   return head(d)+_lgSvg(W,H,g);},
@@ -39,8 +39,8 @@ Object.assign(CARD_EXT,{
   F.forEach((f,i)=>{const [x0,y0]=P[f.a],[x1,y1]=P[f.b],mx2=(x0+x1)/2,my2=(y0+y1)/2,dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy)||1,b=(f.bend==null?0.28:f.bend)*L;
    const cx=mx2-dy/L*b,cy=my2+dx/L*b,p=`M${x0},${y0} Q${cx.toFixed(1)},${cy.toFixed(1)} ${x1},${y1}`;
    g+=`<g class="lu lgfw" data-ls="${f.s||0}" data-fx="draw" data-w0="${(4+22*f.v/mx).toFixed(1)}" data-w1="${f.to?(4+22*f.to.v/mx).toFixed(1):''}" data-ws="${f.to?f.to.s:''}"${f.hot!=null?` data-hot="${f.hot}"`:''}>`+
-    `<path class="dr lgfp" d="${p}" fill="none" stroke="${f.hot!=null?'#F5A623':'rgba(244,241,234,.55)'}" stroke-width="${(4+22*f.v/mx).toFixed(1)}" stroke-linecap="round"/>`+
-    [0,1,2,3].map(j=>`<circle class="lgfd" r="7" fill="#F5A623" data-j="${j}"/>`).join('')+
+    `<path class="dr lgfp" d="${p}" fill="none" stroke="${f.hot!=null?'#DFB668':'rgba(244,241,234,.55)'}" stroke-width="${(4+22*f.v/mx).toFixed(1)}" stroke-linecap="round"/>`+
+    [0,1,2,3].map(j=>`<circle class="lgfd" r="7" fill="#DFB668" data-j="${j}"/>`).join('')+
     (f.label?LT(cx+(cx>W/2?-10:10),cy+(cy>my2?34:-24),f.label,{size:28,w:300,cls:'lgt lgor',a:cx>W/2?'end':'start'}):'')+`</g>`;});
   Object.keys(P).filter(k=>!used.has(k)&&!(k==='美国'&&used.has('北美'))&&!(k==='北美'&&used.has('美国'))).forEach(k=>{const [x,y]=P[k];g+=`<g opacity=".35"><circle cx="${x}" cy="${y}" r="9" fill="none" stroke="#F4F1EA" stroke-width="3"/>`+LT(x,y-28,k,{size:24,w:160,cls:'lgn'})+`</g>`;});
   [...used].forEach(k=>{const [x,y]=P[k];g+=`<g><circle cx="${x}" cy="${y}" r="16" fill="#0A0A0A" stroke="#F4F1EA" stroke-width="4"/>`+LT(x,y-38,k,{size:32,w:200,cls:'lgt lgbt'})+`</g>`;});
@@ -51,7 +51,7 @@ Object.assign(CARD_EXT,{
   let g=`<line x1="${L}" y1="${B}" x2="${R}" y2="${B}" stroke="rgba(244,241,234,.5)" stroke-width="3" marker-end="url(#lgAw)"/><line x1="${L}" y1="${B}" x2="${L}" y2="${T}" stroke="rgba(244,241,234,.5)" stroke-width="3" marker-end="url(#lgAw)"/>`+
    LT((L+R)/2,B+50,d.xt||'',{size:28,w:600,cls:'lgn'})+LT(L+10,B+50,(d.xl||[''])[0],{size:24,a:'start',cls:'lgn',w:150})+LT(R,B+50,(d.xl||['',''])[1],{size:24,a:'end',cls:'lgn',w:150})+
    `<text class="lgn" x="${L-40}" y="${(T+B)/2}" font-size="28" text-anchor="middle" transform="rotate(-90 ${L-40} ${(T+B)/2})">${esc(d.yt||'')}</text>`;
-  (d.items||[]).forEach((it,i)=>{const r=18+(it.r||3)*9,col=it.hot!=null?'#F5A623':'rgba(244,241,234,.75)';
+  (d.items||[]).forEach((it,i)=>{const r=18+(it.r||3)*9,col=it.hot!=null?'#DFB668':'rgba(244,241,234,.75)';
    g+=`<g class="lgbw" data-x0="${X(it.x)}" data-y0="${Y(it.y)}"${it.move?` data-x1="${X(it.move.x)}" data-y1="${Y(it.move.y)}" data-ms="${it.move.s}"`:''}>`+
     LU(`<circle cx="0" cy="0" r="${r}" class="lgbub${it.hot!=null?' hot':''}"/>`+LT(0,-r-22,it.t,{size:30,w:240,cls:'lgt lgbt'}),{s:_S(it,i+1),fx:'pop',hot:it.hot,dim:it.dim})+`</g>`;});
   return head(d)+_lgSvg(W,H,g);},
@@ -95,19 +95,19 @@ Object.assign(CARD_EXT,{
  //   一根主干往右走，在中间分成往上、往下两枝；items 是两枝各自的成员（is = 它们出现的 step）
  diverge:d=>{const W=920,H=720,y0=380,x0=40,xs=330,xe=880,yu=70,yd=690,U=d.up||{},Dn=d.down||{};
   let g=LU(`<path class="dr" d="M${x0},${y0} L${xs},${y0}" stroke="#F4F1EA" stroke-width="14" stroke-linecap="round" fill="none"/>`+LT(x0+(xs-x0)/2,y0+52,(d.trunk||{}).t||'',{size:32,w:300,cls:'lgt lgbt'}),{s:_S(d.trunk,0),fx:'draw'});
-  g+=LU(`<path class="dr" d="M${xs},${y0} L${xe-20},${yu+18}" stroke="${U.hot!=null?'#F5A623':'#F4F1EA'}" stroke-width="14" stroke-linecap="round" fill="none" marker-end="url(#${U.hot!=null?'lgAo':'lgAw'})"/>`+
+  g+=LU(`<path class="dr" d="M${xs},${y0} L${xe-20},${yu+18}" stroke="${U.hot!=null?'#DFB668':'#F4F1EA'}" stroke-width="14" stroke-linecap="round" fill="none" marker-end="url(#${U.hot!=null?'lgAo':'lgAw'})"/>`+
    LT(xe,yu-28,U.t||'',{size:44,w:420,a:'end',cls:'lgt lgbt'+(U.hot!=null?' lgor':'')})+(U.n?LT(xe,yu+30,U.n,{size:26,w:330,a:'end',cls:'lgn'}):''),{s:_S(U,1),fx:'draw',hot:U.hot});
-  g+=LU(`<path class="dr" d="M${xs},${y0} L${xe-20},${yd-18}" stroke="${Dn.hot!=null?'#E8553A':'rgba(244,241,234,.55)'}" stroke-width="14" stroke-linecap="round" fill="none" marker-end="url(#${Dn.hot!=null?'lgAr':'lgAw'})"/>`+
+  g+=LU(`<path class="dr" d="M${xs},${y0} L${xe-20},${yd-18}" stroke="${Dn.hot!=null?'#C08253':'rgba(244,241,234,.55)'}" stroke-width="14" stroke-linecap="round" fill="none" marker-end="url(#${Dn.hot!=null?'lgAr':'lgAw'})"/>`+
    LT(xe,yd+46,Dn.t||'',{size:44,w:420,a:'end',cls:'lgt lgbt'+(Dn.hot!=null?' lgred':'')})+(Dn.n?LT(xe,yd-40,Dn.n,{size:26,w:330,a:'end',cls:'lgn'}):''),{s:_S(Dn,2),fx:'draw'});
   (U.items||[]).forEach((t,i)=>{g+=LU(LT(xe,215+i*52,t,{size:32,w:330,a:'end',cls:'lgt'}),{s:U.is??_S(U,1),fx:'fade',delay:i*0.15});});
   (Dn.items||[]).forEach((t,i)=>{g+=LU(LT(xe,490+i*52,t,{size:32,w:330,a:'end',cls:'lgt'}),{s:Dn.is??_S(Dn,2),fx:'fade',delay:i*0.15});});
-  if(d.ask)g+=LU(`<rect x="${x0}" y="140" width="290" height="70" rx="10" fill="#F5A623"/>`+LT(x0+145,175,d.ask.t,{size:34,w:270,cls:'lgt lgdark'}),{s:d.ask.s,fx:'pop'});
+  if(d.ask)g+=LU(`<rect x="${x0}" y="140" width="290" height="70" rx="10" fill="#DFB668"/>`+LT(x0+145,175,d.ask.t,{size:34,w:270,cls:'lgt lgdark'}),{s:d.ask.s,fx:'pop'});
   return head(d)+_lgSvg(W,H,g);},
 
  // ⑲ 正负条形图（有涨有跌）{title,unit,items:[{t,v,s,hot}],total:{t,v,s}}  v 带正负；0 轴的位置按数据自动放
  pnbar:d=>{const W=920,I=d.items||[],T=d.total,all=[...I,...(T?[T]:[])],mn=Math.min(0,...all.map(x=>x.v)),mx=Math.max(0,...all.map(x=>x.v));
   const L0=300,R0=W-190,rh=104,H=all.length*rh+(T?40:10),X=v=>L0+(v-mn)/(mx-mn||1)*(R0-L0),ax=X(0);
-  let g='';const row=(it,i,y,isT)=>{const x1=X(it.v),neg=it.v<0,hot=it.hot!=null||isT,col=hot?(neg?'#E8553A':'#F5A623'):(neg?'rgba(244,241,234,.38)':'rgba(244,241,234,.75)');
+  let g='';const row=(it,i,y,isT)=>{const x1=X(it.v),neg=it.v<0,hot=it.hot!=null||isT,col=hot?(neg?'#C08253':'#DFB668'):(neg?'rgba(244,241,234,.38)':'rgba(244,241,234,.75)');
    const lab=(it.v>0?'+':'')+it.v+(d.unit||'');
    return LU(`<rect x="${Math.min(ax,x1).toFixed(1)}" y="${y-30}" width="${Math.max(4,Math.abs(x1-ax)).toFixed(1)}" height="60" rx="4" fill="${col}"/>`,{s:_S(it,i+1),fx:'grow',o:neg?'right center':'left center'})+
     LU(LT(neg?ax+16:Math.max(ax,x1)+14,y,lab,{size:36,w:200,a:'start',cls:'lgt lgnum'+(hot?'':' lgnn')+(neg&&hot?' lgred':'')}),{s:_S(it,i+1),fx:'fade',delay:0.4})+

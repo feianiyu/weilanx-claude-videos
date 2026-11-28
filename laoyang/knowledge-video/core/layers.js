@@ -58,11 +58,11 @@ function _lyFind(host,needle){const n=_lyNorm(needle);let best=null,bl=1e9;
 function _lyRect(k,host,needle,unit){let e=_lyFind(host,needle);if(e&&unit)e=e.closest('.u, .lu')||e;if(!e){console.error('标注找不到这几个字：'+needle+'（卡 '+k.c.id+'）');return null;}
  const z=parseFloat(k.el.style.zoom)||1,H=host.getBoundingClientRect(),r=e.getBoundingClientRect();
  const x=(r.left-H.left)/z,y=(r.top-H.top)/z,w=r.width/z,h=r.height/z;return {x,y,w,h,cx:x+w/2,cy:y+h/2,r:x+w,b:y+h};}
-const LYC={o:'#F5A623',w:'#F4F1EA',r:'#E8553A'};
+const LYC={o:'#DFB668',w:'#F4F1EA',r:'#C08253'};
 const _lyTW=(s,fs)=>Math.max(...String(s).split('|').map(l=>[...l.replace(/\*/g,'')].reduce((a,ch)=>a+(/[\x00-\xff]/.test(ch)?0.56:1),0)))*fs;
 function _lyText(x,y,s,fs,col,anchor){const ls=String(s).split('|'),lh=fs*1.25;
  return `<text class="an-tx" x="${x.toFixed(1)}" y="${(y+fs*0.36-(ls.length-1)*lh/2).toFixed(1)}" font-size="${fs}" fill="${col}" text-anchor="${anchor||'middle'}">`+
-  ls.map((l,i)=>`<tspan x="${x.toFixed(1)}"${i?` dy="${lh.toFixed(1)}"`:''}>${esc(l).replace(/\*([^*]+)\*/g,'<tspan fill="#F5A623">$1</tspan>')}</tspan>`).join('')+`</text>`;}
+  ls.map((l,i)=>`<tspan x="${x.toFixed(1)}"${i?` dy="${lh.toFixed(1)}"`:''}>${esc(l).replace(/\*([^*]+)\*/g,'<tspan fill="#DFB668">$1</tspan>')}</tspan>`).join('')+`</text>`;}
 const _lyPill=(x,y,s,fs,col,dark)=>{const w=_lyTW(s,fs)+fs*1.1,h=fs*1.6;return `<rect class="an-fill" x="${(x-w/2).toFixed(1)}" y="${(y-h/2).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${(h/2).toFixed(1)}" fill="${col}"/>`+_lyText(x,y,s,fs,dark?'#111':'#F4F1EA');};
 const _lyCl=(v,a,b)=>Math.max(a,Math.min(b,v));
 function _lyAnn(k,host,a){const col=LYC[a.c||'o'],R=_lyRect(k,host,a.on,a.unit);if(!R)return '';let g='',draw='';const t=a.t||'',fs=a.fs||30;
