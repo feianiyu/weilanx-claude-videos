@@ -2,6 +2,14 @@
 
 规则：外框结构变动 +1.0；同一版式内的尺寸 / 配置调整、新效果 / 新规则 / 新工具 +0.1；修 bug 不升号，只记一行。有意改了画面（`regress.py --update`）必须在这里写明。
 
+## 深度 v10.4 · 2026-11-28 · 章节魔方转场 + 真实金属音效
+- 来源（老杨 11-28 同意方案）：卡片动画加电影感转场；卡片里程序合成的「叮、咚、嗖」换成真实金属声。文字和数据仍由代码画，AI 只管质感。
+- `core/assets/trans/`：Flowith 可灵生成的转场镜头（魔方墙横扫 `wall`、光缝劈开 `seam`），`brand_intro/make_trans.py` 切成 1.4s 素材并登记 `manifest.json`。
+- `build.py`：深度版在章节交界放转场（两次至少隔 25s，最多 5 处，按期目录名轮换镜头），转场原声混进音效轨、附近的自动音效让位；`"chapterTrans": false` 关。
+- `render.py`：`compose()` 一次编码完成转场叠加（淡入淡出各 0.3s，最满一刻对准章节交界）和片头。
+- `core/assets/sfx_metal/`：从镜头原声剪的 thud / stamp / chime / swoosh / riser，深度版 autoSfx 默认用它；lines.json 的 `sfxlib` 同名项优先，`"metalSfx": false` 关。
+- 不改单帧画面，回归基准不变。
+
 ## 深度 v10.3 · 2026-11-28 · 机械魔方封面（图库随机）
 - 来源（老杨 11-28）：用 Flowith 重做封面，带机械魔方的科幻感；三版都要，随机换，不固定一版。
 - 新增 `core/cover_cube.html` 和 `core/assets/cover_cube/`（8 张 Flowith · Seedream 5.5 底图 + `manifest.json`）。

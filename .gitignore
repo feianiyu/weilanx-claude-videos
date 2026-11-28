@@ -22,3 +22,5 @@ __pycache__/
 
 # 老杨魔方电影片头素材（自有，出片流程要用）
 !laoyang/knowledge-video/core/assets/intro/*.mp4
+!laoyang/knowledge-video/core/assets/trans/*.mp4
+!laoyang/knowledge-video/core/assets/sfx_metal/*.wav

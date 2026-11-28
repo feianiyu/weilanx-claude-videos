@@ -2,7 +2,7 @@
 """老杨魔方 · 知识分享版（有旁白）构建：时间轴、词级锚点、字幕、混音 → <期>/build/index.html + preview.html
 定稿基准：《规划院转型》V2.3（2026-10-21）
 Usage: python3 core/build.py episodes/<期目录>"""
-import json, re, subprocess, base64, os, wave, shutil, sys
+import hashlib, json, re, subprocess, base64, os, wave, shutil, sys
 import numpy as np
 
 CORE = os.path.dirname(os.path.abspath(__file__))
@@ -238,6 +238,10 @@ for s in subs: print("SUB", s["fs"], " / ".join(s["lines"]))
 V9 = D.get("layout") in ("v9", "v10")
 AUTO_SFX = bool(D.get("autoSfx", V9))
 SFXLIB = D.get("sfxlib", {})
+# 真实金属音效（2026-11-28）：深度版自动音效默认用 Flowith 镜头原声里剪的金属声，替换程序合成的那几种；lines.json 的 sfxlib 同名项优先
+if DEEP and AUTO_SFX and D.get("metalSfx", True):
+    _mm = json.load(open(os.path.join(CORE, "assets", "sfx_metal", "manifest.json"), encoding="utf-8"))["items"]
+    SFXLIB = {**{k: dict(v, file=os.path.join(CORE, "assets", "sfx_metal", v["file"])) for k, v in _mm.items()}, **SFXLIB}
 sfx = [{"t": round(A[at] + float(off), 3), "kind": kind} for at, kind, off in SFXLIST]
 if DEEP and AUTO_SFX and not REGRESS:
     _prio = {"thud": 5, "stamp": 4, "chime": 3, "riser": 2, "swoosh": 1}
@@ -283,6 +287,19 @@ if DEEP and AUTO_SFX and not REGRESS:
             _kept.append(_e)
     sfx = _kept
 sfx.sort(key=lambda x: x["t"])
+# 章节转场（2026-11-28，老杨同意）：深度版在大段落交界叠一段 Flowith 生成的魔方转场镜头（core/assets/trans/，manifest.json 登记），
+# 画面由 render.py 叠，声音在这里混进音效轨；同一时刻附近的自动音效让位。"chapterTrans": false 关。
+TRANS = []
+if DEEP and D.get("chapterTrans", True):
+    _tlib = json.load(open(os.path.join(CORE, "assets", "trans", "manifest.json"), encoding="utf-8"))["items"]
+    _h = int(hashlib.sha1(os.path.basename(os.getcwd()).encode()).hexdigest(), 16)
+    _bs = []   # 章节交界；两次转场至少隔 25s（短片不至于每段都转），最多 5 处
+    for s_ in secs[1:]:
+        if 8 < s_["start"] < DUR - 5 and (not _bs or s_["start"] - _bs[-1] >= 25) and len(_bs) < 5: _bs.append(s_["start"])
+    for _i, _t in enumerate(_bs):
+        _it = _tlib[(_h + _i) % len(_tlib)]
+        TRANS.append({"t": round(_t, 3), "id": _it["id"], "peak": _it["peak"], "len": _it["len"], "lvl": _it.get("lvl", -3)})
+    sfx = [e for e in sfx if all(abs(e["t"] - tr["t"]) > 0.6 for tr in TRANS)]
 if not AUTO_SFX:
     assert len(sfx) <= 20, (len(sfx), sfx)
 # ---------- audio ----------
@@ -469,6 +486,10 @@ for kind, cfg in SFXLIB.items():
     a = a * 10 ** ((vo_ref + cfg["lvl"] - peakwin(a)) / 20)    # 峰值窗 = 人声 RMS + lvl dB
     SAMP[kind] = (a.astype(np.float32), cfg.get("hit", 0.0) - cfg.get("from", 0))
 fx = np.zeros(N, np.float32)
+for tr in TRANS:   # 转场镜头自带的金属声：峰值窗对齐到人声 RMS + lvl dB，转场最满的那一刻落在章节交界
+    a = load(os.path.join(CORE, "assets", "trans", tr["id"] + ".mp4"), tr["len"])
+    if np.abs(a).max() > 0: a = a * 10 ** ((vo_ref + tr["lvl"] - peakwin(a)) / 20)
+    i = int((tr["t"] - tr["peak"]) * SR); j0 = max(0, -i); i = max(0, i); seg = a[j0:j0 + N - i]; fx[i:i + len(seg)] += seg
 for e in sfx:
     if e["kind"] in SAMP: s_, hit = SAMP[e["kind"]]
     else: s_, hit = SYN[e["kind"]], 0.0
@@ -587,7 +608,7 @@ if RETAIN:
     sys.path.insert(0, CORE); import lint_opening
     data["retain"] = {"lift": RETAIN["lift"]}
     if RETAIN["feel"]: data["subHi"] = lint_opening.FEEL_SUB
-meta = {"intro": INTRO, "audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
+meta = {"intro": INTRO, "trans": TRANS, "audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
 

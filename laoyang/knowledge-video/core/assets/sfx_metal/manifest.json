@@ -1,0 +1,40 @@
+{
+ "说明": "真实金属音效（从 Flowith 镜头原声里剪，2026-11-28），深度版 autoSfx 默认用它替换程序合成的 thud / stamp / chime / swoosh / riser；hit = 文件里重音的位置（秒），lvl = 峰值窗相对人声 RMS 的 dB。lines.json 的 sfxlib 同名项优先，\"metalSfx\": false 关。",
+ "items": {
+  "thud": {
+   "file": "thud.wav",
+   "hit": 0.182,
+   "lvl": -11,
+   "src": "wall 1.62-2.45s",
+   "desc": "魔方墙撞合的重击"
+  },
+  "stamp": {
+   "file": "stamp.wav",
+   "hit": 0.087,
+   "lvl": -12,
+   "src": "k01 0.7-1.2s",
+   "desc": "机械臂落位的金属咔哒"
+  },
+  "chime": {
+   "file": "chime.wav",
+   "hit": 0.08,
+   "lvl": -17,
+   "src": "k01 1.2-1.55s",
+   "desc": "轻一点的金属卡扣"
+  },
+  "swoosh": {
+   "file": "swoosh.wav",
+   "hit": 0.35,
+   "lvl": -17,
+   "src": "wall 0.15-0.95s",
+   "desc": "金属墙掠过的呼啸"
+  },
+  "riser": {
+   "file": "riser.wav",
+   "hit": 0.95,
+   "lvl": -14,
+   "src": "seam 0.15-1.22s",
+   "desc": "光缝裂开前的吸气上扬"
+  }
+ }
+}

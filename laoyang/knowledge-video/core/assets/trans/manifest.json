@@ -1,0 +1,21 @@
+{
+ "说明": "章节转场镜头库（Flowith 生成，make_trans.py 切）：peak = 画面最满的时刻（对准章节交界），len = 素材长，lvl = 声音峰值窗相对人声 RMS 的 dB（0 = 和人声一样响，转场落在句间停顿里）。",
+ "items": [
+  {
+   "id": "wall",
+   "src": "laoyang_trans_wall.mp4",
+   "from": 0.85,
+   "peak": 0.7,
+   "len": 1.4,
+   "lvl": 0
+  },
+  {
+   "id": "seam",
+   "src": "laoyang_trans_seam.mp4",
+   "from": 1.5,
+   "peak": 0.7,
+   "len": 1.4,
+   "lvl": 0
+  }
+ ]
+}
