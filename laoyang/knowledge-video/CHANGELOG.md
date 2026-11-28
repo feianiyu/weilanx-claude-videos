@@ -2,6 +2,12 @@
 
 规则：外框结构变动 +1.0；同一版式内的尺寸 / 配置调整、新效果 / 新规则 / 新工具 +0.1；修 bug 不升号，只记一行。有意改了画面（`regress.py --update`）必须在这里写明。
 
+## 深度 v10.3 · 2026-11-28 · 机械魔方封面（图库随机）
+- 来源（老杨 11-28）：用 Flowith 重做封面，带机械魔方的科幻感；三版都要，随机换，不固定一版。
+- 新增 `core/cover_cube.html` 和 `core/assets/cover_cube/`（8 张 Flowith · Seedream 5.5 底图 + `manifest.json`）。
+- `cover.py`：深度版默认用机械魔方封面，按期目录名挑图、避开前 3 期；`cover.look: "classic"` 用回老模板，`cover.bg` 指定底图。
+- 标准见 `STANDARD_DEEP_V2.md` §5.5。
+
 ## 深度 v10.2 · 2026-11-28 · 电影片头接入正片
 - 来源（老杨 11-27 / 11-28）：不要 logo 和文字，要电影画面感的专属片头——碎片从四面八方飞来拼成旋转的金属魔方世界，好莱坞式立体音效、有节奏，和知识卡片无缝衔接；看过 v2 预览后确认接入正片。
 - `brand_intro/edit_v2.py --asset` 出片头素材 `core/assets/intro/intro_v2.mp4`（Flowith 可灵两段镜头，80 BPM 硬切，镜头同步音效 + 低频重击 + 反向吸气 + 混响尾，无旋律）。
