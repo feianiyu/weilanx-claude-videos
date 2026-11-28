@@ -52,15 +52,14 @@ async def main():
           const set=()=>document.body.style.setProperty(v,f+'px');set();
           while(f>min){const [l,r,h]=box();if(l>=60&&r<=1020&&(!maxh||h<=maxh))break;f-=2;set()}
           const [l,r,h]=box();return [f,Math.round(l),Math.round(r),Math.round(h)]})"""
-        # 机械魔方版：标题压在上方暗部（≤600px 高），摘要和期号药丸并排在魔方下方，摘要右边界让出药丸
-        if CUBE: await pg.evaluate("(()=>{const p=document.getElementById('pill');window._R=p.style.display==='none'?1020:p.getBoundingClientRect().left-24})()")
-        fit = fit.replace("r<=1020", "r<=(e.id==='ss'&&window._R?window._R:1020)")
+        # 机械魔方版：标题压在上方暗部（≤600px 高），摘要和期号药丸并排在魔方下方，摘要右边界让出药丸（按药丸宽度算，不按它当前位置——长摘要会把药丸挤出画面）
+        # 机械魔方版：期号药丸在上、摘要在下，摘要可用满宽（并排时长摘要会把药丸挤出画面）
         for args in ((["tt", "--tfs", 176, 110, 600], ["en", "--efs", 40, 26, 0], ["ss", "--sfs", 36, 26, 0]) if CUBE else
                      (["tt", "--tfs", 210, 110, 760], ["en", "--efs", 44, 28, 0], ["ss", "--sfs", 42, 32, 0])):
             if args[0] == "en" and not C.get("en"): continue
             if args[0] == "ss" and not C.get("sub"): continue
             f, l, r, hh = await pg.evaluate(fit + "(" + json.dumps(args) + ")")
             print(f"{args[0]} 字号 {f}px，宽 {l}–{r}，高 {hh}")
-            if l < 59 or r > (await pg.evaluate("window._R||1020") if args[0] == "ss" else 1020) + 1 or (args[4] and hh > args[4] + 1): sys.exit(f"!! 封面文字放不下（{args[0]} {l}–{r}，高 {hh}），再缩短文字")
+            if l < 59 or r > 1021 or (args[4] and hh > args[4] + 1): sys.exit(f"!! 封面文字放不下（{args[0]} {l}–{r}，高 {hh}），再缩短文字")
         await pg.screenshot(path="out/封面.png"); await br.close(); print("封面：", os.path.join(EP, "out/封面.png"))
 asyncio.run(main())
