@@ -3,8 +3,8 @@
 封面模板 v3（2026-11-06，老杨给样板）：超大橙色粗体主标题（左对齐，最多 3 行）压在压暗的实景底图上 → 英文副标 → 一句话摘要（≤2 行）→ 橙色药丸标签 → 底部品牌条。
 内容全部放在 3:4 裁切安全区（y240–1680）内，视频号 / 抖音竖封面裁成 3:4 也不丢字。
 封面规则 v2 继续有效（2026-11-04）：主标题必须直接点出「这期讨论什么」——标题里要含 cover.topic；悬念、反问、数字钩子放摘要。
-机械魔方封面（2026-11-28 起深度版默认，老杨：不要固定一版，随机挑）：底图从 assets/cover_cube/ 图库里挑（manifest.json 登记），
-按期目录名打散排序、避开前 3 期挑中的图；cover.look = "classic" 用回老模板，cover.bg = "A"…"H" 指定某张图。
+机械魔方封面（2026-11-28 起深度版默认）：底图从统一钛金魔方图库 assets/cube_lib/ 挑（manifest.json 登记，与正片底图共用 _cube_lib 挑图逻辑），
+按期目录名确定性打散排序、避开前 3 期用过的图；cover.look = "classic" 用回老模板，cover.bg = "A"…"N" 指定某张图。
 字段：title（必填，≤3 行，用 <br> 分行）、topic（深度版必填）、en（英文副标，可选）、sub（摘要，可选，≤2 行）、tag（药丸大字，默认取 frame.ep）、tag2（药丸小字，默认「深度拆解」）。
 标题 / 英文 / 摘要字号自动缩小到放得下（标题最小 110px），仍放不下报错，不截断。"""
 import asyncio, os, sys, json, re
@@ -25,23 +25,12 @@ if nl(C.get("sub", "")) > 2: sys.exit("封面摘要最多两行（用 <br> 分�
 ep = (D.get("frame") or {}).get("ep", "")
 tag, tag2 = C.get("tag", ep), C.get("tag2", "深度拆解" if D.get("style") == "deep" else "")
 CUBE = D.get("style") == "deep" and C.get("look", "cube") == "cube"
-LIB = os.path.join(CORE, "assets", "cover_cube")
-
-def cube_pick(ep_dir, n_avoid=3):
-    """机械魔方底图：按期目录名打散排序取第一张，避开前 n_avoid 期（同目录里按名字排在前面的期）各自的首选图。确定性：同一期重出封面不变。"""
-    import hashlib
-    items = json.load(open(os.path.join(LIB, "manifest.json"), encoding="utf-8"))["items"]
-    rank = lambda name: sorted(items, key=lambda it: hashlib.sha1((name + it["id"]).encode()).hexdigest())
-    name = os.path.basename(ep_dir.rstrip("/")); parent = os.path.dirname(ep_dir.rstrip("/"))
-    prev = sorted(x for x in os.listdir(parent) if x < name and not x.startswith(("_", ".")) and os.path.isdir(os.path.join(parent, x)))[-n_avoid:]
-    used = {rank(x)[0]["id"] for x in prev}
-    return next((it for it in rank(name) if it["id"] not in used), rank(name)[0])
+from _cube_lib import pick_cover as cube_pick, item_path as cube_path
 
 if CUBE:
-    items = {it["id"]: it for it in json.load(open(os.path.join(LIB, "manifest.json"), encoding="utf-8"))["items"]}
-    it = items[C["bg"]] if C.get("bg") in items else cube_pick(EP)
-    print(f"封面底图：机械魔方 {it['id']}（{it['desc']}）")
-    h = (open(f"{CORE}/cover_cube.html", encoding="utf-8").read().replace("__BG__", "file://" + os.path.join(LIB, it["id"] + ".jpg"))
+    it = cube_pick(EP, n_avoid=3, override_id=C.get("bg"))
+    print(f"封面底图：钛金魔方 {it['id']}（{it['desc']}）")
+    h = (open(f"{CORE}/cover_cube.html", encoding="utf-8").read().replace("__BG__", "file://" + cube_path(it))
          .replace("__DY__", str(it.get("dy", 0))).replace("__SC__", str(it.get("sc", 1))).replace("__FULL__", "full" if it.get("sc", 1) >= 1 and not it.get("dy") else ""))
 else:
     bgf = D.get("bg") or (D["bgs"][0]["file"] if D.get("bgs") else "assets/bg.jpg")

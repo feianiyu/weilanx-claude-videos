@@ -2,6 +2,13 @@
 
 规则：外框结构变动 +1.0；同一版式内的尺寸 / 配置调整、新效果 / 新规则 / 新工具 +0.1；修 bug 不升号，只记一行。有意改了画面（`regress.py --update`）必须在这里写明。
 
+## 深度 v12.2 · 2026-11-28 · 统一钛金魔方图库（14 张，底图 + 封面共用）
+- 合并 Claude 的 8 张 Flowith 2K 机械魔方原图（`A`–`H`，重出 `1152×2048` 并调色去琥珀偏橙 → 统一黑曜石 × 拉丝钛银 × 香槟金）与 6 张钛金魔方渲染图（`I`–`N`）为统一图库 `core/assets/cube_lib/`（共 14 张 + `manifest.json`），移除拆分目录 `core/assets/cover_cube/` 与 `core/assets/bgs_cube/`。
+- 新增 `core/_cube_lib.py` 共用确定性挑图模块：`cover.py`、`build.py` 与手机端 `produce.py` 共用同一套按期目录名哈希 + 避开前 3 期逻辑，相邻期不重复、同一期重出结果不变；正片自动配 2 张叠化切换并与封面同源。
+- `cover_cube.html` 调色同步香槟金并加强上方暗部标题安全区。
+- 同步更新 `STANDARD_DEEP_V2/V3/V10/V12.md`、`PLAYBOOK.md`、`ENVIRONMENT.md`，将旧规则「每期手找新底图」改为「从统一钛金魔方图库轮换」。
+- `LY_REGRESS=1` 维持占位底图，回归基准零变动。
+
 ## 深度 v10.4 · 2026-11-28 · 章节魔方转场 + 真实金属音效
 - 来源（老杨 11-28 同意方案）：卡片动画加电影感转场；卡片里程序合成的「叮、咚、嗖」换成真实金属声。文字和数据仍由代码画，AI 只管质感。
 - `core/assets/trans/`：Flowith 可灵生成的转场镜头（6 段：魔方墙横扫 `wall`、光缝劈开 `seam`、整面翻转 `flip`、能量冲击波 `shock`、方块洪流 `stream`、层面旋转 `twist`），`brand_intro/make_trans.py` 切成 1.4s 素材并登记 `manifest.json`。

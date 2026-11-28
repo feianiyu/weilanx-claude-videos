@@ -1,11 +1,11 @@
-<!-- 机械魔方封面（2026-11-28）：底图从 assets/cover_cube/ 图库里每期挑一张，cover.py 负责挑图、填字、缩字号 -->
+<!-- 钛金魔方封面（2026-11-28）：底图从统一图库 assets/cube_lib/ 每期挑一张，cover.py 负责挑图、填字、缩字号 -->
 <html><head><meta charset="utf-8"><style>@font-face{font-family:NSC;src:url(__FONT__) format("truetype");font-weight:100 900}
-:root{--o:#F59A3A;--g:#E9B86A;--tfs:176px;--efs:40px;--sfs:36px;--dy:__DY__px;--sc:__SC__}
+:root{--o:#DFB668;--g:#F5DFAA;--tfs:176px;--efs:40px;--sfs:36px;--dy:__DY__px;--sc:__SC__}
 *{margin:0;padding:0;box-sizing:border-box}body{width:1080px;height:1920px;overflow:hidden;position:relative;background:#050607;font-family:NSC,sans-serif;color:#fff}
-/* 机械魔方封面：AI 生成的金属魔方大片做底，标题压在上方暗部，魔方留在中下部 */
-.bg{position:absolute;inset:0;background:url(__BG__) center/cover;transform:translateY(var(--dy)) scale(var(--sc));-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 86%,transparent 100%),radial-gradient(ellipse 74% 64% at 50% 54%,#000 62%,transparent 100%);-webkit-mask-composite:source-in;mask-composite:intersect}
-body.full .bg{-webkit-mask-image:none}
-.sh{position:absolute;inset:0;background:linear-gradient(180deg,#050607 0,rgba(5,6,7,.82) 14%,rgba(5,6,7,.55) 34%,rgba(5,6,7,.12) 52%,rgba(5,6,7,0) 62%,rgba(5,6,7,.35) 72%,rgba(5,6,7,.85) 80%,#050607 90%)}
+/* 钛金魔方封面：黑曜石×钛银×香槟金统一质感，上方 45% 留暗部托住标题，魔方主体落在中下部 */
+.bg{position:absolute;inset:0;background:url(__BG__) center/cover;transform:translateY(var(--dy)) scale(var(--sc));-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 86%,transparent 100%),radial-gradient(ellipse 76% 64% at 50% 56%,#000 62%,transparent 100%);-webkit-mask-composite:source-in;mask-composite:intersect}
+body.full .bg{-webkit-mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.35) 22%,#000 42%,#000 86%,transparent 100%)}
+.sh{position:absolute;inset:0;background:linear-gradient(180deg,#050607 0,rgba(5,6,7,.90) 18%,rgba(5,6,7,.64) 36%,rgba(5,6,7,.16) 52%,rgba(5,6,7,0) 62%,rgba(5,6,7,.36) 72%,rgba(5,6,7,.86) 80%,#050607 90%)}
 .grain{position:absolute;inset:0;opacity:.10;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
 /* 科幻细节：3:4 安全区四角的金色取景框 + 顶部细线读数 */
 .fr{position:absolute;width:56px;height:56px;border-color:rgba(233,184,106,.75);border-style:solid;border-width:0}
@@ -15,11 +15,11 @@ body.full .bg{-webkit-mask-image:none}
 .chip{display:flex;align-items:center;gap:16px;color:rgba(255,255,255,.92)}.chip i{width:4px;height:28px;background:var(--o)}
 .ep{display:flex;align-items:center;gap:14px;color:var(--g)}.ep i{width:90px;height:2px;background:linear-gradient(90deg,transparent,var(--g))}
 .col{position:absolute;left:60px;right:60px;top:380px;display:flex;flex-direction:column;align-items:flex-start;gap:26px}
-.t{font-size:var(--tfs);font-weight:900;line-height:1.06;white-space:nowrap;background:linear-gradient(180deg,#FFE2B0 0,#F8B25A 42%,#F59A3A 62%,#C8661C 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 22px rgba(0,0,0,.55)) drop-shadow(0 0 26px rgba(245,154,58,.28))}
-.en{font-size:var(--efs);font-weight:800;color:rgba(255,255,255,.9);letter-spacing:2px;white-space:nowrap;text-shadow:0 3px 12px rgba(0,0,0,.8)}
+.t{font-size:var(--tfs);font-weight:900;line-height:1.06;white-space:nowrap;background:linear-gradient(180deg,#FFF3D6 0,#F5DFAA 42%,#DFB668 68%,#B5873A 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 22px rgba(0,0,0,.60)) drop-shadow(0 0 26px rgba(223,182,104,.28))}
+.en{font-size:var(--efs);font-weight:800;color:rgba(216,224,235,.92);letter-spacing:2px;white-space:nowrap;text-shadow:0 3px 12px rgba(0,0,0,.85)}
 .low{position:absolute;left:60px;right:60px;top:1418px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .s{font-size:var(--sfs);font-weight:900;color:#fff;line-height:1.55;letter-spacing:1px;white-space:nowrap;text-shadow:0 3px 16px rgba(0,0,0,.95),0 0 30px rgba(0,0,0,.8)}
-.pill{display:inline-flex;align-items:baseline;gap:16px;white-space:nowrap;flex-shrink:0;background:linear-gradient(90deg,#F8B25A,#F59A3A);color:#14110d;border-radius:60px;padding:16px 40px 16px 38px;box-shadow:0 0 30px rgba(245,154,58,.35)}
+.pill{display:inline-flex;align-items:baseline;gap:16px;white-space:nowrap;flex-shrink:0;background:linear-gradient(90deg,#F5DFAA,#DFB668);color:#12100c;border-radius:60px;padding:16px 40px 16px 38px;box-shadow:0 0 30px rgba(223,182,104,.35)}
 .pill b{font-size:44px;font-weight:900}.pill span{font-size:30px;font-weight:900;letter-spacing:2px}
 .lock{position:absolute;left:0;right:0;top:1566px;display:flex;justify-content:center;align-items:center;gap:20px}
 .lock .bar{width:4px;height:48px;background:var(--o)}.lock .nm{font-size:40px;font-weight:900;letter-spacing:6px}

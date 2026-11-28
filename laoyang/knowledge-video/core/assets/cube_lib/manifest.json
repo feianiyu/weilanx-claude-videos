@@ -1,0 +1,19 @@
+{
+  "说明": "老杨魔方 · 统一钛金魔方图库（14 张，1152×2048，黑曜石×拉丝钛银×香槟金，同时用于每期视频背景底图和每期封面底图）。A–H 来自 Flowith 2K 原图重出调色，I–N 为钛金魔方渲染图。由 core/_cube_lib.py 统一按期目录名确定性挑图并避开前 3 期，相邻期不重复，同一期重出结果不变。",
+  "items": [
+    {"id": "A", "file": "A.jpg", "desc": "完整钛金魔方，缝里透香槟金光", "source": "flowith-2k-graded", "dy": -70, "sc": 0.84, "bg_dim": 0.90},
+    {"id": "B", "file": "B.jpg", "desc": "钛金魔方炸开，露出精密机械核心", "source": "flowith-2k-graded", "dy": -60, "sc": 0.86, "bg_dim": 0.90},
+    {"id": "C", "file": "C.jpg", "desc": "巨型钛金魔方内部的立方体峡谷", "source": "flowith-2k-graded", "dy": 0, "sc": 1.0, "bg_dim": 0.88},
+    {"id": "D", "file": "D.jpg", "desc": "钛金魔方悬在暗黑镜面水上带倒影", "source": "flowith-2k-graded", "dy": 200, "sc": 0.90, "bg_dim": 0.90},
+    {"id": "E", "file": "E.jpg", "desc": "钛金魔方抽屉滑开露出香槟金光流", "source": "flowith-2k-graded", "dy": 80, "sc": 0.94, "bg_dim": 0.90},
+    {"id": "F", "file": "F.jpg", "desc": "双机械臂精密装上魔方最后一块", "source": "flowith-2k-graded", "dy": -90, "sc": 0.88, "bg_dim": 0.88},
+    {"id": "G", "file": "G.jpg", "desc": "星尘中多座钛金魔方连成知识网络", "source": "flowith-2k-graded", "dy": -40, "sc": 0.90, "bg_dim": 0.90},
+    {"id": "H", "file": "H.jpg", "desc": "半拉丝钛金半全息投影魔方", "source": "flowith-2k-graded", "dy": 170, "sc": 0.92, "bg_dim": 0.90},
+    {"id": "I", "file": "I.jpg", "desc": "悬浮暗黑钛金巨型魔方单体", "source": "titanium-render", "dy": 250, "sc": 0.80, "bg_dim": 0.90},
+    {"id": "J", "file": "J.jpg", "desc": "钛金魔方阵列无限纵深长廊", "source": "titanium-render", "dy": 0, "sc": 1.0, "bg_dim": 0.88},
+    {"id": "K", "file": "K.jpg", "desc": "失重裂解悬浮钛金魔方模块", "source": "titanium-render", "dy": 140, "sc": 0.92, "bg_dim": 0.90},
+    {"id": "L", "file": "L.jpg", "desc": "极近微距拉丝钛金倒角与香槟金缝隙", "source": "titanium-render", "dy": 120, "sc": 0.96, "bg_dim": 0.88},
+    {"id": "M", "file": "M.jpg", "desc": "高空俯瞰星轨环绕钛金魔方矩阵", "source": "titanium-render", "dy": 150, "sc": 0.90, "bg_dim": 0.90},
+    {"id": "N", "file": "N.jpg", "desc": "暗黑建筑穹顶悬空钛金魔方圣殿", "source": "titanium-render", "dy": 100, "sc": 0.96, "bg_dim": 0.88}
+  ]
+}

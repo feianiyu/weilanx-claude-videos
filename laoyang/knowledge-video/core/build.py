@@ -630,20 +630,20 @@ if DEEP:
         w, h = o.split(",")[:2]; return int(w), int(h)
     cstart = {c["id"]: c["t0"] for c in data["cards"]}
     _bg_list = list(D.get("bgs") or [{"file": BGP}])
-    # v12 钛金魔方专属底图库：每期按期名哈希自动匹配 2 张不同的钛金魔方底图（中段自然交叉切换），彻底消除旧图撞图与偏色
-    _cb_dir = os.path.join(CORE, "assets", "bgs_cube")
-    if not REGRESS and D.get("cubeBg", D.get("layout") == "v12") and os.path.isdir(_cb_dir):
-        _cb_pool = sorted(os.path.join(_cb_dir, f) for f in os.listdir(_cb_dir) if f.startswith("cube_") and f.endswith(".jpg"))
-        _has_cube = any("cube_" in os.path.basename(b.get("file", "")) and os.path.exists(b.get("file", "")) for b in _bg_list)
-        if _cb_pool and not _has_cube:
-            _h = int(hashlib.md5(os.path.basename(EP).encode("utf-8")).hexdigest()[:8], 16)
-            _i1 = _h % len(_cb_pool)
-            _i2 = (_i1 + 1 + (_h // len(_cb_pool)) % max(1, len(_cb_pool) - 1)) % len(_cb_pool)
+    # 统一钛金魔方图库（core/assets/cube_lib/，14 张，与封面共用 _cube_lib 挑图逻辑）：
+    # 深度版默认按期目录名确定性挑选 2 张不重复魔方底图（避开前 3 期），同一期重出结果不变；
+    # lines.json 若显式写 "cubeBg": false 或指定了本地自有底图且 cubeBg 未强制开启，则尊重显式配置。
+    _use_cube_bg = D.get("cubeBg", D.get("layout") in ("v10", "v12") or not D.get("bgs"))
+    if not REGRESS and _use_cube_bg:
+        sys.path.insert(0, CORE); import _cube_lib
+        _explicit_bgs = [b for b in _bg_list if b.get("file") and os.path.exists(b["file"]) and "cube_lib" in os.path.abspath(b["file"])]
+        if not _explicit_bgs:
+            _picked = _cube_lib.pick_bgs(EP, count=2, n_avoid=3)
             _mid_c = data["cards"][len(data["cards"]) // 2]["id"] if len(data["cards"]) >= 4 else None
-            _bg_list = [{"file": _cb_pool[_i1], "dim": 0.90}]
-            if _mid_c and _i2 != _i1:
-                _bg_list.append({"file": _cb_pool[_i2], "from": _mid_c, "dim": 0.88})
-            print("钛金魔方底图：", ", ".join(os.path.basename(x["file"]) for x in _bg_list))
+            _bg_list = [{"file": _cube_lib.item_path(_picked[0]), "dim": _picked[0].get("bg_dim", 0.90)}]
+            if _mid_c and len(_picked) >= 2:
+                _bg_list.append({"file": _cube_lib.item_path(_picked[1]), "from": _mid_c, "dim": _picked[1].get("bg_dim", 0.88)})
+            print("钛金魔方底图：", ", ".join(f"{it['id']}({it['desc']})" for it in _picked[:len(_bg_list)]))
     for i, b in enumerate(_bg_list):
         dst = f"bg_{i}" + os.path.splitext(b["file"])[1].lower()
         if REGRESS or not os.path.exists(b["file"]):
