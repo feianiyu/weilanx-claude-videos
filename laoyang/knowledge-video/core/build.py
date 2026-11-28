@@ -109,12 +109,12 @@ if DEEP:
     def svg_cube(px): return f'<svg width="{px}" height="{px}" viewBox="-56 -56 112 112">{CUBE}</svg>'
     ep_html = ""; ep_js = open("scenes.js", encoding="utf-8").read() if os.path.exists("scenes.js") else ""
     FXLIB = ""
-    if D.get("fx") or (D.get("layout") == "v10" and D.get("fx") is not False):   # 深度 v2.3 融合层；v10 默认开克制光尘微动，消除背景死寂
-        FXLIB = ("const X=$('fxo').getContext('2d'),O='#F5A623',AU='#F0B429',G='#3CF07A',IV='#FFE9C4',GR='#8C857A',RD='#E8553A',lerp=(a,b,p)=>a+(b-a)*p,"
+    if D.get("fx") or (D.get("layout") in ("v10", "v12") and D.get("fx") is not False):   # 深度 v2.3 融合层；v10/v12 默认开克制香槟金光尘，消除背景死寂
+        FXLIB = ("const X=$('fxo').getContext('2d'),O='#DFB668',AU='#F5DFAA',G='#D8E0EB',IV='#F4F1EA',GR='#9B978E',RD='#C08253',lerp=(a,b,p)=>a+(b-a)*p,"
                  "rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${Math.max(0,a)})`;};\n"
                  + "\n".join(open(f"{CORE}/{f}", encoding="utf-8").read() for f in ("fx.js", "fx_particles.js", "fx_text.js", "fx_mist.js"))
                  + "\n$('mist').style.display='block';$('fxo').style.display='block';\n")
-    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_vivid.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/layers.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/media.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
+    tpl = (open(f"{CORE}/shell_deep.html", encoding="utf-8").read().replace("//@CARDS", FXLIB + open(f"{CORE}/cards_map.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_logic.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_data.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards_vivid.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/morph.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/layers.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/media.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/canvas_v12.js", encoding="utf-8").read() + "\n" + open(f"{CORE}/cards.js", encoding="utf-8").read() + "\n" + ep_js)
            .replace("/*@EP_CSS*/", ep_css).replace("__CUBE64__", svg_cube(64)).replace("__CUBE58__", svg_cube(58))
            .replace("__T1__", D["series"]["title"]).replace("__SERIES__", FR.get("seriesLine", D["series"]["title"]))
            .replace("__COLUMN__", FR.get("column", "LAOYANG CUBE")).replace("__EPNO__", FR.get("ep", "")))
@@ -221,7 +221,7 @@ for k in keys:
         else: ln = [txt[:txt.index(br) + len(br)], txt[txt.index(br) + len(br):]] if br and br in txt else split2(txt, wb2)
         w = max(cw(x) for x in ln)
         item = {"s": s, "e": e, "lines": ln, "fs": min(52, int(840 / w))}
-        if D.get("karaoke") or D.get("layout") in ("v9", "v10"):
+        if D.get("karaoke") or D.get("layout") in ("v9", "v10", "v12"):
             wl = []; cur_p = off
             for line_s in ln:
                 row = []
@@ -235,7 +235,7 @@ for k in keys:
 for s in subs: print("SUB", s["fs"], " / ".join(s["lines"]))
 
 # ---------- sfx（v2.2：采样音效库 + 自合成；v9：autoSfx 按卡片和动效锚点自动排点） ----------
-V9 = D.get("layout") in ("v9", "v10")
+V9 = D.get("layout") in ("v9", "v10", "v12")
 AUTO_SFX = bool(D.get("autoSfx", V9))
 SFXLIB = D.get("sfxlib", {})
 # 真实金属音效（2026-11-28）：深度版自动音效默认用 Flowith 镜头原声里剪的金属声，替换程序合成的那几种；lines.json 的 sfxlib 同名项优先
@@ -580,6 +580,8 @@ if DEEP and HAS_MEDIA:
     data["media"] = True   # 深度 v8 媒体层（media.js）
 if DEEP and (V9 or D.get("motion")):
     data["motion"] = D.get("motion", "v2")
+if DEEP and (D.get("layout") == "v12" or D.get("infiniteCanvas")):
+    data["infiniteCanvas"] = True
 if DEEP and (V9 or D.get("karaoke")):
     data["karaoke"] = True
 if DEEP and (V9 or D.get("progressBar")):
@@ -596,8 +598,8 @@ if DEEP and (V9 or D.get("progressBar")):
     data["progressBar"] = {"chapters": _chaps}
 if DEEP and int(D.get("v", 1)) >= 3:
     data["look"] = D.get("look", "muted")   # 底图观感：muted = 彩色照片降饱和、轻压暗（老杨 11-11 定）；mono = 纯黑白；dark = v2 的重压暗
-if DEEP and (D.get("fx") or (D.get("layout") == "v10" and D.get("fx") is not False)):
-    _def_mist = 0.42 if D.get("layout") == "v10" else (0 if int(D.get("v", 1)) >= 3 else 0.8)
+if DEEP and (D.get("fx") or (D.get("layout") in ("v10", "v12") and D.get("fx") is not False)):
+    _def_mist = 0.42 if D.get("layout") in ("v10", "v12") else (0 if int(D.get("v", 1)) >= 3 else 0.8)
     data["fx"] = dict({"mist": _def_mist}, **(D["fx"] if isinstance(D.get("fx"), dict) else {}))
     data["fx"]["hits"] = [round(A[x], 3) for x in data["fx"].get("hits", [])]
 if DEEP and int(D.get("v", 1)) >= 3 and D.get("retain") is None:
@@ -645,7 +647,7 @@ if DEEP:
         sys.path.insert(0, CORE); import lint_visual
         _ve, _vw = lint_visual.lint(D, EP)
         for _x in _vw: print("画面体检：", _x)
-        if _ve and D.get("layout") in ("v5", "v6", "v7", "v8", "v9", "v10") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
+        if _ve and D.get("layout") in ("v5", "v6", "v7", "v8", "v9", "v10", "v12") and not REGRESS: sys.exit("画面多样性体检未通过：\n  " + "\n  ".join(_ve))
         for _x in _ve: print("画面提示：", _x)
     if RETAIN:   # §2.7 体检：第 1 张是钩子大字卡；前 20% 画面每 ≤maxGap 秒变一次；后段有金句卡
         R_err = []
@@ -656,7 +658,7 @@ if DEEP:
         big = [g for g in gaps if g[0] > RETAIN["maxGap"]]
         if big: R_err.append(f"前 20%（0–{W}s）画面有 {len(big)} 段超过 {RETAIN['maxGap']}s 没变化：" + "、".join(f"{a}s 起 {g}s" for g, a in big) + "。加一个 step / 换卡 / 换底图。")
         print(f"留人套件：前 20%（0–{W}s）画面变化 {len(ev) - 1} 次，最长间隔 {max([g for g, _ in gaps] or [0])}s")
-        if D.get("layout") == "v10":
+        if D.get("layout") in ("v10", "v12"):
             _all_ev = sorted({0.0, DUR, *[c["t0"] for c in cdat], *[x for c in cdat for x in c["st"]]})
             _slow = [(round(b - a, 1), round(a, 1)) for a, b in zip(_all_ev, _all_ev[1:]) if b - a > 3.5]
             if _slow: print(f"v10 节奏提示：全片有 {len(_slow)} 段超过 3.5s 无新要素（最长 {max(g for g,_ in _slow)}s）：" + "、".join(f"{a}s({g}s)" for g, a in _slow[:6]) + "——建议加密 step 或拆卡（引擎已自动叠加永动流光/呼吸）")

@@ -359,6 +359,24 @@ svg.ann .an-tx{font-weight:900;font-family:inherit}
  background:linear-gradient(110deg,transparent 0%,transparent 45%,rgba(245,223,170,.16) 50%,transparent 55%,transparent 100%);
  transform:translateX(calc(-115% + var(--sh,0) * 230%))}
 .k2 .is-cur{filter:drop-shadow(0 0 calc(8px + 12px * var(--lv,0)) rgba(223,182,104,.34))}
+/* ===== 深度 v12 无边框无限空间美学（取消硬边框束缚，元素直接悬浮在黑金开放空间）===== */
+#v12-grid{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(223,182,104,.16) 1.3px,transparent 1.6px);opacity:.72}
+#v12-dust{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:6}
+#v12-leak{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0;z-index:7;
+ background:radial-gradient(ellipse 58% 36% at var(--lx,50%) 46%,rgba(245,223,170,.48),rgba(223,182,104,.12) 48%,transparent 72%)}
+#v12-coords{position:absolute;right:104px;top:150px;font-size:18px;font-weight:700;color:rgba(223,182,104,.58);letter-spacing:1.5px;font-variant-numeric:tabular-nums;pointer-events:none;z-index:18}
+.v12 .vv-box,.v12 .fc-box,.v12 .q-box,.v12 .cl-box,.v12 .sh-box{
+ border:none!important;border-top:2px solid rgba(223,182,104,.45)!important;border-radius:0!important;
+ background:linear-gradient(180deg,rgba(223,182,104,.07) 0%,rgba(12,14,20,.28) 28%,transparent 100%)!important;
+ box-shadow:none!important;padding-left:8px;padding-right:8px}
+.v12 .ix,.v12 .node,.v12 .ac-p,.v12 .sm{
+ border:none!important;border-top:1.5px solid rgba(244,241,234,.22)!important;border-radius:8px!important;
+ background:linear-gradient(180deg,rgba(244,241,234,.06),rgba(12,14,20,.22))!important;box-shadow:none!important}
+.v12 .ac-p.ac-r,.v12 .node.on,.v12 .sm.hot{
+ border-top:2px solid var(--o)!important;background:linear-gradient(180deg,rgba(223,182,104,.13),rgba(12,14,20,.26))!important}
+.v12 .big,.v12 .dn{background:linear-gradient(180deg,#FFF5DA,#DFB668);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none}
+.v12 .vv-box::after,.v12 .fc-box::after,.v12 .q-box::after,.v12 .cl-box::after{
+ background:linear-gradient(110deg,transparent 0%,transparent 46%,rgba(245,223,170,.12) 50%,transparent 54%,transparent 100%)}
 </style></head>
 <body>
 <div id="wrap"><div id="v">
