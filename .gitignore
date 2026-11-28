@@ -19,3 +19,6 @@ __pycache__/
 
 # 本机配置
 .claude/settings.local.json
+
+# 老杨魔方电影片头素材（自有，出片流程要用）
+!laoyang/knowledge-video/core/assets/intro/*.mp4

@@ -3,6 +3,7 @@
   python3 core/render.py <期> snap 5.0 20.3 ...        → build/snap_<t>.png
   python3 core/render.py <期> part a b out.mp4         → 只渲第 a..b 帧（无声）
   python3 core/render.py <期> final [--jobs 3]         → 并行分段 → 拼接 → 混入 build/mix.wav → out/老杨魔方_<标题>.mp4
+     meta.intro 为真时（layout v10 默认）开头接电影片头 core/assets/intro/intro_v2.mp4：片头 3.6s 起 0.5s 溶进正片，正片整体后移 3.6s
 """
 import sys, os, json, subprocess, asyncio
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -51,9 +52,29 @@ def final():
         if p.wait(): sys.exit("分段渲染失败")
     open("build/parts/list.txt", "w").write("".join(f"file 'p{i}.mp4'\n" for i in range(jobs)))
     out = f"out/老杨魔方_{D['series']['title']}.mp4"
-    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", "build/parts/list.txt", "-i", "build/mix.wav",
-                    "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out], check=True)
+    if meta.get("intro"):
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", "build/parts/list.txt", "-c", "copy", "build/parts/body.mp4"], check=True)
+        with_intro("build/parts/body.mp4", "build/mix.wav", out)
+    else:
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", "build/parts/list.txt", "-i", "build/mix.wav",
+                        "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out], check=True)
     print("成片：", os.path.join(EP, out))
+
+INTRO_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "intro", "intro_v2.mp4")
+INTRO_AT, INTRO_XF = 3.60, 0.50   # 与 brand_intro/edit_v2.py 的 XF_AT / XF 一致：片头最后的金雾里溶进第 1 张卡
+
+def with_intro(body, wav, out):
+    """片头 + 正片：画面 0.5s 溶接；片头声音 3.6s 起自带 1.1s 淡出，正片声音 0.5s 淡入后整体后移 3.6s，叠加后 −1dB 限幅。"""
+    if not os.path.exists(INTRO_FILE): sys.exit(f"缺电影片头素材：{INTRO_FILE}（用 brand_intro/edit_v2.py --asset 重出，或 lines.json 写 \"intro\": false）")
+    ms = int(INTRO_AT * 1000)
+    fc = (f"[0:v]trim=0:{INTRO_AT + INTRO_XF},setpts=PTS-STARTPTS,fps={FPS},noise=alls=7:allf=t,format=yuv420p[a];"
+          f"[1:v]fps={FPS},format=yuv420p,setpts=PTS-STARTPTS[b];[a][b]xfade=transition=fade:duration={INTRO_XF}:offset={INTRO_AT}[v];"
+          f"[0:a]aresample=48000,aformat=channel_layouts=stereo[ia];"
+          f"[2:a]aresample=48000,aformat=channel_layouts=stereo,afade=t=in:d={INTRO_XF},adelay={ms}|{ms}[ea];"
+          f"[ia][ea]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.89:level=false[aout]")
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", INTRO_FILE, "-i", body, "-i", wav, "-filter_complex", fc, "-map", "[v]", "-map", "[aout]",
+                    "-c:v", "libx264", "-preset", "medium", "-crf", CRF, "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+                    "-movflags", "+faststart", out], check=True)
 
 mode = sys.argv[2]
 if mode == "final": final()

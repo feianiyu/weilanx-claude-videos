@@ -130,6 +130,11 @@ SFXLIST = D.get("sfx", [])
 # 锚点：scenes.js 里任何写成 'v07|词|s' 的字符串都算（包括写在数组里的），加上 scenes.html 的 data-at 和音效表
 specs = set(re.findall(r"""['"](v\d{2,3}\|[^'"|]+\|[se](?:\|[+-][\d.]+)?)['"]""", ep_js)) | set(re.findall(r'data-(?:at|kf)="(v[^"]+)"', ep_html)) | {x[0] for x in SFXLIST} | {h[0] for h in D.get("heads", []) if h[0].startswith("v")}
 CARDS = D.get("cards", []) if DEEP else []
+# 电影片头（brand_intro/，render.py final 接到每期开头，3.6s 起 0.5s 溶进第 1 张卡）：layout v10 默认开，"intro": false 关。
+# 片头开着时，第 1 张卡的 2.8s 程序化魔方（bleed.brand）和它那组拧动音效就不要了，免得魔方出两遍。
+INTRO = bool(DEEP and D.get("intro", D.get("layout") == "v10"))
+if INTRO and CARDS and ((CARDS[0].get("data") or {}).get("bleed") or {}).get("brand"):
+    del CARDS[0]["data"]["bleed"]; print("电影片头已开：去掉第 1 张卡的程序化魔方开场")
 for c in CARDS:
     for x in [c["at"]] + list(c.get("steps", [])):
         if "|" in x: specs.add(x)
@@ -582,7 +587,7 @@ if RETAIN:
     sys.path.insert(0, CORE); import lint_opening
     data["retain"] = {"lift": RETAIN["lift"]}
     if RETAIN["feel"]: data["subHi"] = lint_opening.FEEL_SUB
-meta = {"audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
+meta = {"intro": INTRO, "audio_missing": MISSING, "bgm_offset": BGM_OFF, "dur": DUR, "timeline": tl, "secs": secs, "sfx": sfx, "bgm_gain": g, "lufs": LU,
         "bgm_vs_vo_db": float(round(wrms(bg, speech) - wrms(vo, speech), 2)) if g else None}
 json.dump(meta, open("build/meta.json", "w"), ensure_ascii=False, indent=1)
 

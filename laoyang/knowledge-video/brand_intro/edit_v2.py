@@ -3,20 +3,25 @@
 节奏：80 BPM（一拍 0.75s）。剪点 0.75 / 2.25；3.30 冲入；3.60 起 0.5s 溶进正片（正片 t=0 从 3.60 开始）。
 声音：镜头自带的同步音效（碎片呼啸、金属咬合、穿越风声）为主，叠：反向吸气 → 低频重击 → 混响尾，全部无旋律、无电子叮当。
 用法：python3 edit_v2.py A.mp4 B.mp4 [正片开头.mp4 正片开头音频.wav] out.mp4
+      python3 edit_v2.py A.mp4 B.mp4 --asset core/assets/intro/intro_v2.mp4   → 出片流程用的片头素材
+        （画面 4.10s = 溶入终点；声音多留 1.2s 混响尾，3.60s 起 1.1s 淡出；render.py final 自动接到每期开头）
 """
 import sys, os, subprocess, wave, numpy as np
+ASSET = "--asset" in sys.argv
+if ASSET: sys.argv.remove("--asset")
 A, B = sys.argv[1], sys.argv[2]
 EPV = sys.argv[3] if len(sys.argv) > 5 else None; EPA = sys.argv[4] if len(sys.argv) > 5 else None
-OUT = sys.argv[-1]; D = os.path.dirname(os.path.abspath(OUT)) or "."
+OUT = sys.argv[-1]; import tempfile; D = tempfile.mkdtemp(prefix="ly_intro_")   # 中间文件放临时目录
 FPS, SR = 30, 48000
 # (源, 起, 止, 速度) → 片头时间轴
 SEG = [(A, 0.10, 1.30, 1.60),    # 0.00–0.75  碎片高速掠过（加速）
        (A, 1.45, 3.35, 1.27),    # 0.75–2.25  拼合、咬合、亮起
-       (B, 2.20, 4.40, 1.333)]   # 2.25–3.90  魔方逼近 → 冲进缝隙 → 金色雾
+       (B, 2.20, 4.67, 1.333)]   # 2.25–4.10  魔方逼近 → 冲进缝隙 → 金色雾
 XF_AT, XF = 3.60, 0.50           # 溶进正片
 GRADE = ("eq=saturation=0.86:contrast=1.08:brightness=-0.02,"
          "colorbalance=rs=0.04:gs=0.01:bs=-0.05:rm=0.03:bm=-0.04:rh=0.03:bh=-0.05,"
-         "vignette=PI/5,noise=alls=7:allf=t")
+         "vignette=PI/5" + ("" if ASSET else ",noise=alls=7:allf=t"))   # 素材版不烧颗粒（文件小 3 倍），由 render.py 接片时再加
+GRAIN = "noise=alls=7:allf=t"
 
 def run(*a): subprocess.run(list(a), check=True)
 parts_v, parts_a = [], []
@@ -37,7 +42,7 @@ def load(f, ch=2):
     x = np.frombuffer(subprocess.run(["ffmpeg", "-v", "error", "-i", f, "-ac", str(ch), "-ar", str(SR), "-f", "f32le", "-"], capture_output=True).stdout, np.float32)
     return x.reshape(-1, ch).copy()
 nat = load(intro_raw)                                   # 镜头自带同步音效
-T = (XF_AT + 7.0) if EPV else dur
+T = (XF_AT + 7.0) if EPV else (dur + 1.2 if ASSET else dur)
 N = int(T * SR); mix = np.zeros((N, 2), np.float32)
 n0 = min(len(nat), N); g = np.ones(n0, np.float32); g[: int(0.75 * SR)] = 3.2; mix[:n0] += nat[:n0] * 1.6 * g[:, None]
 R0 = np.random.default_rng(5)
@@ -84,6 +89,8 @@ if EPA:
     # 片头自带部分在溶入后退场（正片音频不受影响）
     intro_only = mix.copy(); intro_only[s:e] -= ep[: e - s] * ramp
     mix = intro_only * fade[:, None] + (mix - intro_only)
+if ASSET:   # 素材版：溶入起点开始 1.1s 淡出，正片音频由 render.py 叠进来
+    k0, k1 = int(XF_AT * SR), int((XF_AT + 1.1) * SR); fade = np.ones(N, np.float32); fade[k0:k1] = np.linspace(1, 0, k1 - k0); fade[k1:] = 0; mix *= fade[:, None]
 # 轻微立体加宽（Haas）+ 限幅
 mix[:, 1] = np.concatenate([np.zeros(18, np.float32), mix[:-18, 1]]) * 0.6 + mix[:, 1] * 0.4
 mix = np.tanh(mix / (np.abs(mix).max() + 1e-9) * 1.25) * 0.93
@@ -98,6 +105,11 @@ if EPV:
     run("ffmpeg", "-v", "error", "-y", "-i", intro_raw, "-i", EPV, "-i", wav, "-filter_complex", vf, "-map", "[v]", "-map", "2:a",
         "-af", "loudnorm=I=-14:TP=-1.5:LRA=9", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "192k", "-ar", str(SR), "-shortest", OUT)
+elif ASSET:
+    os.makedirs(os.path.dirname(os.path.abspath(OUT)), exist_ok=True)
+    run("ffmpeg", "-v", "error", "-y", "-i", intro_raw, "-i", wav, "-map", "0:v", "-map", "1:a", "-t", f"{dur + 1.2:.2f}",
+        "-af", "loudnorm=I=-14:TP=-1.5:LRA=9", "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", str(FPS),
+        "-c:a", "aac", "-b:a", "256k", "-ar", str(SR), "-movflags", "+faststart", OUT)
 else:
     run("ffmpeg", "-v", "error", "-y", "-i", intro_raw, "-i", wav, "-map", "0:v", "-map", "1:a",
         "-af", "loudnorm=I=-14:TP=-1.5:LRA=9", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
