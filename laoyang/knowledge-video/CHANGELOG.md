@@ -4,7 +4,7 @@
 
 ## 深度 v10.4 · 2026-11-28 · 章节魔方转场 + 真实金属音效
 - 来源（老杨 11-28 同意方案）：卡片动画加电影感转场；卡片里程序合成的「叮、咚、嗖」换成真实金属声。文字和数据仍由代码画，AI 只管质感。
-- `core/assets/trans/`：Flowith 可灵生成的转场镜头（魔方墙横扫 `wall`、光缝劈开 `seam`），`brand_intro/make_trans.py` 切成 1.4s 素材并登记 `manifest.json`。
+- `core/assets/trans/`：Flowith 可灵生成的转场镜头（6 段：魔方墙横扫 `wall`、光缝劈开 `seam`、整面翻转 `flip`、能量冲击波 `shock`、方块洪流 `stream`、层面旋转 `twist`），`brand_intro/make_trans.py` 切成 1.4s 素材并登记 `manifest.json`。
 - `build.py`：深度版在章节交界放转场（两次至少隔 25s，最多 5 处，按期目录名轮换镜头），转场原声混进音效轨、附近的自动音效让位；`"chapterTrans": false` 关。
 - `render.py`：`compose()` 一次编码完成转场叠加（淡入淡出各 0.3s，最满一刻对准章节交界）和片头。
 - `core/assets/sfx_metal/`：从镜头原声剪的 thud / stamp / chime / swoosh / riser，深度版 autoSfx 默认用它；lines.json 的 `sfxlib` 同名项优先，`"metalSfx": false` 关。

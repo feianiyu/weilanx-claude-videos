@@ -16,6 +16,38 @@
    "peak": 0.7,
    "len": 1.4,
    "lvl": 0
+  },
+  {
+   "id": "flip",
+   "src": "laoyang_trans_flip.mp4",
+   "from": 1.6,
+   "peak": 0.7,
+   "len": 1.4,
+   "lvl": 0
+  },
+  {
+   "id": "shock",
+   "src": "laoyang_trans_shock.mp4",
+   "from": 1.5,
+   "peak": 0.7,
+   "len": 1.4,
+   "lvl": 0
+  },
+  {
+   "id": "stream",
+   "src": "laoyang_trans_stream.mp4",
+   "from": 0.55,
+   "peak": 0.7,
+   "len": 1.4,
+   "lvl": 0
+  },
+  {
+   "id": "twist",
+   "src": "laoyang_trans_twist.mp4",
+   "from": 1.5,
+   "peak": 0.7,
+   "len": 1.4,
+   "lvl": 0
   }
  ]
 }
